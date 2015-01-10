@@ -1,25 +1,11 @@
 package com.la.mvc.view.token
 {
-<<<<<<< HEAD
 	
 	import com.la.mvc.view.field.IToken;
 	import com.log.Logger;
 	
 	import com.la.mvc.view.card.Card;
 	import com.la.mvc.model.CardData;
-
-=======
-import com.la.mvc.view.IAttackAvailable;
-import com.ps.tokens.*;
-import com.log.Logger;
-import com.ps.cards.Card;
-	import com.ps.cards.CardData;
-	import com.ps.cards.eptitude.CardEptitude;
-
-	import com.ps.cards.eptitude.EptitudeLevel;
-    import com.ps.cards.eptitude.EptitudePeriod;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
@@ -31,11 +17,7 @@ import com.ps.cards.Card;
 	 * ...
 	 * @author 
 	 */
-<<<<<<< HEAD
 	public class Token extends Sprite implements IToken
-=======
-	public class Token extends Sprite implements IAttackAvailable
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 	{
 		
 		private static var tokenPreview:Sprite;
@@ -102,18 +84,10 @@ import com.ps.cards.Card;
 
         private  var dumbnessFlag:Boolean = false;
 		
-<<<<<<< HEAD
 		private var _cloneFlag:Boolean = false;
 		
 		internal static const TOKEN_FREEZE:int = 1000;
 
-=======
-		internal static const TOKEN_FREEZE:int = 1000;
-
-        internal var dependency:CardEptitude;
-		
-		
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 		public static function getTokenPreviewInstance () :Sprite {
 			if (tokenPreview == null) {
 				tokenPreview = new Token (null);
@@ -264,15 +238,9 @@ import com.ps.cards.Card;
 			attackCount = 1;
 			_canAttack = false;
 			
-<<<<<<< HEAD
 			//addEventListener (MouseEvent.MOUSE_DOWN, onMouseDown);
 			//addEventListener (MouseEvent.MOUSE_OVER, onMouseOver);
 			//addEventListener (MouseEvent.MOUSE_OUT, onMouseOut);
-=======
-			addEventListener (MouseEvent.MOUSE_DOWN, onMouseDown);
-			addEventListener (MouseEvent.MOUSE_OVER, onMouseOver);
-			addEventListener (MouseEvent.MOUSE_OUT, onMouseOut);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 			
 			_health = cardData.getHealth ();
 			_attack = cardData.getAttack ();
@@ -287,106 +255,13 @@ import com.ps.cards.Card;
 		public function freeze () :void {
 			this.freezeFlag = true;
 			level4.addChild (freezeSprite);
-<<<<<<< HEAD
-		
-=======
-			var newEptitude:CardEptitude
-			if (!containsAnyLevelEptitude(TOKEN_FREEZE)) {
-				newEptitude = new CardEptitude (TOKEN_FREEZE);
-				newEptitude.setPower(2);
-				newEptitude.setPeriod (EptitudePeriod.START_STEP);
-				addEptitude (newEptitude);
-			} else {
-				newEptitude = getEptitudeByType (TOKEN_FREEZE);
-				newEptitude.setPower(2);
-			}
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 		}
 		
 		public function getCardData () :CardData {
 			return cardData;
 		}
 
-
-<<<<<<< HEAD
 		public function isProvocator () :Boolean {
-=======
-		
-		private function onMouseOver (event:MouseEvent) :void {
-			//dispatchEvent (new TokenEvent (TokenEvent.TOKEN_MOUSE_OVER, this));
-		}
-		
-		private function onMouseOut (event:MouseEvent) :void {
-			//dispatchEvent (new TokenEvent (TokenEvent.TOKEN_MOUSE_OUT, this));
-		}
-		
-		public function activateEptitudes (period:int, callback:Function) :EptitudeActivator {
-
-            return null
-
-            //var activator:EptitudeActivator = new EptitudeActivator (this, callback);
-            /*
-            var eptitude:CardEptitude;
-
-            if (period == EptitudePeriod.END_STEP) {
-                while (tempEmptitudes.length) {
-                    eptitude = tempEmptitudes.shift();
-                    deactivateEptitude (eptitude);
-                }
-            }
-
-            if (period == EptitudePeriod.START_STEP) {
-                attackCount = 1;
-                if (getTotalAttack() == 0) {
-                    canAttack = false;
-                }
-            }
-
-			periodEptitudes = [];
-
-            for (var i:int = 0; i < eptitudes.length; i ++) {
-				eptitude = eptitudes[i];
-				if (eptitude.getPeriod() == period) {
-					periodEptitudes.push (eptitude);
-				}
-			}
-
-
-
-			activator.activateEptitudes (periodEptitudes);
-            return activator;
-            */
-
-		}
-
-        public function forceActivate (eptitude:CardEptitude, callback:Function) :void {
-           // var activator:EptitudeActivator = new EptitudeActivator (this, callback);
-           // activator.activateEptitudes ([eptitude]);
-        }
-
-        private function deactivateEptitude (eptitude:CardEptitude) :void {
-            switch (eptitude.getType()) {
-                case CardEptitude.INCREASE_ATTACK: {
-                    var newAttack:int;
-                    newAttack = getAttack() - eptitude.getPower();
-                    if (newAttack < 0) newAttack = 0;
-                    if (newAttack == 0) {
-                        canAttack = false;
-                        attackCount = 0;
-                    }
-                    setAttack (newAttack);
-                    break;
-                }
-            }
-        }
-
-		public function configure (eptitude:CardEptitude, callback:Function) :void {
-            //var activator:EptitudeActivator = new EptitudeActivator (this, callback, true);
-            //activator.activateEptitudes ([eptitude]);
-        }
-
-        public function isProvocator () :Boolean {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             if (shadowFlag) {
                 return false;
             }
@@ -544,70 +419,7 @@ import com.ps.cards.Card;
 				eptitudes = []
         }
 		
-<<<<<<< HEAD
-		
-
 	    public function set canAttack (bool:Boolean) :void {
-=======
-		public function getEptitudeByType (type:int) :CardEptitude {
-			var eptitude:CardEptitude;
-			for (var i:int = 0; i < eptitudes.length; i ++) {
-				eptitude = eptitudes[i];
-				if (eptitude.getType() == type) {
-					break;
-				}
-			}
-			return eptitude;
-		}
-		
-		public function containsAnyLevelEptitude (type:int) :Boolean {
-			var flag:Boolean = false;
-			var eptitude:CardEptitude
-			for (var i:int = 0; i < eptitudes.length; i ++) {
-				eptitude = eptitudes[i];
-				if (eptitude.getType() == type) {
-					flag = true;
-					break;
-				}
-			}
-			return flag;
-		}
-		
-		public function containsEptitude (type:int) :Boolean {
-			var flag:Boolean = false;
-			var eptitude:CardEptitude
-			for (var i:int = 0; i < eptitudes.length; i ++) {
-				eptitude = eptitudes[i];
-				if (eptitude.getType() == type && eptitude.getLevel() == EptitudeLevel.SELF) {
-					flag = true;
-					break;
-				}
-			}
-			return flag;
-		}
-		
-		public function addEptitude (eptitude:CardEptitude) :void {
-			eptitudes.push (eptitude);
-		}
-		
-		public function removeEptitude (eptitude:CardEptitude) :void {
-			var index:int = eptitudes.indexOf (eptitude);
-            eptitudes.splice (index, 1);
-		}
-		
-
-	    public function set canAttack (bool:Boolean) :void {
-			if (bool) {
-				if (!isEnemy()) {
-					level2.filters = [new GlowFilter (0x00FFFF)];
-				}
-				
-			} else {
-				if (!isEnemy()) {
-					level2.filters = null;
-				}
-			}
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 			_canAttack = bool;
 		}
 		
@@ -615,81 +427,16 @@ import com.ps.cards.Card;
 			return _canAttack;
 		}
 		
-<<<<<<< HEAD
-		
-		
 		public function set isEnemy (value:Boolean) :void {
 			this.enemy = value;
 		}
 		
 		public function get isEnemy () :Boolean {
-=======
-		public function attackComplete () :void {
-			attackCount --;
-			if (attackCount <= 0) {
-				canAttack = false;
-			} else {
-				blur ();
-			}
-			if (level3.contains (shadow)) {
-				level3.removeChild (shadow);
-				shadowFlag = false;
-			}
-			//dispatchEvent (new TokenEvent (TokenEvent.ATTACK_COMPLETE, this));
-		}
-		
-		public function cancelActivate () :void {
-			//dispatchEvent (new TokenEvent (TokenEvent.ACTIVATION_COMPLETE, this));
-		}
-
-        public function completeConfigure () :void {
-            //dispatchEvent (new TokenEvent (TokenEvent.CONFIGURE_COMPLETE, this));
-        }
-		
-		
-		
-		
-		private function onMouseDown (event:MouseEvent) :void {
-			if (isEnemy()) {
-				return;
-			}
-			
-			if (!_canAttack) {
-				return;
-			}
-			
-			//dispatchEvent (new TokenEvent (TokenEvent.TOKEN_MOUSE_DOWN, this));
-			
-			
-		}
-		
-		public function attackPlayerHero () :void {
-			//dispatchEvent (new TokenEvent (TokenEvent.ATTACK_PLAYER_HERO, this));
-		}
-		
-		public function attackUnit (unit:Token) :void {
-			//var event:TokenEvent = new TokenEvent (TokenEvent.ATTACK_UNIT, this);
-			//event.setTargetUnit (unit);
-			//dispatchEvent (event);
-		}
-		
-		public function isEnemy () :Boolean {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 			return enemy;
 		}
 		
 		public function getPosition () :Point {
-<<<<<<< HEAD
 			return new Point (this.x, this.y);
-=======
-			if (position == null) {
-				position = new Point ();
-			}
-			position.x = this.x
-			position.y =  this.y;
-			
-			return position;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 		}
 		
 
@@ -754,14 +501,6 @@ import com.ps.cards.Card;
 
         public function setHealth (value:int):void {
             _health = value;
-            //if (!value && _healthBob) {
-               // _health = 1;
-<<<<<<< HEAD
-			   
-			   
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-          //  }
             var finalHealth:int = _health + _healthBob;
             //Logger.log (finalHealth.toString())
             if (finalHealth > getMaxHealth()) {
@@ -772,12 +511,7 @@ import com.ps.cards.Card;
 			} else {
 				healthLabel.defaultTextFormat = woundFormat;
 			}
-<<<<<<< HEAD
-			
 			if (finalHealth < 0) finalHealth = 0;
-			
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 			healthLabel.text = "" + finalHealth;
 		}
 		
@@ -794,7 +528,6 @@ import com.ps.cards.Card;
 		
 
 		
-<<<<<<< HEAD
 		public function getMirror () :Sprite {
 			return card.getMirror ();
 		}
@@ -804,17 +537,6 @@ import com.ps.cards.Card;
 		}
 		
 		public function stopGlow () :void {
-=======
-		public function getMirrow () :Sprite {
-			return card.getMirrow ();
-		}
-		
-		public function blur () :void {
-			level2.filters = [new GlowFilter (0x00FFFF)];
-		}
-		
-		public function stopBlur () :void {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 			level2.filters = null;
 		}
 		
@@ -831,20 +553,12 @@ import com.ps.cards.Card;
 
 
 
-<<<<<<< HEAD
         public function getRace () :String {
-=======
-        public function getRace () :int {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             return cardData.getRace();
         }
 
         public function cancelSelect () :void {
-<<<<<<< HEAD
             //dependency = null;
-=======
-            dependency = null;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         }
 
         public function getAttackBob () :int {
@@ -871,8 +585,7 @@ import com.ps.cards.Card;
         public function setEnemy (value:Boolean) :void {
             this.enemy = value;
         }
-<<<<<<< HEAD
-		
+	
 		public function clone () :IToken {
 			var tokenCopy:IToken = new Token (card, enemy);
 			tokenCopy.setHealth (getHealth());
@@ -887,17 +600,7 @@ import com.ps.cards.Card;
 			return this._cloneFlag;
 		}
 
-        
-=======
-
-        public function copyEptitudes () :Array {
-            return eptitudes.concat();
-        }
-
-        public function setEptitudes (arr:Array) :void {
-            eptitudes = arr;
-        }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+       
 
 
 		

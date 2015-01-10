@@ -36,11 +36,7 @@ public class StartupMatchCommand extends Command {
 
     override public function execute():void {
         field.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
-<<<<<<< HEAD
 		field.setScene (scene);
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
         contextView.addChildAt(field as DisplayObject, 0);
 
         playerDeck.resize(contextView.stage.stageWidth, contextView.stage.stageHeight);

@@ -2,10 +2,7 @@
  * Created by root on 11/15/14.
  */
 package com.la.mvc.view.field {
-<<<<<<< HEAD
 import com.la.event.FieldEvent;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.filters.GlowFilter;
@@ -51,11 +48,7 @@ public class StepButton extends Sprite {
     }
 
     private function onClick (event:MouseEvent) :void {
-<<<<<<< HEAD
 		dispatchEvent (new FieldEvent (FieldEvent.END_STEP))
-=======
-
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 }
 }

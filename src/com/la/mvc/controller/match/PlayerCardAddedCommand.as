@@ -2,10 +2,7 @@
  * Created by root on 11/16/14.
  */
 package com.la.mvc.controller.match {
-<<<<<<< HEAD
 import com.la.event.ScenarioEvent;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 import com.la.mvc.model.RootModel;
 import com.la.mvc.view.deck.PlayerDeck;
 import com.la.state.GameState;
@@ -27,10 +24,7 @@ public class PlayerCardAddedCommand extends Command {
                 rootModel.currentState = GameState.PLAYER_STEP;
                 playerDeck.unblock();
                 playerDeck.glowAvailableCards();
-<<<<<<< HEAD
 				dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
                 break;
             }
 

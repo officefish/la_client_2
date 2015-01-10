@@ -2,7 +2,6 @@
  * Created by root on 10/24/14.
  */
 package com.la.mvc.view.field {
-<<<<<<< HEAD
 	import flash.events.IEventDispatcher;
 	import flash.geom.Point;
 	
@@ -19,9 +18,6 @@ public interface IAttackAvailable extends IEventDispatcher {
 	function getAttack () :int;
 	function setMaxHealth (value:int):void;
 	function getMaxHealth () :int;
-	
-=======
-public interface IAttackAvailable {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 }
 }

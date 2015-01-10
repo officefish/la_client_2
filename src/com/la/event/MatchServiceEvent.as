@@ -15,13 +15,10 @@ public class MatchServiceEvent extends Event {
     public static const CHANGE_OPPONENT_PREFLOP:String = 'changeOpponentPreflop';
     public static const READY:String = 'ready';
     public static const OPPONENT_STEP:String = 'opponentStep';
-<<<<<<< HEAD
 	public static const PLAYER_STEP:String = 'player_step';
 	public static const SCENARIO:String = 'scenario';
 	public static const END_STEP_TIMER:String = 'endStepTimer';
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
+	
     public function MatchServiceEvent(type:String,  data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
         this.data = data;
         super(type, bubbles, cancelable)

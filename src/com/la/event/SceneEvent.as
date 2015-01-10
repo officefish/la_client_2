@@ -13,8 +13,6 @@ public class SceneEvent extends Event {
     public static const PREFLOP_COMPLETE:String = 'preflopComplete';
     public static const WELCOME_COMPLETE:String = 'welcomeAnimationComplete';
     public static const LIGHTEN_COMPLETE:String = 'lightenComplete';
-<<<<<<< HEAD
-	
 	public static const WARNING_CLOSE:String = 'warningClose';
 	public static const WARNING_CANCEL:String = 'warningCancel';
 	public static const WARNING_CONFIRM:String = 'warningConfirm';
@@ -27,8 +25,7 @@ public class SceneEvent extends Event {
 	public static const PASSIVE_ATTACK:String = 'passiveAttack';
 	
 	public static const BACK_TOKEN_TO_HAND:String = 'backTokenToHand';
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
     public function SceneEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
         this._data = data;

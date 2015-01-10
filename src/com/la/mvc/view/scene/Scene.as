@@ -4,22 +4,15 @@
 package com.la.mvc.view.scene {
 import com.greensock.TweenLite;
 import com.greensock.easing.Expo;
-<<<<<<< HEAD
-import com.hurlant.util.der.OID;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 import com.la.event.SceneEvent;
 import com.la.mvc.view.card.Card;
 import com.la.mvc.view.card.PreflopCard;
 import com.la.mvc.view.field.IHero;
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
 import com.la.mvc.view.scene.popup.WarningPopup;
 import com.la.mvc.view.ui.StepTimerWidget;
 import flash.events.Event;
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
 import fl.controls.Button;
 
@@ -43,10 +36,8 @@ public class Scene extends Sprite implements IScene{
     private var backToDeckCards:Array;
 
     private var placeCardLevel:Sprite;
-<<<<<<< HEAD
 	private var trajectoryLevel:Sprite; 
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
     private static const SCALE_INDEX:Number = 0.72;
 
@@ -56,8 +47,7 @@ public class Scene extends Sprite implements IScene{
     private var opponentHero:IHero;
     private var heroesSprite:Sprite;
     private var preflopContainer:Sprite;
-<<<<<<< HEAD
-	
+
 	private var attackTokenPosition:Point;
 	
 	private var previewContainer:Sprite;
@@ -103,35 +93,6 @@ public class Scene extends Sprite implements IScene{
     public function resize (stageWidth:int, stageHeight:int) :void {
         this.stageWidth = stageWidth;
         this.stageHeight = stageHeight;
-	
-
-        
-=======
-
-
-
-    public function Scene() {
-    }
-
-    public function resize (stageWidth:int, stageHeight:int) :void {
-        this.stageWidth = stageWidth;
-        this.stageHeight = stageHeight;
-
-        this.placeCardLevel = new Sprite();
-        addChild(placeCardLevel);
-
-        darkenSprite = new Sprite();
-        addChild(darkenSprite);
-
-        heroesSprite = new Sprite ();
-        addChild(heroesSprite);
-
-        preflopContainer = new Sprite();
-        addChild(preflopContainer);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
-
-
     }
 
     public function preflopCards (cards:Vector.<CardData>) :void {
@@ -226,11 +187,7 @@ public class Scene extends Sprite implements IScene{
     private function getClassInstances (container:DisplayObjectContainer, cl:Class) :Vector.<DisplayObject> {
         var vector:Vector.<DisplayObject> = new Vector.<DisplayObject>();
         for (var i:int = container.numChildren - 1; i > -1; i --) {
-<<<<<<< HEAD
             var child:DisplayObject = container.getChildAt(i);
-=======
-            var child = container.getChildAt(i);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             if (child is cl) {
                 vector.push(child)
             }
@@ -296,11 +253,8 @@ public class Scene extends Sprite implements IScene{
 
         }
         _preflopCards.sort(sortByXPosition);
-<<<<<<< HEAD
         for (i = 0; i < _preflopCards.length; i ++) {
-=======
-        for (var i:int = 0; i < _preflopCards.length; i ++) {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
             preflopContainer.addChild(_preflopCards[i]);
         }
     }
@@ -359,7 +313,6 @@ public class Scene extends Sprite implements IScene{
     public function placeCard (card:DisplayObject) :void {
         placeCardLevel.addChild(card);
     }
-<<<<<<< HEAD
 	
 	public function warning  (msg:String, confirmFlag:Boolean = false, cancelFlag:Boolean = false) :void {
 		var popup:WarningPopup = new WarningPopup (msg, confirmFlag, cancelFlag, onConfirm, onCancel);
@@ -388,8 +341,7 @@ public class Scene extends Sprite implements IScene{
 		dispatchEvent (new SceneEvent(SceneEvent.WARNING_CLOSE, {}));
 	}
 
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
     public function endPlaceCard () :void {
         while (placeCardLevel.numChildren) placeCardLevel.removeChildAt(0);
@@ -444,21 +396,17 @@ public class Scene extends Sprite implements IScene{
     }
 
     public function darken () :void {
-<<<<<<< HEAD
         if (!contains(darkenSprite)) {
 			addChildAt(darkenSprite, 1);
 		}
 		darkenSprite.alpha = 1;
 		darkenSprite.graphics.clear();
-=======
-        darkenSprite.graphics.clear();
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
         darkenSprite.graphics.beginFill(0x222222,0.8);
         darkenSprite.graphics.drawRect(0,0,stageWidth,stageHeight);
         darkenSprite.graphics.endFill();
     }
 
-<<<<<<< HEAD
     public function lighten (dispatch:Boolean = true) :void {
 		if (dispatch) {
 	        TweenLite.to (darkenSprite, 1.0, {alpha:0, ease:Expo.easeOut, onComplete:onLightenComplete});
@@ -473,11 +421,6 @@ public class Scene extends Sprite implements IScene{
             darkenSprite.alpha = 1;
 		}
 	}
-=======
-    public function lighten () :void {
-        TweenLite.to (darkenSprite, 1.0, {alpha:0, ease:Expo.easeOut, onComplete:onLightenComplete});
-    }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     private function onLightenComplete () :void {
         if (contains(darkenSprite)) {
@@ -486,7 +429,6 @@ public class Scene extends Sprite implements IScene{
             dispatchEvent(new SceneEvent(SceneEvent.LIGHTEN_COMPLETE, {}))
         }
     }
-<<<<<<< HEAD
 	
 	public function setAttackTokenPosition (position:Point) :void {
 			this.attackTokenPosition = position	
@@ -561,8 +503,7 @@ public class Scene extends Sprite implements IScene{
 		}
 		while (trajectoryLevel.numChildren) trajectoryLevel.removeChildAt(0);
 	}
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
 
 

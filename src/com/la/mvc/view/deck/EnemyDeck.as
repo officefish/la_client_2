@@ -7,19 +7,11 @@ import com.greensock.TweenLite;
 import com.greensock.TweenLite;
 import com.greensock.easing.Ease;
 import com.greensock.easing.Expo;
-<<<<<<< HEAD
 import com.la.event.ScenarioEvent;
 import com.la.event.SceneEvent;
 import com.la.mvc.view.card.Card;
 import com.la.mvc.model.CardData;
-
-=======
-import com.la.mvc.view.card.Card;
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import flash.display.DisplayObject;
-
 import flash.display.Sprite;
 import flash.geom.Point;
 
@@ -97,15 +89,8 @@ public class EnemyDeck extends Deck {
         animationCof --;
         if (!animationCof) {
             scene.endPlaceCard();
-<<<<<<< HEAD
 			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
 		}
-=======
-        }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
-
-
         //dispatchEvent (new Event (COMPLETE_PLACE_CARD));
     }
 
@@ -127,7 +112,6 @@ public class EnemyDeck extends Deck {
         return card;
 
     }
-<<<<<<< HEAD
 	
 	public function getCard (index:int) :Card {
 		return cardsStack.getChildAt(index) as Card;
@@ -154,10 +138,8 @@ public class EnemyDeck extends Deck {
 	public function getCardsCount() :int {
 		return cardsStack.numChildren;
 	}
-=======
 
 
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     private function sortCollodion (index:int = 0, animation:Boolean = true) :Point {
         var centerX:int = stageWidth / 2;
@@ -170,13 +152,8 @@ public class EnemyDeck extends Deck {
             shirt.x = shift * i;
             if (index == i) {
                 position.x = shift * i;
-<<<<<<< HEAD
-            }
-=======
-
             }
             //TweenLite.to (shirt, 0.4, { x:shift * i } );
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             shirt.y = yPosition;
             position.y = yPosition
         }

@@ -5,10 +5,7 @@ package com.transform {
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
-<<<<<<< HEAD
 import flash.geom.Rectangle;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
 public class Transform {
     public function Transform() {
@@ -26,8 +23,6 @@ public class Transform {
         result.draw(bitmapData, matrix);
         return new Bitmap(result);
     }
-<<<<<<< HEAD
-	
 	public static function crop (asset:Bitmap, square:Rectangle) :Bitmap {
 		var bitmapData:BitmapData = asset.bitmapData;
         var width:int = square.width;
@@ -41,7 +36,5 @@ public class Transform {
         result.draw(bitmapData, matrix);
         return new Bitmap(result);
 	}
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 }
 }

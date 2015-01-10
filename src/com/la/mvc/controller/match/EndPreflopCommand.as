@@ -11,13 +11,7 @@ import com.la.mvc.view.card.Card;
 import com.la.mvc.view.deck.PlayerDeck;
 import com.la.mvc.view.scene.IScene;
 import com.la.state.GameState;
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
-
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import org.robotlegs.mvcs.Command;
 
 public class EndPreflopCommand extends Command {
@@ -74,13 +68,9 @@ public class EndPreflopCommand extends Command {
 
     private function getCardDataVector (data:Array) :Vector.<CardData> {
         var vector:Vector.<CardData> = new Vector.<CardData>();
-<<<<<<< HEAD
         var cardData:CardData
 		for (var i:int = 0; i < data.length; i ++) {
             cardData = CardData.converToData (data[i])
-=======
-        for (var i:int = 0; i < data.length; i ++) {
-
             var attack:int = data[i].attack;
             var health:int = data[i].health;
             var price:int = data[i].price;
@@ -93,7 +83,6 @@ public class EndPreflopCommand extends Command {
 
             cardData.setTitle(title);
             cardData.setDescription(description);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             vector.push(cardData)
         }
         return vector;

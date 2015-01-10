@@ -20,14 +20,12 @@ public class GameState extends UintEnumeration {
     public static const PLAYER_STEP_PREVIEW:GameState   =  new GameState(11);
     public static const PLAYER_STEP:GameState           =  new GameState(12);
     public static const OPPONENT_STEP:GameState         =  new GameState(13);
-<<<<<<< HEAD
 	public static const PLAYER_STEP_ACTION:GameState    =  new GameState(14);
 	public static const OPPONENT_STEP_ACTION:GameState  =  new GameState(15);
 	public static const COLLECTION_PREVIEW:GameState    =  new GameState(16);
 	public static const EDIT_DECK:GameState             =  new GameState(17);
 	public static const CLOSE_MATCH_INTRO:GameState     =  new GameState(18); 
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
 
     public function GameState(value:uint) {

@@ -114,9 +114,18 @@ package com.la.mvc.controller.match.scenario
 				case 'pick_card': {
 					cardData = CardData.converToData (data.card)
 					if (data.client == rootModel.userId) {
-						playerDeck.addCard(cardData, true);
+						if (data.attachmnent) {
+							playerDeck.addCard(cardData, true);
+						} else {
+							enemyDeck.addCard(cardData, true);
+						}
+						
 					} else {
-						enemyDeck.addCard(cardData, true);
+						if (data.attachmnent) {
+							enemyDeck.addCard(cardData, true);
+						} else {
+							playerDeck.addCard(cardData, true);
+						}
 					}
 					break;
 				}

@@ -26,12 +26,10 @@ import com.worlize.websocket.WebSocketErrorEvent;
         private static const CHANGE_OPPONENT_PREFLOP:String = 'change_opponent_preflop';
         private static const READY:String = 'ready';
         private static const OPPONENT_STEP:String = 'opponent_step';
-<<<<<<< HEAD
 		private static const PLAYER_STEP:String = 'player_step';
 		private static const SCENARIO:String = 'scenario';
 		private static const END_STEP_TIMER:String = 'end_step_timer';
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 
         private var wrapper:IWebSocketWrapper;
         private var userId:uint;
@@ -127,17 +125,9 @@ import com.worlize.websocket.WebSocketErrorEvent;
         private function parseResponse (response:Object) :void {
             var data:Object = {}
 
-<<<<<<< HEAD
             switch (response.type) {
                 case PREFLOP:
                 {
-=======
-            trace(response.type);
-            switch (response.type) {
-                case PREFLOP:
-                {
-
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
                     dispatch(new MatchServiceEvent(MatchServiceEvent.CONNECTION_INIT, response.data));
                     break;
                 }
@@ -163,7 +153,6 @@ import com.worlize.websocket.WebSocketErrorEvent;
                     break;
                 }
 
-<<<<<<< HEAD
                 case SCENARIO: {
 					dispatch(new MatchServiceEvent(MatchServiceEvent.SCENARIO, response.data))
                     break;
@@ -173,29 +162,7 @@ import com.worlize.websocket.WebSocketErrorEvent;
 					dispatch(new MatchServiceEvent(MatchServiceEvent.END_STEP_TIMER, response.data))
                     break;
 				}
-=======
-                case READY: {
-                    dispatch(new MatchServiceEvent(MatchServiceEvent.READY, response.data))
-                    break;
-                }
-
-                case OPPONENT_STEP: {
-                    dispatch(new MatchServiceEvent(MatchServiceEvent.OPPONENT_STEP, response.data))
-                    break;
-                }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
-
-
-
-
             }
-
-
-
-
-
         }
-
     }
 }

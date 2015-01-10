@@ -2,28 +2,20 @@
  * Created by root on 10/24/14.
  */
 package com.la.mvc.view.field {
-<<<<<<< HEAD
 import com.demonsters.debugger.MonsterDebugger;
 import com.greensock.TimelineLite;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 import com.greensock.TweenLite;
 import com.greensock.easing.Expo;
 import com.greensock.easing.ExpoOut;
 import com.la.event.FieldEvent;
-<<<<<<< HEAD
 import com.la.event.ScenarioEvent;
 import com.la.mvc.view.card.Card;
 import com.la.mvc.view.scene.IScene;
 import com.la.mvc.view.token.Token;
 import com.la.mvc.model.CardData;
 import flash.filters.BlurFilter;
-=======
 import com.la.mvc.view.token.Token;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import flash.display.DisplayObject;
-
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Point;
@@ -46,21 +38,10 @@ public class Field extends Sprite implements IField {
     private var opponentRow:UnitRow;
 
     private var tokenPreviewIndex:int = 0;
-<<<<<<< HEAD
-	
 	private var actualToken:Token;
-	
 	private var _sygnal:Boolean = false;
-	
-	
 	private var scene:IScene;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
-    public function Field() {
-
-    }
-<<<<<<< HEAD
 	
 	private function set sygnal (value:Boolean) :void {
 		this._sygnal = value;
@@ -73,8 +54,6 @@ public class Field extends Sprite implements IField {
 	public function setScene (scene:IScene) :void {
 		this.scene = scene;
 	}
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     public function clear () :void {
         while (numChildren) removeChildAt(0);
@@ -121,19 +100,12 @@ public class Field extends Sprite implements IField {
     public function addPlayerHero (hero:IHero) :void {
         this.playerHero = hero;
         addChild(playerHero as DisplayObject);
-<<<<<<< HEAD
-    }
-=======
-
-
     }
 
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     public function addOpponentHero (hero:IHero) :void {
         this.opponentHero = hero;
         addChild(opponentHero as DisplayObject);
     }
-<<<<<<< HEAD
 	
 	public function getPlayerHero () :IHero {
 		return playerHero;
@@ -141,8 +113,6 @@ public class Field extends Sprite implements IField {
 	public function getOpponentHero() :IHero {
 		return opponentHero;
 	}
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     public function enableStepButton () :void {
         stepButton.enable();
@@ -152,7 +122,6 @@ public class Field extends Sprite implements IField {
         stepButton.disable();
     }
 
-<<<<<<< HEAD
     public function setPlayerPrice (value:int,  endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
         playerPriceWidget.setPrice(value);
 		if (sygnalFlag) {
@@ -204,18 +173,6 @@ public class Field extends Sprite implements IField {
 		}
 	}
 
-	
-	
-=======
-    public function setPlayerPrice (value:int) :void {
-        playerPriceWidget.setPrice(value);
-    }
-
-    public function setOpponentPrice (value:int) :void {
-        opponentPriceWidget.setPrice(value);
-    }
-
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     public function findPosition () :void {
 
         if (!playerRow.numChildren) {
@@ -361,10 +318,6 @@ public class Field extends Sprite implements IField {
         }
         return arr;
     }
-<<<<<<< HEAD
-	
-	
-	
 	
 	public function placeUnitRowPosition () :void {
 		playerRow.y = stageHeight / 2 + 40;
@@ -617,13 +570,6 @@ public class Field extends Sprite implements IField {
 	public function stopBlur(): void {
 		this.filters = []
 	}
-=======
-
-
-
-
-
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
 }
 }

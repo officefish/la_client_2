@@ -9,12 +9,7 @@ import com.la.mvc.view.deck.EnemyDeck;
 import com.la.mvc.view.deck.PlayerDeck;
 import com.la.mvc.view.scene.IScene;
 import com.la.state.GameState;
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import org.robotlegs.mvcs.Command;
 
 public class WelcomeCompleteCommand extends Command {
@@ -41,7 +36,6 @@ public class WelcomeCompleteCommand extends Command {
         scene.preflopCards(model.getPlayerCards());
 
         var cardDatas:Vector.<CardData> = model.getOpponentCards();
-
         enemyDeck.addCards(cardDatas, true);
 
 

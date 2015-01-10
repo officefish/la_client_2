@@ -2,13 +2,11 @@
  * Created by root on 11/6/14.
  */
 package com.la.mvc.model {
-<<<<<<< HEAD
 import com.greensock.plugins.Positions2DPlugin;
 import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.utils.Timer;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 import org.robotlegs.mvcs.Actor;
 
 public class MatchModel extends Actor {
@@ -23,7 +21,6 @@ public class MatchModel extends Actor {
 
     private var _playerHeroHealth:int;
     private var _opponentHeroHealth:int;
-<<<<<<< HEAD
 	
 	private var scenario:Array;
 	
@@ -36,8 +33,6 @@ public class MatchModel extends Actor {
 	
 	private var _previewTimer:Timer;
 	private var _timerCallback:Function;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     public function MatchModel() {
     }
@@ -97,7 +92,6 @@ public class MatchModel extends Actor {
     public function get opponentHeroHealth () :int {
         return _opponentHeroHealth;
     }
-<<<<<<< HEAD
 	
 	public function setScenario (scenario:Array) :void {
 		this.scenario = scenario;
@@ -165,7 +159,6 @@ public class MatchModel extends Actor {
 	public function get timerCallback () :Function {
 		return _timerCallback;
 	}
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 }
 }

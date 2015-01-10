@@ -12,10 +12,6 @@ public class SelectGameCommand extends Command {
 
     override public function execute():void {
         dispatch(new DeckEvent(DeckEvent.STARTUP_DECK_LIST, {}));
-<<<<<<< HEAD
-=======
-        //dispatch(new MatchEvent(MatchEvent.STARTUP_MATCH));
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 }
 }

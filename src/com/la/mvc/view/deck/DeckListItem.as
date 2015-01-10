@@ -4,13 +4,8 @@
 package com.la.mvc.view.deck {
 import com.la.assets.Assets;
 import com.la.event.DeckEvent;
-<<<<<<< HEAD
 import com.la.mvc.model.DeckData;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import fl.controls.Button;
-
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
@@ -29,8 +24,6 @@ public class DeckListItem extends Sprite {
     private var id:int;
     private var uid:int;
     private var hero_id:int;
-<<<<<<< HEAD
-	
 	private var deckData:DeckData;
 
     public function DeckListItem(deckData:DeckData) {
@@ -40,16 +33,6 @@ public class DeckListItem extends Sprite {
 		this.deckData = deckData;
 
         var asset:Bitmap = Assets.getHeroAssetById(uid);
-=======
-
-    public function DeckListItem(title:String, id:int, hero_id:int, hero_uid:int, complicated:Boolean) {
-
-        this.id = id;
-        this.hero_id = hero_id;
-        this.uid = hero_uid;
-
-        var asset:Bitmap = Assets.getHeroAssetById(hero_uid);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         addChild(asset);
 
         shirme = new Sprite();
@@ -61,14 +44,9 @@ public class DeckListItem extends Sprite {
         editButton.label = 'собрать';
         editButton.x = (this.width - editButton.width) / 2;
         editButton.y = (this.height - editButton.height) / 2;
-<<<<<<< HEAD
 		editButton.addEventListener (MouseEvent.CLICK, onEditClick);
 
         if (deckData.complicated) {
-=======
-
-        if (complicated) {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             this.buttonMode = true;
             addEventListener(MouseEvent.CLICK, onClick);
         } else {
@@ -92,29 +70,18 @@ public class DeckListItem extends Sprite {
         titleLabel = new TextField();
         titleLabel.width = this.width;
         titleLabel.defaultTextFormat = format;
-<<<<<<< HEAD
         titleLabel.text = deckData.title;
-=======
-        titleLabel.text = title;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         titleLabel.mouseEnabled = false;
         titleLabel.height = 25;
         titleSprite.addChild(titleLabel);
 
     }
-<<<<<<< HEAD
-	
 	public function getDeckData () :DeckData {
 		return deckData;
 	}
 
     private function onClick (event:MouseEvent) :void {
         dispatchEvent(new DeckEvent(DeckEvent.SELECT, {}))
-=======
-
-    private function onClick (event:MouseEvent) :void {
-        dispatchEvent(new DeckEvent(DeckEvent.SELECT, {'id':id,'hero_id':hero_id, 'hero_uid':uid}))
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 
     public function select () :void {
@@ -128,12 +95,8 @@ public class DeckListItem extends Sprite {
     public function getUid () :int {
         return uid;
     }
-<<<<<<< HEAD
-	
 	private function onEditClick (event:MouseEvent) :void {
 		dispatchEvent (new DeckEvent(DeckEvent.INTRO_EDIT_CLICK, { deckData:deckData }));
 	}
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 }
 }

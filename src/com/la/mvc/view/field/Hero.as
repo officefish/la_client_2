@@ -4,11 +4,7 @@
 package com.la.mvc.view.field {
 import com.la.assets.Assets;
 import com.transform.Transform;
-<<<<<<< HEAD
 import flash.geom.Point;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.text.TextField;
@@ -29,13 +25,10 @@ public class Hero extends Sprite implements IHero{
     public static const HUNTER:int = 2;
 
     private var healthBackground:Sprite;
-<<<<<<< HEAD
-	
+
 	private var asset:Bitmap;
 	private var type:int;
 	private var hideHealthFlag:Boolean = true;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     public function Hero() {
 
@@ -70,11 +63,8 @@ public class Hero extends Sprite implements IHero{
         healthBackground.graphics.drawRect(0,0,20,20);
         healthBackground.graphics.endFill();
         healthBackground.x = healthBackground.y = 60;
-<<<<<<< HEAD
         //addChild(healthBackground);
-=======
         addChild(healthBackground);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 
     public function set isEnemy (value:Boolean) :void {
@@ -86,13 +76,9 @@ public class Hero extends Sprite implements IHero{
 
     public function hideHealth () :void {
 
-<<<<<<< HEAD
         this.hideHealthFlag = true;
 		
-		graphics.clear();
-=======
         graphics.clear();
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         graphics.beginFill (0xAAAAAA, 1);
         graphics.drawRect (0, 0, 80, 80);
         graphics.endFill ();
@@ -103,13 +89,8 @@ public class Hero extends Sprite implements IHero{
 
     public function showHealth () :void {
 
-<<<<<<< HEAD
         this.hideHealthFlag = false;
-		
-		graphics.clear();
-=======
         graphics.clear();
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         graphics.beginFill (0xAAAAAA, 1);
         graphics.drawRect (0, 0, 80, 80);
         graphics.endFill ();
@@ -123,12 +104,8 @@ public class Hero extends Sprite implements IHero{
     }
 
     public function setType (value:int) :void {
-<<<<<<< HEAD
         this.type = value;
 		asset = Assets.getHeroAssetById(value);
-=======
-        var asset:Bitmap = Assets.getHeroAssetById(value);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         asset = Transform.scale(asset, 80/asset.width);
         addChildAt(asset, 0);
     }
@@ -136,7 +113,6 @@ public class Hero extends Sprite implements IHero{
     public function setHealth (value:int) :void {
         this.health = value;
         healthLabel.text = "" + health;
-<<<<<<< HEAD
     }
 	
 	public function setAttack (value:int) :void {
@@ -179,9 +155,7 @@ public class Hero extends Sprite implements IHero{
 		}
 		return cloneHero;
 	}
-=======
 
-    }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 }
 }

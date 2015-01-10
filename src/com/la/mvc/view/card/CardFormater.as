@@ -2,12 +2,7 @@
  * Created by root on 10/24/14.
  */
 package com.la.mvc.view.card {
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.text.AntiAliasType;
@@ -18,7 +13,7 @@ import flash.text.TextFormatAlign;
 
 public class CardFormater {
 
-<<<<<<< HEAD
+
     private static var _labelFormat:TextFormat;
     private static var _saleFormat:TextFormat;
 	private static var _titleFormat:TextFormat;
@@ -27,10 +22,6 @@ public class CardFormater {
 	private static var _typeFormat:TextFormat;
 	private static var _mirrorTypeFormat:TextFormat;
 	private static var _previewTypeFormat:TextFormat;
-=======
-    private static var _priceFormat:TextFormat;
-    private static var _saleFormat:TextFormat;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     private static var _expensiveFormat:TextFormat;
     private static var _mirrorPriceFormat:TextFormat;
     private static var _mirrorExpensiveFormat:TextFormat;
@@ -39,7 +30,6 @@ public class CardFormater {
     private static var _mirrorTitleFormat:TextFormat;
     private static var _mirrorDescriptionFormat:TextFormat;
     private static var _mirrorSmallDescriptionFormat:TextFormat;
-<<<<<<< HEAD
 	private static var _collectionLabelFormat:TextFormat;
 	private static var _countFormat:TextFormat;
 	private static var _previewLabelFormat:TextFormat;
@@ -49,10 +39,7 @@ public class CardFormater {
 	
 
     public static function drawBody (target:Sprite, type:int, width:int, height:int, square:int = 21) :void {
-=======
 
-    public static function drawBody (target:Sprite, width:int, height:int) :void {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         target.graphics.beginFill (0xcccccc, 1);
         target.graphics.drawRect (0, 0, width, height);
         target.graphics.endFill();
@@ -64,7 +51,7 @@ public class CardFormater {
         target.graphics.lineTo (0, 0);
 
         target.graphics.beginFill (0xffFFFF, 1);
-<<<<<<< HEAD
+
         target.graphics.drawRect (0, 0, square, square);
         target.graphics.endFill ();
 		
@@ -89,50 +76,24 @@ public class CardFormater {
         mirror.graphics.lineTo (width, 0);
         mirror.graphics.lineTo (width, height);
         mirror.graphics.lineTo(0, height);
-=======
-        target.graphics.drawRect (0, 0, 21, 21);
-        target.graphics.endFill ();
-    }
 
-    public static function drawMirror (mirror:Sprite, width:int, height:int, type:int) :void {
-        mirror.graphics.beginFill (0xcccccc, 1);
-        mirror.graphics.drawRect (0, 0, 154, 224);
-        mirror.graphics.endFill();
-
-        mirror.graphics.lineStyle (1, 0, 1);
-        mirror.graphics.lineTo (154, 0);
-        mirror.graphics.lineTo (154, 224);
-        mirror.graphics.lineTo(0, 224);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         mirror.graphics.lineTo (0, 0);
         mirror.graphics.lineStyle(0);
 
         if (type == CardData.UNIT) {
             mirror.graphics.beginFill (0xFFFFFF, 1);
-<<<<<<< HEAD
             mirror.graphics.drawRect (0, height-square, square, square);
-=======
-            mirror.graphics.drawRect (0, 194, 30, 30);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             mirror.graphics.endFill ();
         }
 
         if (type == CardData.UNIT) {
             mirror.graphics.beginFill (0xFFFFFF, 1);
-<<<<<<< HEAD
             mirror.graphics.drawRect (width-square, height-square, square, square);
-=======
-            mirror.graphics.drawRect (124, 194, 30, 30);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             mirror.graphics.endFill ();
         }
 
         mirror.graphics.beginFill (0xffffff, 1);
-<<<<<<< HEAD
         mirror.graphics.drawRect (0, 0, square, square);
-=======
-        mirror.graphics.drawRect (0, 0, 30, 30);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         mirror.graphics.endFill ();
     }
 
@@ -158,7 +119,6 @@ public class CardFormater {
         target.graphics.lineTo (0, 0);
     }
 
-<<<<<<< HEAD
     public static function getLabel (price:int) :TextField {
 
         var label:TextField = new TextField();
@@ -166,23 +126,12 @@ public class CardFormater {
         label.text = "" + price;
         label.wordWrap = false;
         label.width = label.height = 22; 
-=======
-    public static function getPriceLabel (price:int) :TextField {
-
-        var label:TextField = new TextField();
-        label.defaultTextFormat = priceFormat;
-        label.text = "" + price;
-        label.autoSize = TextFieldAutoSize.LEFT;
-        label.wordWrap = false;
-        label.x = 4;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         label.mouseEnabled = false;
 
         return label;
     }
-<<<<<<< HEAD
 	
-	 public static function getPreviewMirrorLabel (value:int) :TextField {
+	public static function getPreviewMirrorLabel (value:int) :TextField {
 
         var label:TextField = new TextField();
         label.defaultTextFormat = previewLabelFormat;
@@ -210,16 +159,6 @@ public class CardFormater {
         label.defaultTextFormat = mirrorFormat;
         label.text = "" + price;
 		label.width = 30;
-=======
-
-    public static function getMirrorPriceLabel (price:int) :TextField {
-        var label:TextField = new TextField ();
-        label.defaultTextFormat = mirrorPriceFormat;
-        label.text = "" + price;
-        label.autoSize = TextFieldAutoSize.LEFT;
-        label.wordWrap = false;
-        label.x = 7;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         label.mouseEnabled = false;
         return label;
     }
@@ -253,7 +192,6 @@ public class CardFormater {
         label.mouseEnabled = false;
         return label;
     }
-<<<<<<< HEAD
 	
 	public static function getTypeLabel (width:int) :TextField {
         var label:TextField = new TextField ();
@@ -349,9 +287,6 @@ public class CardFormater {
         return label;
     }
 	
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
     public static function getMirrorDescriptionLabel (width:int, height:int, description:String) :TextField {
         var label:TextField = new TextField ();
         label.antiAliasType = AntiAliasType.ADVANCED;
@@ -367,7 +302,6 @@ public class CardFormater {
         label.text = description;
         return label;
     }
-<<<<<<< HEAD
 	
 	public static function get collectionLabelFormat () :TextFormat {
         if (!_collectionLabelFormat) {
@@ -400,17 +334,6 @@ public class CardFormater {
             _labelFormat.color = 0x000000;
         }
         return _labelFormat;
-=======
-
-    public static function get priceFormat () :TextFormat {
-        if (!_priceFormat) {
-            _priceFormat = new TextFormat();
-            _priceFormat.size = 15;
-            _priceFormat.bold = true;
-            _priceFormat.color = 0x000000;
-        }
-        return _priceFormat;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 
     public static function get saleFormat () :TextFormat {
@@ -433,20 +356,13 @@ public class CardFormater {
         return _expensiveFormat;
     }
 
-<<<<<<< HEAD
     public static function get mirrorFormat () :TextFormat {
-=======
-    public static function get mirrorPriceFormat () :TextFormat {
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         if (!_mirrorPriceFormat) {
             _mirrorPriceFormat = new TextFormat();
             _mirrorPriceFormat.size = 22;
             _mirrorPriceFormat.bold = true;
             _mirrorPriceFormat.color = 0x000000;
-<<<<<<< HEAD
 			_mirrorPriceFormat.align = TextFormatAlign.CENTER;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         }
         return _mirrorPriceFormat;
     }
@@ -495,8 +411,7 @@ public class CardFormater {
         }
         return _mirrorTitleFormat;
     }
-<<<<<<< HEAD
-	
+
 	public static function get titleFormat () :TextFormat {
         if (!_titleFormat) {
             _titleFormat = new TextFormat();
@@ -541,25 +456,18 @@ public class CardFormater {
         return _previewDescriptionFormat;
     }
 
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     public static function get mirrorDescriptionFormat () :TextFormat {
         if (!_mirrorDescriptionFormat) {
             _mirrorDescriptionFormat = new TextFormat();
-<<<<<<< HEAD
             _mirrorDescriptionFormat.align = TextFormatAlign.CENTER;
-=======
-            _mirrorDescriptionFormat..align = TextFormatAlign.CENTER;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             _mirrorDescriptionFormat.size = 13;
             _mirrorDescriptionFormat.bold = true;
             _mirrorDescriptionFormat.color = 0x000000;
         }
         return _mirrorDescriptionFormat;
     }
-<<<<<<< HEAD
-	
+
 	 public static function get descriptionFormat () :TextFormat {
         if (!_descriptionFormat) {
             _descriptionFormat = new TextFormat();
@@ -615,9 +523,6 @@ public class CardFormater {
         return _countFormat;
     }
 
-
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
     public static function get mirrorSmallDescriptionFormat () :TextFormat {
         if (!_mirrorSmallDescriptionFormat) {

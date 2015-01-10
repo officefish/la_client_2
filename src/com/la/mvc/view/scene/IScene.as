@@ -4,13 +4,8 @@
 package com.la.mvc.view.scene {
 import com.la.mvc.view.card.Card;
 import com.la.mvc.view.field.IHero;
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
 import flash.geom.Point;
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import flash.display.DisplayObject;
 
 import flash.events.IEventDispatcher;
@@ -29,7 +24,6 @@ public interface IScene extends IEventDispatcher{
     function setOpponentHero (hero:IHero) :void;
     function welcomeAnimation () :void;
     function darken () :void;
-<<<<<<< HEAD
     function lighten (dispatch:Boolean = true) :void;
 	
 	function setAttackTokenPosition (position:Point) :void;
@@ -48,8 +42,5 @@ public interface IScene extends IEventDispatcher{
 	
 	function placePreview (value:DisplayObject) :void;
 	function endPreview () :void;
-=======
-    function lighten () :void;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 }
 }

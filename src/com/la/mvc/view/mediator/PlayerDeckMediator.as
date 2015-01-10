@@ -2,7 +2,6 @@
  * Created by root on 10/25/14.
  */
 package com.la.mvc.view.mediator {
-<<<<<<< HEAD
 import com.la.event.ConsoleEvent;
 import com.la.event.DeckEvent;
 import com.la.event.ScenarioEvent;
@@ -11,13 +10,6 @@ import com.la.mvc.view.deck.PlayerDeck;
 import org.robotlegs.mvcs.Mediator;
 import com.demonsters.debugger.MonsterDebugger;
 
-=======
-import com.la.event.DeckEvent;
-import com.la.mvc.view.deck.PlayerDeck;
-
-import org.robotlegs.mvcs.Mediator;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 public class PlayerDeckMediator extends Mediator {
 
     [Inject (name='playerDeck')]
@@ -25,7 +17,6 @@ public class PlayerDeckMediator extends Mediator {
 
     override public function onRegister():void {
         eventMap.mapListener(playerDeck, DeckEvent.CARDS_ADDED, listener);
-<<<<<<< HEAD
         eventMap.mapListener(playerDeck, DeckEvent.FIND_POSITION, listener);
         eventMap.mapListener(playerDeck, DeckEvent.STOP_FIND_POSITION, listener);
         eventMap.mapListener(playerDeck, DeckEvent.PLAYER_CARD_PLAY, listener);
@@ -46,17 +37,7 @@ public class PlayerDeckMediator extends Mediator {
 		
 		dispatch (event);
 	}
-	
-=======
-        eventMap.mapListener(playerDeck, DeckEvent.PLAYER_CARD_ADDED, listener);
-        eventMap.mapListener(playerDeck, DeckEvent.FIND_POSITION, listener);
-        eventMap.mapListener(playerDeck, DeckEvent.STOP_FIND_POSITION, listener);
-        eventMap.mapListener(playerDeck, DeckEvent.PLAYER_CARD_PLAY, listener);
-    }
-    private function listener (event:DeckEvent) :void {
-       dispatch(event);
-    }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
     override public function onRemove():void {
         super.onRemove()
     }

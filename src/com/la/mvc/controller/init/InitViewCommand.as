@@ -15,15 +15,10 @@ public class InitViewCommand extends Command {
     public var intro:IIntro;
 
     override public function execute():void {
-
-<<<<<<< HEAD
         intro.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
 		contextView.addChild(intro as DisplayObject);
 		dispatch(new GameContextEvent(GameContextEvent.VIEW_INIT_COMPLETE));
-=======
-        contextView.addChild(intro as DisplayObject);
-        dispatch(new GameContextEvent(GameContextEvent.VIEW_INIT_COMPLETE));
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
     }
 }
 }

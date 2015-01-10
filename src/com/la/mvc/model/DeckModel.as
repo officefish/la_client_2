@@ -2,12 +2,7 @@
  * Created by root on 11/8/14.
  */
 package com.la.mvc.model {
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import org.robotlegs.mvcs.Actor;
 
 public class DeckModel extends Actor {

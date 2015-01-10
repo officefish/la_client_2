@@ -3,12 +3,7 @@
  */
 package com.la.mvc.view.card {
 import com.la.event.CardEvent;
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
-=======
-import com.ps.cards.CardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-
 import flash.events.MouseEvent;
 
 public class PreflopCard extends Card {

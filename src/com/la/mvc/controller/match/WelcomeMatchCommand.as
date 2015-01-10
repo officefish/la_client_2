@@ -31,10 +31,7 @@ public class WelcomeMatchCommand extends Command {
 
         playerHero.setType (matchModel.playerHero);
         opponentHero.setType (matchModel.opponentHero);
-<<<<<<< HEAD
 		opponentHero.isEnemy = true;
-=======
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
         playerHero.setHealth(matchModel.playerHeroHealth);
         opponentHero.setHealth(matchModel.opponentHeroHealth);

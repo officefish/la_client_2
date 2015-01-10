@@ -2,7 +2,6 @@ package com.la.mvc.view.card
 {
 
 import com.log.Logger;
-<<<<<<< HEAD
 import com.la.mvc.model.CardData;
 
 
@@ -19,24 +18,7 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 
 import ru.flasher.utils.StringUtil
-=======
-import com.ps.cards.CardData;
-import com.ps.hero.Hero;
 
-import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-import flash.filters.GlowFilter;
-import flash.geom.Matrix;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
-
-    import ru.flasher.utils.StringUtil
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
 
 /**
@@ -49,18 +31,9 @@ import flash.geom.Matrix;
 	{
 		
 		private var mirror:Sprite
-<<<<<<< HEAD
-		
-		
-=======
-		private var priceLabel:TextField;
-		private var mirrorPriceLabel:TextField;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-		
 		private var cardSensor:CardSensor;
 		private var cardData:CardData;
-		
-<<<<<<< HEAD
+
 		private var priceLabel:TextField;
 		private var attackLabel:TextField;
 		private var healthLabel:TextField;
@@ -73,15 +46,7 @@ import flash.geom.Matrix;
 		private var mirrorTitleLabel:TextField;
 		private var mirrorDescriptionLabel:TextField;
 		private var mirrorTypeLabel:TextField;
-		
-=======
-		private var attackLabel:TextField;
-		private var healthLabel:TextField;
-		
-		private var descriptionLabel:TextField;
-		private var titleLabel:TextField;
-		
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 		public static const MIRROR_WIDTH:int = 154;
 		public static const MIRROR_HEIGHT:int = 224;
 		
@@ -101,29 +66,15 @@ import flash.geom.Matrix;
         private var mirrorPriceFormat:TextFormat;
         private var mirrorSaleFormat:TextFormat;
         private var mirrorExpensiveFormat:TextFormat;
-<<<<<<< HEAD
-		
-		
-
-       // private var hero:Hero;
 	
 		public function Card(cardData:CardData) {
             this.cardData = cardData;
-			
-=======
-
-        private var hero:Hero;
-	
-		public function Card(cardData:CardData) {
-            this.cardData = cardData;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             price = cardData.getPrice();
             defaultPrice = price;
 
             formatCard();
             formatMirror();
             formatShirt();
-<<<<<<< HEAD
         }
 
         private function formatCard () :void {
@@ -151,35 +102,15 @@ import flash.geom.Matrix;
             titleLabel.y = Math.round (CARD_HEIGHT * 0.4);
             addChild (titleLabel);
 			
-			/*
-			descriptionLabel = CardFormater.getDescriptionLabel (CARD_WIDTH, cardData.getDescription());
-			descriptionLabel.y = Math.round (CARD_HEIGHT * 0.55);
-			addChild (descriptionLabel);
-			
-			typeLabel = CardFormater.getTypeLabel (CARD_WIDTH);
-			typeLabel.y = Math.round (CARD_HEIGHT * 0.9);
-			addChild (typeLabel);
-			*/
+		
 			
 			
-=======
-
-        }
-
-        private function formatCard () :void {
-            CardFormater.drawBody(this, CARD_WIDTH, CARD_HEIGHT);
-
-            priceLabel = CardFormater.getPriceLabel (price);
-            addChild (priceLabel);
-            cardSensor = new CardSensor (this);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
-        }
+       }
         private function formatMirror () :void {
             mirror = new Sprite();
 
             CardFormater.drawMirror(mirror, MIRROR_WIDTH, MIRROR_HEIGHT, getType());
 
-<<<<<<< HEAD
             mirrorPriceLabel = CardFormater.getMirrorLabel(price);
             mirror.addChild (mirrorPriceLabel);
 
@@ -222,32 +153,6 @@ import flash.geom.Matrix;
 					mirrorTypeLabel.text = 'способность';
 				}
 			}
-=======
-            mirrorPriceLabel = CardFormater.getMirrorPriceLabel(price);
-            mirror.addChild (mirrorPriceLabel);
-
-            attackLabel = CardFormater.getMirrorAttackLabel(cardData.getAttack());
-            attackLabel.x = 7;
-            attackLabel.y = mirror.height - 30;
-            if (getType() == CardData.UNIT) {
-                mirror.addChild (attackLabel);
-            }
-
-            healthLabel =  CardFormater.getMirrorHealthLabel(cardData.getHealth());
-            healthLabel.x = mirror.width - 25;
-            healthLabel.y = attackLabel.y;
-            if (getType() == CardData.UNIT) {
-                mirror.addChild (healthLabel);
-            }
-
-            titleLabel = CardFormater.getMirrorTitleLabel (MIRROR_WIDTH, cardData.getTitle());
-            titleLabel.y = Math.round (mirror.height * 0.4);
-            mirror.addChild (titleLabel);
-
-            descriptionLabel = CardFormater.getMirrorDescriptionLabel(MIRROR_WIDTH, 80, parseDescription(cardData.getDescription()))
-            descriptionLabel.y = Math.round (mirror.height * 0.55);
-            mirror.addChild (descriptionLabel);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
         }
         private function formatShirt () :void {
@@ -258,14 +163,8 @@ import flash.geom.Matrix;
             CardFormater.drawSmallShirt(smallShirt);
         }
 
-<<<<<<< HEAD
-=======
 
-        public function setHero (hero:Hero) :void {
-            this.hero = hero;
-        }
-		
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 		public function getCardData () :CardData {
 			return cardData;
 		}
@@ -322,13 +221,6 @@ import flash.geom.Matrix;
 
         private function parseDescription (str:String) :String {
             var spellBob:int = 0;
-<<<<<<< HEAD
-           
-=======
-            if (hero) {
-                spellBob = hero.getSpellBob();
-            }
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
             var spellPower:int = cardData.getSpellPower() + spellBob;
             var result:String = StringUtil.format(str, spellPower);
             return result;

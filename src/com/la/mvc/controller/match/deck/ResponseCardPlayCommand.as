@@ -18,20 +18,9 @@ public class ResponseCardPlayCommand extends Command {
 
     [Inject]
     public var service:MatchService;
-<<<<<<< HEAD
-	
-	//[Inject (name='appConsole')]
-	//public var console:Console;
 
     override public function execute():void {
-
-		service.sendMessage('play_card', {'index':event.data.index, 'position':field.getTokenPreviewIndex()});
-=======
-
-    override public function execute():void {
-
         service.sendMessage('play_card', {'index':event.data.index, 'position':field.getTokenPreviewIndex()});
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 }
 }

@@ -16,13 +16,6 @@ public class StartupDeckListCommand extends Command {
     [Inject (name='rootModel')]
     public var rootModel:RootModel;
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     override public function execute():void {
         rootModel.currentState = GameState.DECK_LIST;
 

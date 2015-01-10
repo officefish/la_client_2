@@ -2,23 +2,17 @@
  * Created by root on 10/23/14.
  */
 package com.la.mvc.controller.bootstrap {
-<<<<<<< HEAD
 import com.la.event.ActionEvent;
 import com.la.event.ApiServiceEvent;
 import com.la.event.CardEvent;
 import com.la.event.CollectionEvent;
 import com.la.event.DeckEvent;
-=======
-import com.la.event.CardEvent;
-import com.la.event.DeckEvent;
-import com.la.event.DeckServiceEvent;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 import com.la.event.FieldEvent;
 import com.la.event.LobbyEvent;
 import com.la.event.LobbyServiceEvent;
 import com.la.event.MatchEvent;
 import com.la.event.MatchServiceEvent;
-<<<<<<< HEAD
 import com.la.event.ScenarioEvent;
 import com.la.event.SceneEvent;
 import com.la.event.TokenEvent;
@@ -43,35 +37,22 @@ import com.la.mvc.controller.deck.DeckSelectCommand;
 import com.la.mvc.controller.deck.RequestIntroEditDeckCommand;
 import com.la.mvc.controller.deck.ResquestSelectDeckCommand;
 import com.la.mvc.controller.deck.RequestDeckListCommand;
-=======
-import com.la.event.SceneEvent;
-import com.la.mvc.controller.deck.CardsAddedCommand;
-import com.la.mvc.controller.deck.DeckListInitCommand;
-import com.la.mvc.controller.deck.DeckSelectCommand;
-import com.la.mvc.controller.deck.ResponseSelectDeckCommand;
-import com.la.mvc.controller.deck.ResponseDeckListCommand;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 import com.la.mvc.controller.deck.StartupDeckListCommand;
 import com.la.mvc.controller.init.InitModelCommand;
 import com.la.mvc.controller.init.InitServiceCommand;
 import com.la.mvc.controller.init.InitViewCommand;
 import com.la.mvc.controller.lobby.CloseLobbyCommand;
-<<<<<<< HEAD
 import com.la.mvc.controller.match.attack.PassiveAttackCommand;
 import com.la.mvc.controller.match.attack.ResponseClassicAttackCommand;
 import com.la.mvc.controller.match.attack.StartAttackCommand;
 import com.la.mvc.controller.match.ChangeOpponentPreflopCommand;
 import com.la.mvc.controller.match.ChangePreflopCommand;
 import com.la.mvc.controller.match.deck.BackTokenToHandCommand;
-=======
-import com.la.mvc.controller.match.ChangeOpponentPreflopCommand;
-import com.la.mvc.controller.match.ChangePreflopCommand;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 import com.la.mvc.controller.match.EndPreflopCommand;
 import com.la.mvc.controller.match.OpponentPreflopClickCommand;
 import com.la.mvc.controller.match.PlayerCardAddedCommand;
 import com.la.mvc.controller.match.PreflopClickCommand;
-<<<<<<< HEAD
 import com.la.mvc.controller.match.scenario.ScenarioActionCommand;
 import com.la.mvc.controller.match.scenario.ScenarioCommand;
 import com.la.mvc.controller.match.select.CancelSelectForEptCommand;
@@ -79,21 +60,15 @@ import com.la.mvc.controller.match.select.ScenarioEndSelectCommand;
 import com.la.mvc.controller.match.select.SelectForEptitudeInitCommand;
 import com.la.mvc.controller.match.select.SelectUnitsForEptitudeCommand;
 import com.la.mvc.controller.match.step.EndStepCommand;
-=======
-import com.la.mvc.controller.match.deck.ResponseCardPlayCommand;
-import com.la.mvc.controller.match.step.ReadyCommand;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 import com.la.mvc.controller.match.LightenCompleteCommand;
 import com.la.mvc.controller.match.ResponsePreflopInitCommand;
 import com.la.mvc.controller.match.StartupMatchServiceCommand;
 import com.la.mvc.controller.match.deck.FindPositionCommand;
 import com.la.mvc.controller.match.deck.StopFindPositionCommand;
-<<<<<<< HEAD
 import com.la.mvc.controller.match.step.TimerEndStepCommand;
 import com.la.mvc.controller.match.token.TokenPreviewCommand;
-=======
-import com.la.mvc.controller.match.step.OpponentStepCommand;
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
+
 import com.la.mvc.controller.state.ChangeStateCommand;
 import com.la.mvc.controller.intro.SelectArenaCommand;
 import com.la.mvc.controller.intro.SelectCollectionCommand;
@@ -122,7 +97,6 @@ import com.la.mvc.controller.match.WelcomeMatchCommand;
 import org.robotlegs.base.ContextEvent;
 import org.robotlegs.core.ICommandMap;
 
-<<<<<<< HEAD
 import com.la.mvc.controller.debug.DebugCommand;
 import com.la.event.ConsoleEvent;
 
@@ -139,14 +113,6 @@ public class BootstrapController {
 		
 		// Launch application;
 		// init model
-=======
-public class BootstrapController {
-    public function BootstrapController(commandMap:ICommandMap) {
-
-        // Launch application;
-
-        // init model
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
         commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitModelCommand, ContextEvent);
         // init services
         commandMap.mapEvent(GameContextEvent.MODEL_INIT_COMPLETE, InitServiceCommand, GameContextEvent);
@@ -161,7 +127,6 @@ public class BootstrapController {
         commandMap.mapEvent(IntroEvent.SELECT_QUEST, SelectQuestCommand, IntroEvent);
         commandMap.mapEvent(IntroEvent.SELECT_ARENA, SelectArenaCommand, IntroEvent);
         commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
-<<<<<<< HEAD
 		
 		// collection
 		commandMap.mapEvent(ApiServiceEvent.COLLECTION_INIT, CollectionInitCommand, ApiServiceEvent); 
@@ -190,16 +155,6 @@ public class BootstrapController {
         commandMap.mapEvent(ApiServiceEvent.INTRO_DECK_SELECT, DeckSelectCommand, ApiServiceEvent);
         commandMap.mapEvent(DeckEvent.CLOSE, ChangeStateCommand);
 		commandMap.mapEvent(DeckEvent.INTRO_EDIT_CLICK, RequestIntroEditDeckCommand, DeckEvent);
-=======
-
-        // deckList
-        commandMap.mapEvent(DeckEvent.STARTUP_DECK_LIST, StartupDeckListCommand, DeckEvent);
-        commandMap.mapEvent(DeckEvent.STARTUP_DECK_SERVICE, ResponseDeckListCommand, DeckEvent);
-        commandMap.mapEvent(DeckServiceEvent.DECK_LIST_INIT, DeckListInitCommand, DeckServiceEvent);
-        commandMap.mapEvent(DeckServiceEvent.RESPONSE_SELECT_DECK, ResponseSelectDeckCommand, DeckServiceEvent);
-        commandMap.mapEvent(DeckServiceEvent.DECK_SELECT, DeckSelectCommand, DeckServiceEvent);
-        commandMap.mapEvent(DeckEvent.CLOSE, ChangeStateCommand);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
         // lobby
         commandMap.mapEvent(LobbyEvent.STARTUP_LOBBY, StartupLobbyCommand, LobbyEvent);
@@ -237,7 +192,6 @@ public class BootstrapController {
 
         commandMap.mapEvent(MatchServiceEvent.END_PREFLOP, EndPreflopCommand, MatchServiceEvent);
         commandMap.mapEvent(SceneEvent.LIGHTEN_COMPLETE, LightenCompleteCommand, SceneEvent);
-<<<<<<< HEAD
 		
 		//token
 		commandMap.mapEvent(TokenEvent.PREVIEW, TokenPreviewCommand, TokenEvent);
@@ -246,19 +200,11 @@ public class BootstrapController {
         commandMap.mapEvent(DeckEvent.PLAYER_CARD_ADDED, PlayerCardAddedCommand, DeckEvent);
 		commandMap.mapEvent(FieldEvent.END_STEP, EndStepCommand, FieldEvent);
 		commandMap.mapEvent(MatchServiceEvent.END_STEP_TIMER, TimerEndStepCommand, MatchServiceEvent);
-=======
-
-        // step
-        commandMap.mapEvent(MatchServiceEvent.READY, ReadyCommand, MatchServiceEvent);
-        commandMap.mapEvent(MatchServiceEvent.OPPONENT_STEP, OpponentStepCommand, MatchServiceEvent);
-        commandMap.mapEvent(DeckEvent.PLAYER_CARD_ADDED, PlayerCardAddedCommand, DeckEvent);
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
 
         // playCard
         commandMap.mapEvent(DeckEvent.FIND_POSITION, FindPositionCommand, DeckEvent);
         commandMap.mapEvent(DeckEvent.STOP_FIND_POSITION, StopFindPositionCommand, DeckEvent);
         commandMap.mapEvent(DeckEvent.PLAYER_CARD_PLAY, ResponseCardPlayCommand, DeckEvent);
-<<<<<<< HEAD
 		
 		// scenario
 		commandMap.mapEvent(MatchServiceEvent.SCENARIO, ScenarioCommand, MatchServiceEvent);
@@ -279,11 +225,7 @@ public class BootstrapController {
 		
 		// passive attack
 		commandMap.mapEvent(SceneEvent.PASSIVE_ATTACK, PassiveAttackCommand, SceneEvent);
-=======
 
-
-
->>>>>>> 26440aade46c09ee0a6b6f85ed8c3c6499e415a2
     }
 }
 }
