@@ -4,7 +4,7 @@ package com.la.mvc.controller.match.attack
 	import com.la.event.TokenEvent;
 	import com.la.mvc.model.MatchModel;
 	import com.la.mvc.view.debug.Console;
-	import com.la.mvc.view.field.IAttackAvailable;
+	import com.la.mvc.view.IAttackAvailable;
 	import com.la.mvc.view.field.IField;
 	import com.la.mvc.view.field.IHero;
 	import com.la.mvc.view.scene.IScene;

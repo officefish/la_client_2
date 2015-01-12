@@ -33,7 +33,7 @@ public class Hero extends Sprite implements IHero{
     public function Hero() {
 
         this.health = health;
-        this.enemy = enemy;
+		this.enemy = enemy;
         this.maxHealth = health;
 
         var format:TextFormat = new TextFormat ();
@@ -124,14 +124,12 @@ public class Hero extends Sprite implements IHero{
 	}
 	
 	public function setMaxHealth (value:int) :void {
-		
+		this.maxHealth = value;
 	}
 	
 	public function getMaxHealth () :int {
-		return health;
+		return maxHealth;
 	}
-	
-	
 	
 	public function getHealth () :int {
 		return health;
@@ -154,6 +152,22 @@ public class Hero extends Sprite implements IHero{
 			}
 		}
 		return cloneHero;
+	}
+	
+	public function getAttackBob () :int {
+        return 0
+    }
+    public function setAttackBob (value:int) :void {
+        
+    }
+	
+	public function treatment (value:int) :void {
+		health += value;
+		if (health > maxHealth) {
+			health = maxHealth;
+		}
+        healthLabel.text = "" + health;
+
 	}
 
 

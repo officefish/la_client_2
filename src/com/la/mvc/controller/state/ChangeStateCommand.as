@@ -22,7 +22,6 @@ public class ChangeStateCommand extends Command {
 	
 	[Inject] 
     public var intro:IIntro;
-
     override public function execute():void {
         switch (rootModel.currentState) {
             case GameState.MATCH: {
@@ -33,6 +32,7 @@ public class ChangeStateCommand extends Command {
                 dispatch(new LobbyEvent(LobbyEvent.STARTUP_LOBBY_SERVICE));
                 break;
             }
+
             case GameState.DECK_LIST: {
                 dispatch(new DeckEvent(DeckEvent.STARTUP_DECK_SERVICE, {}));
                 break;
@@ -43,6 +43,7 @@ public class ChangeStateCommand extends Command {
 				contextView.addChild(intro as DisplayObject);
 				break;
 			}
+
         }
     }
 

@@ -3,6 +3,7 @@ package com.la.mvc.view.token
 	
 	import com.la.mvc.view.field.IToken;
 	import com.log.Logger;
+	import flash.text.TextFormatAlign;
 	
 	import com.la.mvc.view.card.Card;
 	import com.la.mvc.model.CardData;
@@ -180,17 +181,20 @@ package com.la.mvc.view.token
 						
 			defaultFormat = new TextFormat ();
 			defaultFormat.size = 14;
+			defaultFormat.align = TextFormatAlign.CENTER
 			defaultFormat.bold = true;
 			defaultFormat.color = 0x444444;
 			
 			woundFormat = new TextFormat ();
 			woundFormat.size = 14;
+			woundFormat.align = TextFormatAlign.CENTER
 			woundFormat.bold = true;
 			woundFormat.color = 0xFF0000;
 
             bonusFormat = new TextFormat();
             bonusFormat.size = 14;
             bonusFormat.bold = true;
+			bonusFormat.align = TextFormatAlign.CENTER
             bonusFormat.color = 0x00FF00;
 
 			
@@ -205,27 +209,25 @@ package com.la.mvc.view.token
 			attackLabel = new TextField ();
 			attackLabel.defaultTextFormat = defaultFormat;
 			attackLabel.text = "" + cardData.getAttack();
-			attackLabel.autoSize = TextFieldAutoSize.LEFT;
-			attackLabel.wordWrap = true;
+			attackLabel.width = 15;
+			attackLabel.height = 18;
 			attackLabel.mouseEnabled = false;
 			attackLabel.selectable = false;
 			
-			attackLabel.x = 1;
-			attackLabel.y = 61;
-			attackLabel.width = 20;
+			attackLabel.x = 0;
+			attackLabel.y = Token.HEIGHT - attackLabel.height;
 			level2.addChild (attackLabel);
 			
 			healthLabel = new TextField ();
-			healthLabel.width = 10;
+			healthLabel.width = 15;
+			healthLabel.height = 18;
 			healthLabel.defaultTextFormat = defaultFormat;
 			healthLabel.text = "" + cardData.getHealth();
-			healthLabel.autoSize = TextFieldAutoSize.LEFT;
-			healthLabel.wordWrap = true;
 			healthLabel.mouseEnabled = false;
 			healthLabel.selectable = false;
 			
-			healthLabel.x = 47;
-			healthLabel.y = 61;
+			healthLabel.x = Token.WIDTH - healthLabel.width;
+			healthLabel.y = Token.HEIGHT - healthLabel.height;
 			level2.addChild (healthLabel);
 			
 			provocationSprite = new Sprite ();
@@ -457,6 +459,14 @@ package com.la.mvc.view.token
 			return _maxHealth;
 		}
 		
+		public function treatment (value:int) :void {
+			_health += value;
+			if (_health > _maxHealth) {
+				_health = _maxHealth;
+			}
+			setHealth (_health);
+		}
+		
 		public function getDefaultHealth () :int {
 			return _defaultHealth;
 		}
@@ -568,8 +578,6 @@ package com.la.mvc.view.token
             _attackBod = value;
         }
 
-
-
         public function getHealthBob () :int {
             return _healthBob;
         }
@@ -588,7 +596,10 @@ package com.la.mvc.view.token
 	
 		public function clone () :IToken {
 			var tokenCopy:IToken = new Token (card, enemy);
+			tokenCopy.setMaxHealth(getMaxHealth())
 			tokenCopy.setHealth (getHealth());
+			tokenCopy.setAttackBob(getAttackBob());
+			tokenCopy.setAttack (getAttack());
 			tokenCopy.cloneFlag = true;
 			return tokenCopy;
 		}

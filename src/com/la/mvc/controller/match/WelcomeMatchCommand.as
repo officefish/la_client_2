@@ -34,7 +34,9 @@ public class WelcomeMatchCommand extends Command {
 		opponentHero.isEnemy = true;
 
         playerHero.setHealth(matchModel.playerHeroHealth);
+		playerHero.setMaxHealth (matchModel.playerHeroHealth);
         opponentHero.setHealth(matchModel.opponentHeroHealth);
+		opponentHero.setMaxHealth (matchModel.opponentHeroHealth);
 
         playerHero.hideHealth();
         opponentHero.hideHealth();

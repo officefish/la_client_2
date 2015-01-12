@@ -10,7 +10,7 @@ package com.la.mvc.controller.match.scenario
 	import com.la.mvc.view.debug.Console;
 	import com.la.mvc.view.deck.EnemyDeck;
 	import com.la.mvc.view.deck.PlayerDeck;
-	import com.la.mvc.view.field.IAttackAvailable;
+	import com.la.mvc.view.IAttackAvailable;
 	import com.la.mvc.view.field.IField;
 	import com.la.mvc.model.CardData;
 	import com.la.mvc.view.field.IToken;
@@ -55,7 +55,7 @@ package com.la.mvc.controller.match.scenario
 		{
 			//console.debug ('scenarioActionCommand::execute');
 			var clientId:String = rootModel.userId + " :: " 
-			//console.debug (clientId + 'scenarioLength: ' + matchModel.scenarioLength)
+			console.debug (clientId + 'scenarioLength: ' + matchModel.scenarioLength)
 						
 			if (matchModel.scenarioLength) {
 				var action:Object = matchModel.getScenarioAction ();
@@ -97,6 +97,7 @@ package com.la.mvc.controller.match.scenario
 			var initiatorAttachment:Boolean;
 			var targetAttachment:Boolean;
 			var clientFlag:Boolean;
+			var target:IAttackAvailable;
 			
 			switch (data.type) {
 				case 'step_price': {
@@ -114,14 +115,13 @@ package com.la.mvc.controller.match.scenario
 				case 'pick_card': {
 					cardData = CardData.converToData (data.card)
 					if (data.client == rootModel.userId) {
-						if (data.attachmnent) {
+						if (data.attachment) {
 							playerDeck.addCard(cardData, true);
 						} else {
 							enemyDeck.addCard(cardData, true);
 						}
-						
 					} else {
-						if (data.attachmnent) {
+						if (data.attachment) {
 							enemyDeck.addCard(cardData, true);
 						} else {
 							playerDeck.addCard(cardData, true);
@@ -141,11 +141,13 @@ package com.la.mvc.controller.match.scenario
 						rootModel.currentState = GameState.PLAYER_STEP;
 						playerDeck.unblock();
 						playerDeck.glowAvailableCards();
+						field.setOpponentPrice(0, false, false);	
 						field.enableStepButton ();
 					} else {
 						rootModel.currentState = GameState.OPPONENT_STEP;
 						field.disableStepButton();
 						field.blockTokens ();
+						field.setPlayerPrice (0, false, false)
 						playerDeck.block();
 						playerDeck.stopGlowCards ();
 					}
@@ -454,6 +456,9 @@ package com.la.mvc.controller.match.scenario
 							field.removeToken (targetIndex, true, endAnimationFlag, true);
 						}
 					}
+					if (!endAnimationFlag) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
 					break;
 				}
 				
@@ -533,14 +538,6 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				case 'new_unit': {
-					//console.debug (clientId + 'new_unit');
-					/*   action['type'] = Action.NEW_UNIT
-                    action['client'] = self.client
-                    action['endAnimationFlag'] = True
-                    action['attachment'] = 1
-                    action['index'] = playerIndex
-                    action['cardData'] = cardData
-					*/
 					cardData = CardData.converToData (data.cardData);
 					targetAttachment = data.attachment
 					targetIndex = data.index
@@ -552,6 +549,67 @@ package com.la.mvc.controller.match.scenario
 					
 					break;
 				}
+				
+				case 'attack_mixin': {
+										
+					targetIndex = data.index;
+					targetAttachment = data.attachment;
+					clientFlag = data.client == rootModel.userId;
+					power = data.power
+					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					target = targetUnit as IAttackAvailable;
+					var attackBob:int = target.getAttackBob();
+					attackBob += power;
+					target.setAttackBob (attackBob);
+					target.setAttack(target.getAttack());
+										
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break;
+				}
+				
+				case 'treatment':
+				{
+					targetIndex = data.index;
+					targetAttachment = data.attachment;
+					clientFlag = data.client == rootModel.userId;
+					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					target = targetUnit as IAttackAvailable;
+					target.setHealth (data.health);
+					
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break;
+				}
+				
+				case 'increase_attack':
+				{
+					targetIndex = data.index;
+					targetAttachment = data.attachment;
+					clientFlag = data.client == rootModel.userId;
+					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					target = targetUnit as IAttackAvailable;
+					target.setAttack (data.attack);
+					
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break;
+				}
+				
+				case 'glow_last_card':
+				{
+					if (data.client == rootModel.userId) {
+						var card:Card = playerDeck.getLastCard();
+						var price:int = playerDeck.price
+						var cardPrice:int = card.getPrice();
+						if (price > cardPrice) {
+							playerDeck.glowCard(card);
+						}
+						
+					}
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break;
+				}
+					
+					
 				
 			}
 		}

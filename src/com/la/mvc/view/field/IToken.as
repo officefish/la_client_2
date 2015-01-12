@@ -3,6 +3,7 @@
  */
 package com.la.mvc.view.field {
 
+	import com.la.mvc.view.IAttackAvailable;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 

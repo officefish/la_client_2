@@ -19,6 +19,7 @@ import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Point;
+import com.la.mvc.view.IAttackAvailable;
 
 public class Field extends Sprite implements IField {
 
@@ -545,15 +546,20 @@ public class Field extends Sprite implements IField {
 		if (playerFlag) {
 			playerRow.removeChildAt(index);
 			sortUnitRow (playerRow);
-			centerizeRow (playerRow);
+			centerizeRow (playerRow, onEndRemove);
 		} else {
 			opponentRow.removeChildAt(index);
 			sortUnitRow(opponentRow);
-			centerizeRow(opponentRow);
+			centerizeRow(opponentRow, onEndRemove);
+		}
+	}
+	
+	private function onEndRemove () :void {
+		if (sygnal) {
+			sygnal = false;
+			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
 		}
 		
-		if (sygnal) dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
-		sygnal = false;
 	}
 	
 	public function getPlayerToken (index:int) :IToken {

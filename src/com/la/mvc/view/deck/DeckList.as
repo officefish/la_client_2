@@ -5,8 +5,6 @@ package com.la.mvc.view.deck {
 import com.la.event.DeckEvent;
 import com.la.mvc.model.DeckData;
 import com.la.mvc.view.ui.SmallButton;
-import com.la.event.DeckServiceEvent;
-
 import fl.controls.Button;
 
 import flash.display.Sprite;
@@ -18,13 +16,6 @@ public class DeckList extends Sprite {
     private var stageHeight:int;
 
     private var deckContainer:Sprite;
-    private var infoContainer:Sprite;
-
-    private var items:Object;
-    private var heroes:Object;
-
-    private var selectedDeckId:int;
-    private var selectedHeroId:int;
     private var selectedDeckItem:DeckListItem;
 
     private var widget:DeckHeroWidget;
@@ -33,7 +24,6 @@ public class DeckList extends Sprite {
 	private var decks:Object;
 	
 	private var closeButton:SmallButton; 
-
 
     public function DeckList() {
 
@@ -137,85 +127,6 @@ public class DeckList extends Sprite {
 	}
 	
 	
-    /*
-	public function setDeckListData (data:Object) :void {
-
-
-        var heroes:Array = data.heroes;
-
-
-        var decks:Array = [];
-        var item:DeckListItem;
-        var hero_uid:int;
-        var hero_id:int;
-        var deck:Object;
-        var shift:int = 40;
-
-        items = {};
-        this.heroes = {};
-
-        var hero:Object;
-
-        for (var i:int = 0; i < heroes.length; i ++) {
-            var row:Sprite = new Sprite();
-            row.x = shift;
-            row.y = shift + 120 * i;
-            deckContainer.addChild(row);
-            hero = {};
-            hero.vocation = heroes[i].vocation;
-            hero.title = heroes[i].title;
-            hero.description = heroes[i].description;
-            hero.level =  heroes[i].level;
-            decks = heroes[i].decks;
-            hero_uid = heroes[i].uid;
-            hero.uid = hero_uid;
-            hero_id = heroes[i].id;
-            this.heroes[hero_uid] = hero;
-            for (var j:int = 0; j < decks.length; j ++) {
-                deck = decks[j];
-                item = new DeckListItem(deck.title, deck.id, hero_id, hero_uid, deck.complicated);
-                item.x = (item.width + shift) * j;
-                row.addChild(item);
-                items[deck.id] = item;
-            }
-        }
-
-        activateDeck(data.activeDeck, data.activeHero);
-    }
-	*/
-
-    /*
-	private function onItemSelect (event:DeckEvent) :void {
-        activateDeck(event.data.id, event.data.hero_id)
-    }
-
-    private function activateDeck (deckId:int, heroId:int) :void {
-        if (!contains(widget)) addChild(widget);
-
-        var item:DeckListItem = items[deckId]
-        var heroData:Object =  heroes[item.getUid()]
-
-        if (selectedDeckItem) {
-            selectedDeckItem.deselect ();
-            selectedDeckItem = item;
-        }
-
-        item.select();
-
-        selectedDeckId = deckId;
-        selectedHeroId = heroId;
-
-        widget.setHeroData (heroData);
-    }
-
-    private function deckSelect (event:MouseEvent) :void {
-        dispatchEvent(new DeckServiceEvent(DeckServiceEvent.RESPONSE_SELECT_DECK, {'deck':selectedDeckId, 'hero':selectedHeroId}))
-    }
-	*/
-
-    public function close () :void {
-        dispatchEvent(new DeckEvent(DeckEvent.CLOSE, {}));
-    }
     public function destroy () :void {
 
     }

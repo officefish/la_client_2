@@ -305,6 +305,13 @@ public class PlayerDeck extends Deck {
     public function setPlayDistance (value:int) :void {
         playDistance = value;
     }
+	
+	public function getLastCard () :Card {
+		return cardsStack.getChildAt (cardsStack.numChildren - 1) as Card;
+	}
+	public function glowCard (card:Card) :void {
+		 card.filters = [new GlowFilter(0x00FFFF)]
+	}
 
 }
 }
