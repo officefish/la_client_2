@@ -28,17 +28,10 @@ public class WelcomeCompleteCommand extends Command {
     public var enemyDeck:EnemyDeck;
 
     override public function execute():void {
-
-        trace('welcomecompletecommands')
-
         rootModel.currentState = GameState.PREFLOP;
-
         scene.preflopCards(model.getPlayerCards());
-
         var cardDatas:Vector.<CardData> = model.getOpponentCards();
         enemyDeck.addCards(cardDatas, true);
-
-
     }
 }
 }

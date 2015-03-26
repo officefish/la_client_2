@@ -74,14 +74,29 @@ import flash.geom.Matrix;
 		private var showCountFlag:Boolean;
 		
 		private var count:int;
-		
 		private var blockFlag:Boolean = false;
-		
 		private var blockSprite:Sprite;
 		
-
-       // private var hero:Hero;
-	
+		private var craftTitleLabel:TextField;
+		private var craftDescriptionLabel:TextField;
+		private var craftPriceLabel:TextField;
+		private var craftAttackLabel:TextField;
+		private var craftHealthLabel:TextField;
+		private var craftTypeLabel:TextField;
+		private var craftBody:Sprite;
+		
+		private var craftMirrorTitleLabel:TextField;
+		private var craftMirrorDescriptionLabel:TextField;
+		private var craftMirrorPriceLabel:TextField;
+		private var craftMirrorAttackLabel:TextField;
+		private var craftMirrorHealthLabel:TextField;
+		private var craftMirrorTypeLabel:TextField;
+		private var craftMirror:Sprite;
+		
+		private var body:Sprite;
+		
+		private var state:int = 0;
+			
 		public function CollectionCard(cardData:CollectionCardData, showCount:Boolean = true) {
             showCountFlag = showCount;
 			
@@ -92,8 +107,10 @@ import flash.geom.Matrix;
             formatCard();
             formatMirror();
 			
-			buttonMode = true;
+			formatCraftCard();
+			formatCraftMirror();
 			
+			buttonMode = true;
 			addEventListener (MouseEvent.CLICK, onClick); 
         }
 		
@@ -102,35 +119,38 @@ import flash.geom.Matrix;
 		}
 
         private function formatCard () :void {
-            CardFormater.drawBody(this, getType(), CARD_WIDTH, CARD_HEIGHT, 25);
-
-            priceLabel = CardFormater.getCollectionLabel (price);
-            addChild (priceLabel);
+            body = new Sprite();
+			
+			CardFormater.drawBody(body, getType(), CARD_WIDTH, CARD_HEIGHT, 25);
+			addChild (body);
+			
+			priceLabel = CardFormater.getCollectionLabel (price);
+            body.addChild (priceLabel);
 			
 			if (getType() == CardData.UNIT) {
 				attackLabel = CardFormater.getCollectionLabel (cardData.getAttack());
 				attackLabel.y = this.height - attackLabel.height;
-				addChild (attackLabel);
+				body.addChild (attackLabel);
 			}
 			
 			if (getType() == CardData.UNIT) {
 				healthLabel = CardFormater.getCollectionLabel (cardData.getHealth());
 				healthLabel.y = attackLabel.y;
 				healthLabel.x = this.width - healthLabel.width; 
-				addChild (healthLabel);
+				body.addChild (healthLabel);
 			}
 			
 			titleLabel = CardFormater.getTitleLabel (CARD_WIDTH, cardData.getTitle());
             titleLabel.y = Math.round (CARD_HEIGHT * 0.4);
-            addChild (titleLabel);
+            body.addChild (titleLabel);
 			
 			descriptionLabel = CardFormater.getDescriptionLabel (CARD_WIDTH, cardData.getDescription());
 			descriptionLabel.y = Math.round (CARD_HEIGHT * 0.55);
-			addChild (descriptionLabel);
+			body.addChild (descriptionLabel);
 			
 			typeLabel = CardFormater.getTypeLabel (CARD_WIDTH);
 			typeLabel.y = Math.round (CARD_HEIGHT * 0.9);
-			addChild (typeLabel);
+			body.addChild (typeLabel);
 			
 			if (cardData.getSubrace()) {
 				typeLabel.text = cardData.getSubrace();
@@ -148,14 +168,14 @@ import flash.geom.Matrix;
 			}
 			
 			count = cardData.getCount();
+			countLabel = CardFormater.getCountLabel(20);
+			countLabel.y = CARD_HEIGHT;
+			countLabel.x = (CARD_WIDTH - countLabel.width) / 2;
+			if (cardData.getCount() > 1) {
+				countLabel.text = 'x' + count;
+			}
 			if (showCountFlag) {
-				countLabel = CardFormater.getCountLabel(20);
-				countLabel.y = CARD_HEIGHT;
-				countLabel.x = (CARD_WIDTH - countLabel.width) / 2;
-				if (cardData.getCount() > 1) {
-					countLabel.text = 'x' + count;
-				}
-				addChild(countLabel);
+				body.addChild(countLabel);
 			}
 			
 			blockSprite = new Sprite ();
@@ -166,6 +186,116 @@ import flash.geom.Matrix;
 			
 		}
 		
+		private function formatCraftCard () :void {
+			craftBody = new Sprite;
+			CraftCardFormatter.drawBody(craftBody, getType(), CARD_WIDTH, CARD_HEIGHT, 25);
+            
+			craftPriceLabel = CraftCardFormatter.getLabel (price);
+            craftBody.addChild (craftPriceLabel);
+			
+			if (getType() == CardData.UNIT) {
+				craftAttackLabel = CraftCardFormatter.getLabel (cardData.getAttack());
+				craftAttackLabel.y = craftBody.height - craftAttackLabel.height;
+				craftBody.addChild (craftAttackLabel);
+			}
+			
+			if (getType() == CardData.UNIT) {
+				craftHealthLabel = CraftCardFormatter.getLabel (cardData.getHealth());
+				craftHealthLabel.y = craftAttackLabel.y;
+				craftHealthLabel.x = craftBody.width - craftHealthLabel.width; 
+				craftBody.addChild (craftHealthLabel);
+			}
+			
+			
+			craftTitleLabel = CraftCardFormatter.getTitleLabel (CARD_WIDTH, cardData.getTitle());
+            craftTitleLabel.y = Math.round (CARD_HEIGHT * 0.4);
+            craftBody.addChild (craftTitleLabel);
+			
+			craftDescriptionLabel = CraftCardFormatter.getDescriptionLabel (CARD_WIDTH, cardData.getDescription());
+			craftDescriptionLabel.y = Math.round (CARD_HEIGHT * 0.55);
+			craftBody.addChild (craftDescriptionLabel);
+						
+			craftTypeLabel = CraftCardFormatter.getTypeLabel (CARD_WIDTH);
+			craftTypeLabel.y = Math.round (CARD_HEIGHT * 0.9);
+			craftBody.addChild (craftTypeLabel);
+			
+			if (cardData.getSubrace()) {
+				craftTypeLabel.text = cardData.getSubrace();
+			} else if (cardData.getRace()) {
+				craftTypeLabel.text = cardData.getRace();
+			} else {
+				if (cardData.getType() == CardData.UNIT) {
+					craftTypeLabel.text = 'персонаж';
+				} else if (cardData.getType() == CardData.SECRET) {
+					craftTypeLabel.text = 'секрет';
+				}
+				else {
+					craftTypeLabel.text = 'способность';
+				}
+			}
+			
+			
+		}
+		
+		private function formatCraftMirror () :void {
+			craftMirror = new Sprite();
+            CraftCardFormatter.drawMirror(craftMirror, MIRROR_WIDTH, MIRROR_HEIGHT, cardData.getType(), 40);
+
+            craftMirrorPriceLabel = CraftCardFormatter.getMirrorLabel(price);
+			craftMirror.addChild (craftMirrorPriceLabel);
+
+            craftMirrorAttackLabel = CraftCardFormatter.getMirrorLabel(cardData.getAttack());
+            craftMirrorAttackLabel.y = craftMirror.height - 40;
+            if (getType() == CardData.UNIT) {
+                craftMirror.addChild (craftMirrorAttackLabel);
+            }
+
+            craftMirrorHealthLabel =  CraftCardFormatter.getMirrorLabel(cardData.getHealth());
+            craftMirrorHealthLabel.x = craftMirror.width - 40;
+            craftMirrorHealthLabel.y = craftMirrorAttackLabel.y;
+            if (getType() == CardData.UNIT) {
+                craftMirror.addChild (craftMirrorHealthLabel);
+            }
+
+			
+            craftMirrorTitleLabel = CraftCardFormatter.getMirrorTitleLabel (MIRROR_WIDTH, cardData.getTitle());
+            craftMirrorTitleLabel.y = Math.round (craftMirror.height * 0.4);
+            craftMirror.addChild (craftMirrorTitleLabel);
+
+            craftMirrorDescriptionLabel = CraftCardFormatter.getMirrorDescriptionLabel(MIRROR_WIDTH, parseDescription(cardData.getDescription()))
+            craftMirrorDescriptionLabel.y = Math.round (craftMirror.height * 0.55);
+            craftMirror.addChild (craftMirrorDescriptionLabel);
+			
+			
+			craftMirrorTypeLabel = CraftCardFormatter.getMirrorTypeLabel (MIRROR_WIDTH);
+			craftMirrorTypeLabel.y = Math.round (MIRROR_HEIGHT * 0.92);
+			craftMirror.addChild (craftMirrorTypeLabel);
+			
+			if (cardData.getSubrace()) {
+				craftMirrorTypeLabel.text = cardData.getSubrace();
+			} else if (cardData.getRace()) {
+				craftMirrorTypeLabel.text = cardData.getRace();
+			} else {
+				if (cardData.getType()) {
+					craftMirrorTypeLabel.text = 'персонаж';
+				} else {
+					craftMirrorTypeLabel .text = 'способность';
+				}
+			}
+			
+		}
+		
+		public function setState (state:int) :void {
+			this.state = state;
+			while (this.numChildren) this.removeChildAt (0);
+
+			if (state) {
+				addChild (craftBody);
+			} else {
+				addChild (body);
+			}
+		}
+		
 		public function increment () :void {
 			
 			count ++
@@ -173,7 +303,7 @@ import flash.geom.Matrix;
 			if (countLabel) {
 				countLabel.text = 'x' + cardData.getCount();
 				if (count > 1) {
-					addChild (countLabel);
+					body.addChild (countLabel);
 				}
 			}
 			
@@ -187,12 +317,26 @@ import flash.geom.Matrix;
 			if (countLabel) {
 				countLabel.text = 'x' + cardData.getCount();
 				if (count < 2) {
-					if (contains(countLabel)) removeChild (countLabel);
+					if (body.contains(countLabel)) body.removeChild (countLabel);
 				} 
 			}
 						
 			if (count <= 0) {
 				block();
+			}
+		}
+		
+		public function showCount () :void {
+			count = cardData.getCount();
+			if (countLabel) {
+				countLabel.text = 'x' + count;
+				if (count > 1) {
+					body.addChild (countLabel);
+				} else {
+					if (body.contains(countLabel)) {
+						body.removeChild (countLabel);
+					}
+				}
 			}
 		}
 		
@@ -278,16 +422,24 @@ import flash.geom.Matrix;
         }
 	
 		public function getMirror () :Sprite {
-			return mirror;
+			if (state) {
+				return craftMirror;
+			} else {
+				return mirror;
+			}
+			
 		}
 		
 		public function getMirrorBitmap () :Bitmap {
-			return getBitmapCopy (mirror);
+			if (state) {
+				return getBitmapCopy(craftMirror);
+			} else {
+				return getBitmapCopy(mirror);
+			}
 		}
 		
 		private function getBitmapCopy (target:DisplayObject) :Bitmap {
 			var bitmapData:BitmapData = new BitmapData (target.width, target.height, true, 0);
-			
 			bitmapData.draw (target);
 			var bitmap:Bitmap = new Bitmap (bitmapData);
 			return bitmap;

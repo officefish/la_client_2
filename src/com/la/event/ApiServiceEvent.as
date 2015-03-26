@@ -17,8 +17,14 @@ package com.la.event
 		public static const EDIT_DECK_INIT:String = 'editDeckInit';
 		public static const INTRO_DECK_LIST_INIT:String = 'introDeckListInit';
 		public static const INTRO_DECK_SELECT:String = 'introDeckSelect';
+		public static const FULL_COLLECTION_INIT:String = 'fullCollectionInit';
+		public static const CARD_CREATED:String = 'cardCreated';
+		public static const CARD_DESTROYED:String = 'cardDestroyed';
 		
-		public function ApiServiceEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
+		public static const REQUEST:String = 'request';
+		public static const REQUEST_COMPLETE:String = 'request_complete';
+		
+		public function ApiServiceEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false) {
 			this._data = data;
 			super(type, bubbles, cancelable)
 		}

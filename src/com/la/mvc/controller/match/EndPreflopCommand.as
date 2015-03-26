@@ -71,18 +71,6 @@ public class EndPreflopCommand extends Command {
         var cardData:CardData
 		for (var i:int = 0; i < data.length; i ++) {
             cardData = CardData.converToData (data[i])
-            var attack:int = data[i].attack;
-            var health:int = data[i].health;
-            var price:int = data[i].price;
-            var title:String = data[i].title;
-            var description:String = data[i].description;
-
-            var cardData:CardData = new CardData(attack, health, price);
-
-            cardData.id = data[i].id;
-
-            cardData.setTitle(title);
-            cardData.setDescription(description);
             vector.push(cardData)
         }
         return vector;

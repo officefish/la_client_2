@@ -95,23 +95,42 @@ public class EnemyDeck extends Deck {
     }
 
     override public function addCard (cardData:CardData, animation:Boolean = true) :Card {
-        var card:Card = new Card (cardData);
+        trace ('addCard');
+		
+		var card:Card = new Card (cardData);
         card.graphics.clear();
         while (card.numChildren) card.removeChildAt (0);
         card.addChild (card.getSmallShirt());
         cardsStack.addChild (card);
-
+		
+		sortCollodion(0, false);
+        var collodionPosition:Point = centerizeCollodion (false);
         if (animation) {
-            sortCollodion(0, false);
-            var collodionPosition:Point = centerizeCollodion (false);
             var vector:Vector.<Card> = new Vector.<Card>();
             vector.push(card);
             animateCards (vector, collodionPosition);
-        }
-
-        return card;
+        } 
+		return card;
 
     }
+	
+	public function changeCard (card:Card, cardData:CardData) :Card {
+						
+			var newCard:Card = new Card (cardData);
+			var position:Point = new Point (card.x, card.y);
+			
+			newCard.graphics.clear();
+			while (newCard.numChildren) newCard.removeChildAt (0);
+			newCard.addChild (newCard.getSmallShirt());
+			
+			var index:int = cardsStack.getChildIndex (card);
+			cardsStack.addChildAt (newCard, index);
+			
+			newCard.x = position.x;
+			newCard.y = position.y;
+			
+			return newCard;
+	}
 	
 	public function getCard (index:int) :Card {
 		return cardsStack.getChildAt(index) as Card;
@@ -128,8 +147,8 @@ public class EnemyDeck extends Deck {
 
 	override public function sort(endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false):void 
 	{
-		sortCollodion();
-		centerizeCollodion ();
+		sortCollodion(0, false);
+		centerizeCollodion (false);
 		if (sygnalFlag) {
 			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));		
 		}

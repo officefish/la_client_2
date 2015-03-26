@@ -12,7 +12,7 @@ public class RootModel extends Actor {
     private var _currentState:GameState;
     private var _currentCollectionId:int;
     private var _userId:int;
-
+	
     public function RootModel() {
     }
 
@@ -45,5 +45,9 @@ public class RootModel extends Actor {
         userId = Math.random() * 100000;
         dispatch(new GameContextEvent(GameContextEvent.MODEL_INIT_COMPLETE));
     }
+	
+	
+	
+	
 }
 }

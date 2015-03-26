@@ -17,6 +17,8 @@ public class CollectionMediator extends Mediator {
 		eventMap.mapListener(collection, CollectionEvent.SAVE_DECK, listener);
 		eventMap.mapListener(collection, CollectionEvent.SELECT_HERO, listener);
 		eventMap.mapListener(collection, CollectionEvent.RESET_DECK, listener);
+		eventMap.mapListener(collection, CollectionEvent.CREATE_CARDS, listener);
+		eventMap.mapListener(collection, CollectionEvent.CRAFT_READY, listener);
     }
 
     private function listener(event:CollectionEvent) :void {

@@ -52,11 +52,11 @@ package com.la.mvc.controller.match.attack
 		}
 		
 		private function passiveAttackComplete () :void {
-			TweenLite.to (asset, 1.5, { alpha:0, onComplete:alphaComplete } );
-			dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+			TweenLite.to (asset, 1.0, { alpha:0, onComplete:alphaComplete } );
 		}
 		
 		private function alphaComplete () :void {
+			dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 			scene.endCopy();
 		}
 	}

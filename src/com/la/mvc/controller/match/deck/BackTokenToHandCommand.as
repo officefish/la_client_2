@@ -6,6 +6,7 @@ package com.la.mvc.controller.match.deck
 	import com.la.event.SceneEvent;
 	import com.la.mvc.view.card.Card;
 	import com.la.mvc.view.debug.Console;
+	import com.la.mvc.view.deck.EnemyDeck;
 	import com.la.mvc.view.deck.PlayerDeck;
 	import com.la.mvc.view.field.IField;
 	import com.la.mvc.view.scene.IScene;
@@ -37,7 +38,12 @@ package com.la.mvc.controller.match.deck
 		
 		[Inject (name='field')]
 		public var field:IField; 
-
+		
+		private var playerFlag:Boolean = true;
+		
+		[Inject (name='enemyDeck')]
+		public var enemyDeck:EnemyDeck; 
+		
 		
 		override public function execute():void 
 		{
@@ -45,14 +51,43 @@ package com.la.mvc.controller.match.deck
 			//console.debug (event.data.cardData);
 			var token:DisplayObject = event.data.token;
 			
-			card = playerDeck.addCard(event.data.cardData);
+			var targetIndex:int = event.data.targetIndex;
+			var targetAttachment:Boolean = event.data.targetAttachment;
+			if (event.data.clientFlag) {
+				if (targetAttachment) {
+					playerFlag = true;
+				} else {
+					playerFlag = false;
+				}
+			} else {
+				if (targetAttachment) {
+					playerFlag = false;
+				} else {
+					playerFlag = true;
+				}
+			}
+			
+			if (playerFlag) {
+				card = playerDeck.addCard(event.data.cardData); 
+			} else {
+				card = enemyDeck.addCard(event.data.cardData, false);
+			}
+			
 			card.visible = false;
 			
-			mirror = card.getMirrorBitmap ();
+			if (playerFlag) {
+				mirror = card.getMirrorBitmap ();
+			} else {
+				mirror = card.getShirt();
+			}
 			
 			var startPosition:Point = new Point (token.x, token.y);
 			startPosition = token.parent.localToGlobal (startPosition);
 			startPosition.x -= ((mirror.width - token.width) / 2);
+			
+			if (!playerFlag) {
+				startPosition.y -= (mirror.height - token.height);
+			}
 			
 			mirror.x = startPosition.x;
 			mirror.y = startPosition.y;
@@ -61,6 +96,10 @@ package com.la.mvc.controller.match.deck
 			mirror.scaleY = 1;
 			
 			var middlePosition:Point = new Point(startPosition.x, contextView.stage.stageHeight / 2);
+			
+			if (!playerFlag) {
+				middlePosition.y -= mirror.height;
+			}
 			
 			var endPosition:Point = new Point (card.x, card.y);
 			endPosition = card.parent.localToGlobal (endPosition);
@@ -74,28 +113,15 @@ package com.la.mvc.controller.match.deck
 		
 		private function onPlaceContinue () :void {
 			var targetIndex:int = event.data.targetIndex;
-			var targetAttachment:Boolean = event.data.targetAttachment;
-			if (event.data.clientFlag) {
-				if (targetAttachment) {
-					field.removeToken (targetIndex, true);
-				} else {
-					field.removeToken (targetIndex, false);
-				}
-			} else {
-				if (targetAttachment) {
-					field.removeToken (targetIndex, false);
-				} else {
-					field.removeToken (targetIndex, true);
-				}
-			}
+			field.removeToken (targetIndex, playerFlag);
 		}
-			//var index:int = field.getTokenIndex(event.data.token);
 		
 		
 		private function onPlaceComplete () :void {
 			scene.endPlaceCard ();
 			mirror.scaleX = 1;
 			mirror.scaleY = 1;
+						
 			card.visible = true;
 			
 			dispatch (new ScenarioEvent (ScenarioEvent.ACTION)); 

@@ -3,11 +3,13 @@
  */
 package com.la.mvc.controller.bootstrap {
 import com.la.mvc.view.card.CollectionCard;
+import com.la.mvc.view.collection.CraftWidget;
 import com.la.mvc.view.collection.DeckItemSlot;
 import com.la.mvc.view.collection.DeckSlot;
 import com.la.mvc.view.field.IToken;
 import com.la.mvc.view.field.StepButton;
 import com.la.mvc.view.collection.ICollection;
+import com.la.mvc.view.mediator.CraftMediator;
 
 import com.la.mvc.view.IIntro;
 import com.la.mvc.view.card.PreflopCard;
@@ -51,6 +53,7 @@ public class BootstrapView {
 		mediatorMap.mapView(ICollection, CollectionMediator);
 		mediatorMap.mapView(DeckItemSlot, DeckItemSlotMediator);
 		mediatorMap.mapView(DeckSlot, DeckSlotMediator);
+		mediatorMap.mapView(CraftWidget, CraftMediator);
 
 
 

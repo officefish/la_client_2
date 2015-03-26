@@ -31,6 +31,12 @@ public interface IScene extends IEventDispatcher{
 	function stopDraw () :void;
 	
 	function warning  (msg:String, confirmFlag:Boolean = false, cancelFlag:Boolean = false) :void;
+	function stopWarning():void;
+	
+	function block () :void;
+	function stopBlock() :void;
+	
+	
 		
 	function clear ():void;
 	

@@ -38,7 +38,7 @@ package com.la.mvc.model
 
         private var auxiliaryFlag:Boolean = false;
 		
-		
+		private var _widget:int = 0;
 		
 		public function CardData(attack:int, health:int, price:int, eptitudes:Array = null) 
 		{
@@ -160,6 +160,10 @@ package com.la.mvc.model
             return _id;
         }
 		
+		public function get widget () :int {
+			return _widget;
+		}
+		
 		public function setEptitudes (ept:Array) :void {
 			this._eptitudes = []
 			for (var i:int = 0; i < ept.length; i ++) {
@@ -208,6 +212,7 @@ package com.la.mvc.model
             cardData.setDescription(description);
 			cardData.setEptitudes (data.eptitudes);
 			cardData.setType (data.type);
+			cardData._widget = data.widget;
 			if (data.race) {
 				cardData.setRace (data.race);
 			}

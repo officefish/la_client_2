@@ -382,7 +382,7 @@ public class CardFormater {
             _mirrorExpensiveFormat = new TextFormat();
             _mirrorExpensiveFormat.size = 22;
             _mirrorExpensiveFormat.bold = true;
-            _mirrorExpensiveFormat.color = 0x00FF00;
+            _mirrorExpensiveFormat.color = 0xFF0000;
         }
         return _mirrorExpensiveFormat;
     }

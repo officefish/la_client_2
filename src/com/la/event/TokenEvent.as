@@ -15,6 +15,7 @@ package com.la.event
 		
 		public static const ATTACK:String = 'attack';
 		public static const PREVIEW:String = 'preview';
+		public static const WIDGET_ACTIVATE_COMPLETE:String = 'widgetActivateComplete';
 		
 		public function TokenEvent(type:String, token:IToken, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

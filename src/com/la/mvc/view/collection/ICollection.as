@@ -18,6 +18,7 @@ public interface ICollection extends IEventDispatcher {
 	function blur () :void;
 	function stopBlur() :void;
 	function setState (value:int) :void;
+	function getState () :int;
 	function initHero (heroData:HeroData) :void;
 	function getDeckItemsStack () :Sprite;
 	function addDeckItem (data:CollectionCardData) :void;
@@ -25,5 +26,9 @@ public interface ICollection extends IEventDispatcher {
 	function removeDeckItem (data:CollectionCardData) :void;
 	function getDeckItemsCount() :int; 
 	function getDeckItems () :Array;
+	function setDust (value:int) :void;
+	function restateCards () :void;
+	
+	
 }
 }

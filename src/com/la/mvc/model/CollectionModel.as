@@ -6,6 +6,7 @@ import com.la.event.MatchEvent;
 import com.la.mvc.model.CardData;
 import com.la.mvc.view.card.CollectionCard;
 import com.la.mvc.view.collection.DeckItemSlot;
+import flash.display.Bitmap;
 import org.robotlegs.mvcs.Actor;
 
 public class CollectionModel extends Actor {
@@ -13,9 +14,13 @@ public class CollectionModel extends Actor {
     private var _collectionCard:CollectionCard;
 	private var _deckSlot:DeckItemSlot;
 	private var _deckData:DeckData;
-    private static var collections:Object = {};
+    private static var collections:Object = { };
+	
+	private var _dust:int;
 
     private var cards:Vector.<CardData>
+	
+	private var _cardPreview:Bitmap;
 
     public function CollectionModel() {
 
@@ -71,5 +76,21 @@ public class CollectionModel extends Actor {
         }
         return response;
     }
+	
+	public function setDust (value:int) :void {
+		_dust = value;
+	}
+	
+	public function getDust () :int {
+		return _dust;
+	}
+	
+	public function setPreview (value:Bitmap) :void {
+		_cardPreview = value;
+	}
+	
+	public function getPreview () :Bitmap {
+		return _cardPreview;
+	}
 }
 }

@@ -7,6 +7,7 @@ import com.greensock.TimelineLite;
 import com.greensock.TweenLite;
 import com.greensock.easing.Expo;
 import com.greensock.easing.ExpoOut;
+import com.hurlant.util.der.OID;
 import com.la.event.FieldEvent;
 import com.la.event.ScenarioEvent;
 import com.la.mvc.view.card.Card;
@@ -37,12 +38,12 @@ public class Field extends Sprite implements IField {
 
     private var playerRow:UnitRow;
     private var opponentRow:UnitRow;
+	private var actualRow:UnitRow;
 
     private var tokenPreviewIndex:int = 0;
 	private var actualToken:Token;
 	private var _sygnal:Boolean = false;
 	private var scene:IScene;
-
 	
 	private function set sygnal (value:Boolean) :void {
 		this._sygnal = value;
@@ -419,6 +420,7 @@ public class Field extends Sprite implements IField {
 
         var mirror:Sprite = card.getShirt ();
 		scene.placeCard (mirror);
+		
         
         mirror.x = mirrorPosition.x;
         mirror.y = mirrorPosition.y;
@@ -441,7 +443,9 @@ public class Field extends Sprite implements IField {
         var rowPosition:Point = centerizeRow (opponentRow);
 
         mirrorPosition = new Point (tokenPosition.x + rowPosition.x, tokenPosition.y + rowPosition.y);
-        var endY:int = mirrorPosition.y;
+   		mirrorPosition.y -= (Card.MIRROR_WIDTH - Token.HEIGHT);
+
+		var endY:int = mirrorPosition.y;
 
         mirrorPosition.x -= (Card.MIRROR_WIDTH - Token.WIDTH) / 2;
         mirrorPosition.y -= (Card.MIRROR_HEIGHT - Token.HEIGHT) / 2;
@@ -554,6 +558,33 @@ public class Field extends Sprite implements IField {
 		}
 	}
 	
+	public function changeToken (token:IToken, cardData:CardData) :IToken {
+		var tokenDO:DisplayObject = token as DisplayObject;
+		var position:Point = new Point (tokenDO.x, tokenDO.y)
+		var index:int;
+		var newUnitCard:Card = new Card (cardData);
+		
+		if (playerRow.contains(tokenDO)) {
+			index = playerRow.getChildIndex(tokenDO);
+			actualToken = new Token (newUnitCard);
+			playerRow.removeChild (tokenDO);
+			playerRow.addChildAt(actualToken, index);
+			actualToken.x = position.x;
+			actualToken.y = position.y;
+		}
+		
+		if (opponentRow.contains(tokenDO)) {
+			index = opponentRow.getChildIndex(tokenDO);
+			actualToken = new Token (newUnitCard, true);
+			opponentRow.removeChild (tokenDO);
+			opponentRow.addChildAt(actualToken, index);
+			actualToken.x = position.x;
+			actualToken.y = position.y;
+		}
+		
+		return actualToken;
+	}
+	
 	private function onEndRemove () :void {
 		if (sygnal) {
 			sygnal = false;
@@ -575,6 +606,54 @@ public class Field extends Sprite implements IField {
 	}
 	public function stopBlur(): void {
 		this.filters = []
+	}
+	
+	public function placePreviewToOpponentRow(token:DisplayObject) :Point {
+		var position:Point = new Point();
+		Token.getTokenPreviewInstance().alpha = 0.01;
+		actualToken = token as Token;
+		if (playerRow.contains(token)) {
+			
+			actualRow = opponentRow;
+			opponentRow.addChild(Token.getTokenPreviewInstance());
+			sortUnitRow (opponentRow);
+			position = centerizeRow(opponentRow, onPlaceRewiewComplete);
+			position.x = position.x + this.x + ((UnitRow.PADDING + Token.WIDTH) * (opponentRow.numChildren - 1));
+			position.y += this.y;
+			
+		} else {
+			actualRow = playerRow;			
+			playerRow.addChild (Token.getTokenPreviewInstance());
+			sortUnitRow (playerRow);
+			position = centerizeRow(playerRow, onPlaceRewiewComplete);
+			position.x = position.x + this.x + ((UnitRow.PADDING + Token.WIDTH) * (playerRow.numChildren - 1));
+			position.y += this.y;
+		}
+		return position;
+	}
+	
+	private function onPlaceRewiewComplete () :void {
+		actualRow.removeChild(Token.getTokenPreviewInstance());
+		Token.getTokenPreviewInstance().alpha = 1;
+
+	}
+	
+	public function sortAndCenter(row:UnitRow) :void {
+		sortUnitRow(row);
+		centerizeRow(row);
+	}
+	
+	public function placeTokenToActualRow (token:DisplayObject) :void {
+		actualRow.addChild(token);
+		token.x = (UnitRow.PADDING + Token.WIDTH) * (actualToken.numChildren - 1);
+		token.y = 0;
+		sortUnitRow(actualRow, 0, false);
+		centerizeRow(actualRow);
+		if ((token as IToken).isEnemy) {
+			(token as IToken).isEnemy = false;
+		} else {
+			(token as IToken).isEnemy = true;
+		}
 	}
 
 }

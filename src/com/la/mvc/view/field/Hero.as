@@ -29,6 +29,9 @@ public class Hero extends Sprite implements IHero{
 	private var asset:Bitmap;
 	private var type:int;
 	private var hideHealthFlag:Boolean = true;
+	
+	private var freezeSprite:Sprite;
+	private var freezeFlag:Boolean = false;
 
     public function Hero() {
 
@@ -65,6 +68,13 @@ public class Hero extends Sprite implements IHero{
         healthBackground.x = healthBackground.y = 60;
         //addChild(healthBackground);
         addChild(healthBackground);
+		
+		freezeSprite = new Sprite ();
+		freezeSprite.graphics.beginFill (0x56A5EC, 0.7);
+		freezeSprite.graphics.drawRect (0, 0, 80, 80);
+		freezeSprite.graphics.endFill ();
+		freezeSprite.mouseEnabled = false;
+	
     }
 
     public function set isEnemy (value:Boolean) :void {
@@ -73,6 +83,10 @@ public class Hero extends Sprite implements IHero{
     public function get isEnemy () :Boolean {
         return enemy;
     }
+	
+	public function getDefaultHealth () :int {
+		return health; 
+	}
 
     public function hideHealth () :void {
 
@@ -151,6 +165,9 @@ public class Hero extends Sprite implements IHero{
 				cloneHero.showHealth();
 			}
 		}
+		if (isFreeze()) {
+			cloneHero.activateFreeze();
+		}
 		return cloneHero;
 	}
 	
@@ -167,7 +184,49 @@ public class Hero extends Sprite implements IHero{
 			health = maxHealth;
 		}
         healthLabel.text = "" + health;
+	}
+	
+	public function activateShield () :void {
+         
+    }
 
+    public function destroyShield () :void {
+    
+	}
+	
+	public function activateShadow () :void {
+		
+	}
+	
+	public function destroyShadow() :void {
+		
+	}
+	
+	public function dumbness () :void {
+		
+	}
+	
+	public function activateDoubleAttack()  :void { };
+	public function deactivateDoubleAttack() :void { };
+	public function set canAttack (value:Boolean) :void {};
+	public function get canAttack () :Boolean { return false };
+	public function activateProvocation () :void {};
+	public function deactivateProvocation () :void { };
+	
+	public function activateFreeze () :void {
+		freezeFlag = true;
+		addChild (freezeSprite);
+	}
+		
+	public function deactivateFreeze () :void {
+		freezeFlag = false;
+		if (contains(freezeSprite)) {
+			removeChild (freezeSprite);
+		}
+	}
+	
+	public function isFreeze () :Boolean {
+		return freezeFlag;
 	}
 
 

@@ -18,6 +18,10 @@ package com.la.event
 		public static const RESET_DECK:String = 'resetDeck';
 		public static const REMOVE_DECK:String = 'removeDeck';
 		public static const EDIT_DECK:String = 'editDeck';
+		public static const CREATE_CARDS:String = 'createCards';
+		public static const CRAFT_READY:String = 'craftReady';
+		public static const CRAFT_CARD:String = 'craftCard';
+		public static const DESTROY_CARD:String = 'destroyCard';
 			
 		private var data:Object;
 		

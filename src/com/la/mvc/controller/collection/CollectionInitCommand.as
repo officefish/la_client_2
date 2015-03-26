@@ -2,7 +2,9 @@ package com.la.mvc.controller.collection
 {
 	import com.la.event.ApiServiceEvent;
 	import com.la.mvc.model.CollectionModel;
+	import com.la.mvc.model.RootModel;
 	import com.la.mvc.view.collection.ICollection;
+	import com.la.state.GameState;
 	import org.robotlegs.mvcs.Command;
 	
 	/**
@@ -21,13 +23,17 @@ package com.la.mvc.controller.collection
 		[Inject (name='collectionModel')]
 		public var model:CollectionModel;
 		
+		[Inject (name='rootModel')]
+		public var rootModel:RootModel; 
+
+		
 		override public function execute():void 
 		{
-			//trace (event.getData())
+			rootModel.currentState = GameState.COLLECTION;
+			
 			collection.setState (0);
 			collection.initBooks (event.getData().books);
 			collection.initDecks (event.getData().decks);
-			
 		}
 	}
 

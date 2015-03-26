@@ -4,6 +4,7 @@
 package com.la.mvc.controller.bootstrap {
 
 import com.la.mvc.view.collection.Collection;
+import com.la.mvc.view.collection.CraftWidget;
 import com.la.mvc.view.field.StepButton;
 import com.la.mvc.view.collection.ICollection;
 
@@ -53,6 +54,8 @@ public class BootstrapClasses {
         injector.mapSingletonOf(DeckList, DeckList, 'deckList');
 		injector.mapSingletonOf(Console, Console, 'appConsole');
 		injector.mapClass (StepButton, StepButton);
+		
+		injector.mapSingletonOf(CraftWidget, CraftWidget, 'craftWidget');
 
     }
 }

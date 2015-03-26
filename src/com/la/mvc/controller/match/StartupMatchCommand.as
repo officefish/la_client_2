@@ -49,7 +49,6 @@ public class StartupMatchCommand extends Command {
         contextView.addChild(enemyDeck);
         enemyDeck.setScene(scene);
 
-
         scene.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
         scene.darken();
         contextView.addChild(scene as DisplayObject);

@@ -7,6 +7,22 @@ import com.la.event.ApiServiceEvent;
 import com.la.event.CardEvent;
 import com.la.event.CollectionEvent;
 import com.la.event.DeckEvent;
+import com.la.mvc.controller.collection.CardCreatedCommand;
+import com.la.mvc.controller.collection.CardDestroyedCommand;
+import com.la.mvc.controller.collection.CraftReadyCommand;
+import com.la.mvc.controller.collection.FullCollectionInitCommand;
+import com.la.mvc.controller.collection.RequestCraftCardCommand;
+import com.la.mvc.controller.collection.RequestDestroyCardCommand;
+import com.la.mvc.controller.collection.RequestFullCollectionCommand;
+import com.la.mvc.controller.loading.PreloadingCommand;
+import com.la.mvc.controller.loading.PreloadingCompleteCommand;
+import com.la.mvc.controller.match.attack.FreezeAttackCommand;
+import com.la.mvc.controller.match.deck.CancelSpellSelectCommand;
+import com.la.mvc.controller.match.deck.EndSpellSelectCommand;
+import com.la.mvc.controller.match.deck.SpellSelectCommand;
+import com.la.mvc.controller.match.scenario.actions.ActivateWidgetCommand;
+import com.la.mvc.controller.match.scenario.actions.EnticeTokenCommand;
+import com.la.mvc.controller.match.scenario.actions.ReplaceCardAndToken;
 
 import com.la.event.FieldEvent;
 import com.la.event.LobbyEvent;
@@ -128,6 +144,10 @@ public class BootstrapController {
         commandMap.mapEvent(IntroEvent.SELECT_ARENA, SelectArenaCommand, IntroEvent);
         commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
 		
+		// api service
+		commandMap.mapEvent(ApiServiceEvent.REQUEST, PreloadingCommand, ApiServiceEvent);
+		commandMap.mapEvent(ApiServiceEvent.REQUEST_COMPLETE, PreloadingCompleteCommand, ApiServiceEvent);
+		
 		// collection
 		commandMap.mapEvent(ApiServiceEvent.COLLECTION_INIT, CollectionInitCommand, ApiServiceEvent); 
 		commandMap.mapEvent(CardEvent.COLLECTION_CLICK, PreviewCollectionCardCommand, CardEvent);
@@ -145,9 +165,15 @@ public class BootstrapController {
 		commandMap.mapEvent(CollectionEvent.REMOVE_DECK, RequestRemoveDeckCommand, CollectionEvent);
 		commandMap.mapEvent(CollectionEvent.EDIT_DECK, RequestEditDeckCommand, CollectionEvent);
 		commandMap.mapEvent(ApiServiceEvent.EDIT_DECK_INIT, DeckInitCommand, ApiServiceEvent);
-
+		commandMap.mapEvent(CollectionEvent.CREATE_CARDS, RequestFullCollectionCommand, CollectionEvent);
+		commandMap.mapEvent(ApiServiceEvent.FULL_COLLECTION_INIT, FullCollectionInitCommand, ApiServiceEvent);
+		commandMap.mapEvent(CollectionEvent.CRAFT_READY, CraftReadyCommand, CollectionEvent);
+		commandMap.mapEvent(CollectionEvent.CRAFT_CARD, RequestCraftCardCommand, CollectionEvent);	
+		commandMap.mapEvent(ApiServiceEvent.CARD_CREATED, CardCreatedCommand, ApiServiceEvent);
+		commandMap.mapEvent(CollectionEvent.DESTROY_CARD, RequestDestroyCardCommand, CollectionEvent);
+        commandMap.mapEvent(ApiServiceEvent.CARD_DESTROYED, CardDestroyedCommand, ApiServiceEvent);
 		
-        // deckList
+		// deckList
         commandMap.mapEvent(DeckEvent.STARTUP_DECK_LIST, StartupDeckListCommand, DeckEvent);
         commandMap.mapEvent(DeckEvent.STARTUP_DECK_SERVICE, RequestDeckListCommand, DeckEvent);
         commandMap.mapEvent(ApiServiceEvent.INTRO_DECK_LIST_INIT, DeckListInitCommand, ApiServiceEvent);
@@ -225,6 +251,22 @@ public class BootstrapController {
 		
 		// passive attack
 		commandMap.mapEvent(SceneEvent.PASSIVE_ATTACK, PassiveAttackCommand, SceneEvent);
+		
+		// freeze 
+		commandMap.mapEvent(SceneEvent.FREEZE_ATTACK, FreezeAttackCommand, SceneEvent); 
+		
+		// replace card and token
+		commandMap.mapEvent(SceneEvent.REPLACE_CARD_AND_TOKEN, ReplaceCardAndToken, SceneEvent);
+		
+		// entice unit
+		commandMap.mapEvent(SceneEvent.ENTICE_UNIT, EnticeTokenCommand, SceneEvent);
+		
+		commandMap.mapEvent(SceneEvent.ACTIVATE_WIDGET, ActivateWidgetCommand, SceneEvent);
+		
+		// play spell
+		commandMap.mapEvent(DeckEvent.SPELL_SELECT, SpellSelectCommand, DeckEvent); 
+		commandMap.mapEvent(DeckEvent.END_SPELL_SELECT, EndSpellSelectCommand, DeckEvent);
+		commandMap.mapEvent(DeckEvent.CANSEL_SPELL_SELECT, CancelSpellSelectCommand, DeckEvent);
 
     }
 }

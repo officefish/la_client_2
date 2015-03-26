@@ -23,8 +23,13 @@ public class SceneEvent extends Event {
 	public static const SCENARIO_END_SELECT_UNIT:String = 'scenarioEndSelectUnit';
 	
 	public static const PASSIVE_ATTACK:String = 'passiveAttack';
+	public static const FREEZE_ATTACK:String = 'freeze'
 	
 	public static const BACK_TOKEN_TO_HAND:String = 'backTokenToHand';
+	public static const REPLACE_CARD_AND_TOKEN:String = 'replaceCardAndToken';
+	public static const ENTICE_UNIT:String = 'enticeUnit';
+	
+	public static const ACTIVATE_WIDGET:String = 'activate_widget';
 
 
     public function SceneEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {

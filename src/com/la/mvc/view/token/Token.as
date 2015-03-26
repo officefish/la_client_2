@@ -3,6 +3,7 @@ package com.la.mvc.view.token
 	
 	import com.la.mvc.view.field.IToken;
 	import com.log.Logger;
+	import flash.events.Event;
 	import flash.text.TextFormatAlign;
 	
 	import com.la.mvc.view.card.Card;
@@ -14,6 +15,7 @@ package com.la.mvc.view.token
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
+	import com.la.event.TokenEvent;
 	/**
 	 * ...
 	 * @author 
@@ -21,7 +23,7 @@ package com.la.mvc.view.token
 	public class Token extends Sprite implements IToken
 	{
 		
-		private static var tokenPreview:Sprite;
+		private static var tokenPreview:Token;
 		public static const WIDTH:int = 60;
 		public static const HEIGHT:int = 80;
 		
@@ -44,6 +46,7 @@ package com.la.mvc.view.token
 		internal var level2:Sprite;
 		internal var level3:Sprite;
 		internal var level4:Sprite;
+		internal var level5:Sprite;
 		
 		private var defaultFormat:TextFormat;
 		private var woundFormat:TextFormat;
@@ -87,11 +90,18 @@ package com.la.mvc.view.token
 		
 		private var _cloneFlag:Boolean = false;
 		
+		private var doubleAttackSprite:Sprite;
+		
+		private var previewFlag:Boolean = false;
+		
 		internal static const TOKEN_FREEZE:int = 1000;
+		
+		private var widget:TokenWidget;
 
 		public static function getTokenPreviewInstance () :Sprite {
 			if (tokenPreview == null) {
 				tokenPreview = new Token (null);
+				tokenPreview.isPreview = true;
 				var tokenContainer:Sprite = tokenPreview as Sprite
 				tokenContainer.graphics.clear ();
 				tokenContainer.graphics.beginFill (0xFF0000, 1);
@@ -103,6 +113,14 @@ package com.la.mvc.view.token
 			}
 			
 			return tokenPreview;
+		}
+		
+		public function set isPreview (value:Boolean) :void {
+			this.previewFlag = value;
+		}
+		
+		public function get isPreview() :Boolean {
+			return previewFlag
 		}
 		
 		public function Token(card:Card, enemy:Boolean = false) 
@@ -127,7 +145,7 @@ package com.la.mvc.view.token
 			shadowFlag = false;
 
             dumbnessAsset = new Sprite();
-            dumbnessAsset.graphics.beginFill (0xDDA0DD, 0.3);
+            dumbnessAsset.graphics.beginFill (0xDDA0DD, 0.5);
             dumbnessAsset.graphics.drawRect (0, 0, 60, 80);
             dumbnessAsset.graphics.endFill ();
             dumbnessAsset.mouseEnabled = false;
@@ -147,7 +165,7 @@ package com.la.mvc.view.token
 			addChild (level4);
 			
 			freezeSprite = new Sprite ();
-			freezeSprite.graphics.beginFill (0x00FFFF, 0.7);
+			freezeSprite.graphics.beginFill (0x56A5EC, 0.7);
 			freezeSprite.graphics.drawRect (0, 0, 60, 80);
 			freezeSprite.graphics.endFill ();
 			freezeSprite.mouseEnabled = false;
@@ -178,7 +196,7 @@ package com.la.mvc.view.token
 			this.cardData = card.getCardData();
 			
 			this.eptitudes = cardData.getEptitudes();
-						
+			
 			defaultFormat = new TextFormat ();
 			defaultFormat.size = 14;
 			defaultFormat.align = TextFormatAlign.CENTER
@@ -235,14 +253,9 @@ package com.la.mvc.view.token
 			provocationSprite.graphics.drawRect (-10, -10, 80, 100);
 			provocationSprite.graphics.endFill ();
 			provocationSprite.mouseEnabled = false;
-			
-			
+						
 			attackCount = 1;
 			_canAttack = false;
-			
-			//addEventListener (MouseEvent.MOUSE_DOWN, onMouseDown);
-			//addEventListener (MouseEvent.MOUSE_OVER, onMouseOver);
-			//addEventListener (MouseEvent.MOUSE_OUT, onMouseOut);
 			
 			_health = cardData.getHealth ();
 			_attack = cardData.getAttack ();
@@ -252,11 +265,41 @@ package com.la.mvc.view.token
 			
 			periodEptitudes = [];
             tempEmptitudes = [];
+			
+			level5 = new Sprite ();
+			level5.mouseEnabled = false;
+			addChild (level5);
+			
+			doubleAttackSprite = new Sprite ();
+			doubleAttackSprite.graphics.beginFill (0xFFFFFF, 1);
+			doubleAttackSprite.graphics.drawRect (0, Token.HEIGHT / 2, Token.WIDTH, 3);
+			doubleAttackSprite.graphics.drawRect (0, Token.HEIGHT / 2 + 6, Token.WIDTH, 3);
+			doubleAttackSprite.graphics.drawRect (0, Token.HEIGHT / 2 + 12, Token.WIDTH, 3);
+			doubleAttackSprite.graphics.endFill();
+
+			if (cardData.widget) {
+				this.widget = new TokenWidget(cardData.widget);
+				addChild(widget);
+				widget.x = (this.width - widget.width) / 2;
+				widget.y = (this.height - widget.height)
+				addChild(widget);
+				widget.addEventListener(TokenWidget.ACTIVATE_COMPLETE, activateComplete);
+			}
 		}
 		
-		public function freeze () :void {
-			this.freezeFlag = true;
-			level4.addChild (freezeSprite);
+		public function activateWidget () :void {
+			if (widget) {
+				widget.activate();
+			}
+		}
+		
+		private function activateComplete (event:Event) :void {
+			dispatchEvent (new TokenEvent(TokenEvent.WIDGET_ACTIVATE_COMPLETE, this));
+		}
+		
+		public function get hasWidget () :Boolean {
+			if (widget) return true;
+			return false;
 		}
 		
 		public function getCardData () :CardData {
@@ -291,7 +334,7 @@ package com.la.mvc.view.token
             shadowFlag = true;
         }
 
-        public function deactivateShadow () :void {
+        public function destroyShadow () :void {
             shadowFlag = false;
             if (level3.contains(shadow)) {
                 level3.removeChild(shadow);
@@ -318,8 +361,8 @@ package com.la.mvc.view.token
         public function hasShield () :Boolean {
             return shieldFlag;
         }
-
-        public function activateShield () :void {
+		
+	    public function activateShield () :void {
             level4.addChild(shield)
             shieldFlag = true;
         }
@@ -345,12 +388,16 @@ package com.la.mvc.view.token
 
         public function activateDoubleAttack () :void {
             attackCount = 2;
+			level5.addChild(doubleAttackSprite);
         }
 
         public function deactivateDoubleAttack () :void {
             if (attackCount > 1) {
                 attackCount = 1;
             }
+			if (level5.contains(doubleAttackSprite)) {
+				level5.removeChild(doubleAttackSprite);
+			}
         }
 
         public function activateSpellUp () :void {
@@ -392,33 +439,14 @@ package com.la.mvc.view.token
 		
 		public function dumbness () :void {
 			    dumbnessFlag = true;
-
-                if (getHealth() > getDefaultHealth()) {
-					setHealth (getDefaultHealth());
-				}
-                setMaxHealth(getDefaultHealth())
-
-				if (getTotalAttack() > getDefaultAttack()) {
-					setAttack (getDefaultAttack());
-				}
-
-
-                deactivateProvocation();
-                deactivateShadow();
-				deactivateDoubleAttack();
-                destroyShield();
-
-                if (getDefaultAttack() > 0 && attackCount > 0) {
-                    canAttack = true;
-                }
-
-                deactivateFreeze();
-                deactivateSpellInvisible();
-                deactivateSpellUp()
-
-
-                level3.addChild(dumbnessAsset)
+				level3.addChild(dumbnessAsset)
 				eptitudes = []
+				if (widget) {
+					if (contains(widget)) {
+						removeChild(widget);
+					}
+					widget.removeEventListener(TokenWidget.ACTIVATE_COMPLETE, activateComplete);
+				}
         }
 		
 	    public function set canAttack (bool:Boolean) :void {
@@ -440,16 +468,10 @@ package com.la.mvc.view.token
 		public function getPosition () :Point {
 			return new Point (this.x, this.y);
 		}
-		
-
-		
-		
-		
+	
 		public function getShirt () :Sprite {
 			return card.getShirt ();
 		}
-		
-		
 
 		public function setMaxHealth (value:int) :void {
 			_maxHealth = value;
@@ -506,33 +528,49 @@ package com.la.mvc.view.token
         public function getHealth () :int {
             return _health;
         }
-
-
-
-        public function setHealth (value:int):void {
-            _health = value;
+		
+		public function setHealth (value:int):void {
+            if (value == _health) {
+				return;
+			}
+			_health = value;
             var finalHealth:int = _health + _healthBob;
             //Logger.log (finalHealth.toString())
-            if (finalHealth > getMaxHealth()) {
-                healthLabel.defaultTextFormat = bonusFormat;
-            }
-            else if (finalHealth == getMaxHealth()) {
-				healthLabel.defaultTextFormat = defaultFormat;
-			} else {
-				healthLabel.defaultTextFormat = woundFormat;
+            if (_health > _defaultHealth) {
+                if (_health < _maxHealth) {
+					healthLabel.defaultTextFormat = woundFormat;
+				} else {
+					healthLabel.defaultTextFormat = bonusFormat;
+				}
+				
+            } else {
+				if (_health < _maxHealth) {
+					healthLabel.defaultTextFormat = woundFormat;
+				} else if (_health == _maxHealth) {
+					healthLabel.defaultTextFormat = defaultFormat;
+				} else {
+					healthLabel.defaultTextFormat = woundFormat;
+				}
 			}
+           
 			if (finalHealth < 0) finalHealth = 0;
+			if (_health > _maxHealth) {
+				_maxHealth = _health;
+			}
 			healthLabel.text = "" + finalHealth;
 		}
 		
 		public function setAttack (value:int):void {
 			_attack = value;
             var finalAttack:int = _attack + _attackBod;
-            if (_attackBod > 0) {
+            if (_attack > _defaultAttack) {
                 attackLabel.defaultTextFormat = bonusFormat;
             } else {
                 attackLabel.defaultTextFormat = defaultFormat;
             }
+			if (_attackBod > 0) {
+				attackLabel.defaultTextFormat = bonusFormat;
+			}
 			attackLabel.text = "" + finalAttack;
 		}
 		
@@ -601,6 +639,20 @@ package com.la.mvc.view.token
 			tokenCopy.setAttackBob(getAttackBob());
 			tokenCopy.setAttack (getAttack());
 			tokenCopy.cloneFlag = true;
+			if (hasShield()) {
+				tokenCopy.activateShield();
+			}
+			if (isProvocator()) {
+				tokenCopy.activateProvocation();
+			}
+			
+			if (isDumbness()) {
+				tokenCopy.dumbness();
+			}
+			
+			if (isFreeze()) {
+				tokenCopy.activateFreeze();
+			}
 			return tokenCopy;
 		}
 		

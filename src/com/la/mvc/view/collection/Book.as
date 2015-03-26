@@ -13,11 +13,11 @@ package com.la.mvc.view.collection
 		
 		private var title:String;
 		private var description:String;
-		private var cards:Array;
+		protected var cards:Array;
 		private var pages:Array;
 		private var actualPage:BookPage;
 		
-		private var _cardsList:Object;
+		protected var _cardsList:Object;
 		
 		public function Book(bookData:BookData) 
 		{
@@ -47,7 +47,7 @@ package com.la.mvc.view.collection
             actualPage = pages[0];
 		}
 		
-		private function getCards (items:Array) :Array {
+		protected function getCards (items:Array) :Array {
 			var card:CollectionCard;
 			var cardData:CollectionCardData;
 			var _cards:Array = []

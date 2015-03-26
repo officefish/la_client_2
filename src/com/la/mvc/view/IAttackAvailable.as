@@ -14,6 +14,7 @@ public interface IAttackAvailable extends IEventDispatcher {
 	
 	function setHealth (value:int) :void;
 	function getHealth () :int;
+	function getDefaultHealth() :int;
 	function setAttack (value:int) :void;
 	function getAttack () :int;
 	function setMaxHealth (value:int):void;
@@ -23,6 +24,26 @@ public interface IAttackAvailable extends IEventDispatcher {
     function setAttackBob (value:int) :void 
 	
 	function treatment (value:int) :void;
+	
+	function activateShield() :void;
+	function destroyShield ():void; 
+	
+	function activateShadow() :void;
+	function destroyShadow() :void;
+	
+	function activateDoubleAttack()  :void;
+	function deactivateDoubleAttack() :void;
+	
+	function dumbness () :void;
+	
+	function set canAttack (value:Boolean) :void;
+	function get canAttack () :Boolean;
+	
+	function activateProvocation () :void;
+	function deactivateProvocation () :void;
+	
+	function activateFreeze () :void;
+	function deactivateFreeze() :void;
 
 }
 }

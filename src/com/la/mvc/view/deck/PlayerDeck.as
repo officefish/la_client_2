@@ -2,11 +2,13 @@
  * Created by root on 10/25/14.
  */
 package com.la.mvc.view.deck {
+import adobe.utils.ProductManager;
 import com.greensock.TimelineLite;
 import com.greensock.easing.Expo;
 import com.la.event.ConsoleEvent;
 import com.la.event.DeckEvent;
 import com.la.event.ScenarioEvent;
+import com.la.mvc.model.CardType;
 import com.la.mvc.view.card.Card;
 import com.la.mvc.view.card.CardSensor;
 import com.la.mvc.model.CardData;
@@ -17,6 +19,7 @@ import flash.events.MouseEvent;
 import flash.filters.GlowFilter;
 import flash.geom.Point;
 import com.demonsters.debugger.MonsterDebugger;
+
 
 public class PlayerDeck extends Deck {
 
@@ -96,12 +99,44 @@ public class PlayerDeck extends Deck {
 
 
         }
-
-        private function onAddCardComplete (card:Card) :void {
+		
+		private function onAddCardComplete (card:Card) :void {
             scene.endPlaceCard();
             card.visible = true;
 			dispatchEvent(new ScenarioEvent(ScenarioEvent.ACTION));
         }
+		
+		public function changeCard (card:Card, cardData:CardData) :Card {
+						
+			var newCard:Card = new Card (cardData);
+			var position:Point = new Point (card.x, card.y);
+			
+			var index:int = cardsStack.getChildIndex (card);
+			var sensor:CardSensor = card.getSensor();
+            sensor.removeEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver)
+            sensor.removeEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
+            sensor.removeEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
+            sensor.removeEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
+            sensorStack.removeChild (sensor);
+			cardsStack.removeChildAt (index);
+			
+            cardsStack.addChildAt (newCard, index);
+			sensor = newCard.getSensor();
+            sensor.addEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver);
+            sensor.addEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
+            sensor.addEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
+            sensor.addEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
+			sensorStack.addChildAt (sensor, index);
+			
+			newCard.x = sensor.x = position.x;
+			newCard.y = sensor.y = position.y;
+			
+			return newCard;
+			
+			
+		
+
+		}
 
         private function sortCollodion () :void {
             var centerX:int = stageWidth / 2;
@@ -177,6 +212,10 @@ public class PlayerDeck extends Deck {
 			tokenLimitFlag = false;
 		}
 	}
+	
+	public function getTokenLimitFlag () :Boolean {
+		return tokenLimitFlag;
+	}
 
     private function onCardMouseOver (event:MouseEvent) :void {
 
@@ -233,20 +272,49 @@ public class PlayerDeck extends Deck {
         dragMode = true;
         mirror.startDrag ();
 
-        //if (actualCard.getType() == CardData.UNIT) {
-            dispatchEvent(new DeckEvent(DeckEvent.FIND_POSITION, {}));
-        //}
-
-
-        stage.addEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
+		stage.addEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
+		if (actualCard.getType() ==  CardType.SPELL_TO_TARGET) {
+			stage.addEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
+		}
+		if (actualCard.getType() == CardType.UNIT) {
+			dispatchEvent(new DeckEvent(DeckEvent.FIND_POSITION, {}));
+		}
+        
     }
+	
+	private function onMouseMove (event:MouseEvent) :void {
+				
+		if (mouseY < playDistance) {
+			stage.removeEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
+			stage.removeEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
+			mirror.visible = false;
+			dispatchEvent (new DeckEvent (DeckEvent.SPELL_SELECT, {playDistance:playDistance}))
+		}
+	}
+	
+	public function cancelSpellSelect (mouseX:int, mouseY:int) :void {
+		mirror.x = mouseX - (mirror.width / 2);
+		mirror.y = mouseY - (mirror.height / 2);
+		mirror.visible = true;
+		stage.addEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
+		stage.addEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
+	}
 
     private function onMirrowCardUp (event:MouseEvent) :void {
 
 		mirror.stopDrag();
-        //if (actualCard.getType() == CardData.UNIT) {
+		
+		if (actualCard.getType() ==  CardType.SPELL_TO_TARGET) {
+			stage.removeEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
+			stage.removeEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp); 
+			skipPlaingCard ();
+			 return;
+		}
+				
+        if (actualCard.getType() == CardType.UNIT) {
             dispatchEvent(new DeckEvent(DeckEvent.STOP_FIND_POSITION, {}));
-        //}
+        }
+	
 
 
         stage.removeEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
@@ -275,6 +343,28 @@ public class PlayerDeck extends Deck {
         }
 
     }
+	
+	public function destroyActualCard () :void {
+		var sensor:CardSensor = actualCard.getSensor();
+        sensor.removeEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver)
+        sensor.removeEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
+        sensor.removeEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
+        sensor.removeEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
+        sensorStack.removeChild (sensor);
+		
+		if (mirror.parent) {
+			mirror.parent.removeChild(mirror);
+		}
+		mirror.visible = true;
+		cardsStack.removeChild (actualCard);
+        actualCard.filters = null;
+		stopGlowCards ();
+	}
+	
+	public function getActualCardIndex () :int {
+		var cardIndex:int = cardsStack.getChildIndex(actualCard);
+		return cardIndex;
+	}
 	
 	public function getActualCard () :Card {
 		return actualCard;
@@ -309,6 +399,12 @@ public class PlayerDeck extends Deck {
 	public function getLastCard () :Card {
 		return cardsStack.getChildAt (cardsStack.numChildren - 1) as Card;
 	}
+	
+	public function getCardByIndex (index:int) :Card {
+		return cardsStack.getChildAt (index) as Card;
+	}
+	
+	
 	public function glowCard (card:Card) :void {
 		 card.filters = [new GlowFilter(0x00FFFF)]
 	}

@@ -31,6 +31,63 @@ package com.la.mvc.service
 			trace("error occured with " + event.target + ": " + event.text);
 		}
 		
+		public function destroyCard(userId:int, cardId:int, goldenFlag:Boolean) :void {
+			var golden:int = 0
+			if (goldenFlag) {
+				golden = 1;
+			}
+			var url:String = 'http://127.0.0.1:8000/api/destroy_card/?user_id=' + userId + '&card_id=' + cardId + '&golden=' + golden;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDestroyCard, onError:errorHandler});
+			loader.load()
+		}
+		
+		private function onCompleteDestroyCard (event:LoaderEvent) :void {
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			var serviceData:Object = { }
+			serviceData['count'] = response.count;
+			serviceData['dust'] = response.dust;
+			if (response.success) {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.CARD_DESTROYED, serviceData));
+			}
+		}
+		
+		public function craftCard (userId:int, cardId:int, goldenFlag:Boolean) :void {
+			var golden:int = 0
+			if (goldenFlag) {
+				golden = 1;
+			}
+			var url:String = 'http://127.0.0.1:8000/api/craft_card/?user_id=' + userId + '&card_id=' + cardId + '&golden=' + golden;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftCard, onError:errorHandler});
+			loader.load()
+		}
+		
+		private function onCompleteCraftCard (event:LoaderEvent) :void {
+			trace ('onCompleteCraftCard');
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			var serviceData:Object = { }
+			//trace ('golden:' + response.golden);
+			serviceData['count'] = response.count;
+			serviceData['dust'] = response.dust;
+			if (response.success) {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.CARD_CREATED, serviceData));
+			}
+			
+			
+		}
+		
+		public function fullCollection (userId:int) :void {
+			var url:String = 'http://127.0.0.1:8000/api/get_full_collection/?user_id=' + userId;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteFullCollection, onError:errorHandler});
+			loader.load()
+		}
+		
+		private function onCompleteFullCollection (event:LoaderEvent) :void {
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			var serviceData:Object = parseCollection(event.target.content);
+			serviceData['dust'] = response.dust;
+			dispatch (new ApiServiceEvent (ApiServiceEvent.FULL_COLLECTION_INIT, serviceData));
+		}
+		
 		public function requestIntroSelectDeck (userId:int, deckId:int, heroId:int) :void {
 			var url:String = 'http://127.0.0.1:8000/api/select_deck/?user_id=' + userId + '&deck_id=' + deckId + '&hero_id=' + heroId;
 			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteIntroSelectDeck, onError:errorHandler});
@@ -48,12 +105,18 @@ package com.la.mvc.service
 		}
 		
 		public function requestDeckList (playerId:int) :void {
+			
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
+			
 			var url:String = 'http://127.0.0.1:8000/api/get_deck_list/?user_id=' + playerId;
 			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDeckList, onError:errorHandler});
 			loader.load();
 		}
 		
 		private function onCompleteDeckList (event:LoaderEvent) :void {
+			
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}));
+			
 			var serviceData:Object = parseDeckList(event.target.content);
 			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
 			serviceData['actual_deck'] = int(response.actual_deck);
@@ -98,6 +161,7 @@ package com.la.mvc.service
 		}
 		
 		public function saveDeck (userId:int, deckId:int, deckTitle:String, items:Array) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
 			var data:Object = { }
 			data['deckId'] = deckId;
 			data['deckTitle'] = deckTitle;
@@ -118,6 +182,7 @@ package com.la.mvc.service
 		}
 		
 		private function onCompleteSaveDeck (event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}))
 			var serviceData:Object = parseCollection(event.target.content);
 			var decks:Array = getDecks (event.target.content);
 			serviceData['decks'] = decks;
@@ -159,6 +224,7 @@ package com.la.mvc.service
 		}
 		
 		public function requestCollection (userId:int) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
 			var url:String = 'http://127.0.0.1:8000/api/get_collection/?user_id=' + userId;
 			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:completeRequestCollection, onError:errorHandler});
 			loader.load();
@@ -180,6 +246,7 @@ package com.la.mvc.service
 		}
 		
 		private function completeRequestCollection (event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}))
 			var serviceData:Object = parseCollection(event.target.content);
 			var decks:Array = getDecks (event.target.content);
 			serviceData['decks'] = decks;
@@ -306,6 +373,44 @@ package com.la.mvc.service
 				item.setGolden (cardData.golden);
 				item.setCount (cardData.count);
 				item.setId (cardData.id)
+				
+				// craft variables
+				
+				if (cardData.buy_cost) {
+					item.setBuyCost (cardData.buy_cost); 
+				}
+				if (cardData.sale_cost) {
+					item.setSaleCost (cardData.sale_cost); 
+				}
+				if (cardData.rarity) {
+					item.setRarity (cardData.rarity); 
+				}
+				if (cardData.access_simple) {
+					item.setAccessSimple (cardData.access_simple); 
+				}
+				if (cardData.max_simple) {
+					item.setMaxSimple (cardData.max_simple); 
+				}
+				if (cardData.access_golden) {
+					item.setAccessGolden (cardData.access_golden); 
+				}
+				if (cardData.max_golden) {
+					item.setMaxGolden (cardData.max_golden); 
+				}
+				if (cardData.craft_available) {
+					
+					item.setCraftAvailable (cardData.craft_available); 
+				}
+				if (cardData.simple_count) {
+					item.setSimpleCount (cardData.simple_count); 
+					item.setGolden (false);
+				}
+				if (cardData.golden_count) {
+					item.setGoldenCount (cardData.golden_count); 
+					item.setGolden (true);
+				}
+				
+				trace (cardData.title + ':' + cardData.simple_count + ',' + cardData.golden_count);
 				data.addItem (item);
 			}
 		}

@@ -16,8 +16,6 @@ public class OpponentPreflopClickCommand extends Command {
     public var event:MatchServiceEvent;
 
     override public function execute():void {
-        trace(event.getData().index);
-        trace(event.getData().select);
         enemyDeck.click (event.getData().index, event.getData().select);
     }
 }

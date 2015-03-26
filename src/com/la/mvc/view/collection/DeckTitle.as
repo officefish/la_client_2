@@ -12,9 +12,9 @@ package com.la.mvc.view.collection
 	public class DeckTitle extends Sprite 
 	{
 		
-		private var label:TextField;
+		private var _label:TextField;
 		
-		public function DeckTitle() 
+		public function DeckTitle(label:String = 'Мои колоды') 
 		{
 			graphics.beginFill (0x222222);
 			graphics.drawRect (0, 0, 180, 50);
@@ -26,14 +26,14 @@ package com.la.mvc.view.collection
 			format.size = 14;
 			format.bold = true;
 			
-			label = new TextField ();
-			label.defaultTextFormat = format;
-			label.width = this.width;
-			label.mouseEnabled = false;
-			label.y = 15;
-			label.height = 20;
-			label.text = 'Мои колоды';
-			addChild(label)
+			_label = new TextField ();
+			_label.defaultTextFormat = format;
+			_label.width = this.width;
+			_label.mouseEnabled = false;
+			_label.y = 15;
+			_label.height = 20;
+			_label.text = label
+			addChild(_label)
 		}
 		
 	}

@@ -14,7 +14,6 @@ public class ResponsePreflopInitCommand extends Command {
     public var service:MatchService;
 
     override public function execute():void {
-        trace('responsePreflopInitCommand')
         service.sendMessage('end_change_preflop', {});
     }
 }

@@ -51,7 +51,12 @@ public interface IField extends IEventDispatcher{
 	function blur () :void;
 	function stopBlur(): void;
 	
-	function addToken (attachment:Boolean, cardData:CardData, position:int) :void 
+	function addToken (attachment:Boolean, cardData:CardData, position:int) :void;
+	function changeToken (token:IToken, cardData:CardData) :IToken;
+	
+	function placePreviewToOpponentRow (token:DisplayObject) :Point;
+	function sortAndCenter(row:UnitRow):void;
+	function placeTokenToActualRow (token:DisplayObject):void;
 
 
 

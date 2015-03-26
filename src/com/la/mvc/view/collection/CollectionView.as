@@ -3,6 +3,7 @@ package com.la.mvc.view.collection
 	import com.la.mvc.model.CollectionCardData;
 	import com.la.mvc.model.DeckData;
 	import com.la.mvc.model.HeroData;
+	import com.la.mvc.view.ui.SmallButton;
 	import flash.display.Sprite;
 	import com.greensock.easing.Expo;
 	import com.greensock.TweenLite;
@@ -24,6 +25,7 @@ package com.la.mvc.view.collection
 	{
 		public static const INTRO:int = 0;
 		public static const EDIT:int = 1;
+		public static const CRAFT:int = 2;
 		
 		private var books:Array;
 		private var decksContainer:DecksContainer;
@@ -52,6 +54,12 @@ package com.la.mvc.view.collection
 		private var resetButton:CountBarButton;
 		
 		private var deckId:int;
+		
+		private var createCardsButton:SmallButton;
+		
+		private var craftWidget:CraftBar;
+		
+		private var dust:int;
 
 				
 		public function CollectionView() 
@@ -88,12 +96,20 @@ package com.la.mvc.view.collection
 			resetButton.y = 7;
 			resetButton.addEventListener (MouseEvent.CLICK, onResetClick);
 			
-			
+			createCardsButton = new SmallButton('Создание карт', 100, 35);
+			createCardsButton.addEventListener (MouseEvent.CLICK, onCreateCardsClick);
+			createCardsButton.x = 513;
+			createCardsButton.y = 7;
+						
 			heroTitle = new HeroTitle();
 			heroTitle.x = 620;
 			deckItemsContainer = new DeckItemsContainer ();
 			deckItemsContainer.x = 620;
 			deckItemsContainer.y = heroTitle.height;
+			
+			craftWidget = new CraftBar ();
+			craftWidget.x = 620;
+			craftWidget.getReadyButton().addEventListener (MouseEvent.CLICK, onCraftReadyClick);
 			
 		
 		}
@@ -107,9 +123,17 @@ package com.la.mvc.view.collection
 			heroTitle.setHero (heroData);
 		}
 		
+		private function onCraftReadyClick (event:MouseEvent) :void {
+			parent.dispatchEvent (new CollectionEvent (CollectionEvent.CRAFT_READY));
+		}
+		
 		private function onResetClick (event:MouseEvent) :void {
 			deckItemsContainer.defaultStack();
 			parent.dispatchEvent (new CollectionEvent (CollectionEvent.RESET_DECK));
+		}
+		
+		private function onCreateCardsClick (event:MouseEvent) :void {
+			parent.dispatchEvent (new CollectionEvent (CollectionEvent.CREATE_CARDS));
 		}
 		
 		private function onClose(event:MouseEvent) :void {
@@ -141,7 +165,18 @@ package com.la.mvc.view.collection
 					deckItemsContainer.addDeckItem (cardData);
 					countBar.setCount (deckItemsContainer.getCount());
 					card = getCardById (cardData.getId())
-					card.decrement();
+					
+					try 
+					{ 
+						// some code that could throw an error 
+						card.decrement();
+					} 
+					catch (err:Error) 
+					{ 
+						trace ('problem with card:' + cardData.getTitle() + ', (id:' + cardData.getId()+')');
+						// code to react to the error 
+					} 
+					
 				}
 			}
 		}
@@ -159,28 +194,55 @@ package com.la.mvc.view.collection
 			addChild (booksStack);
 			addChild (leftSencor);
 			addChild (rightSencor);
-			
+						
+			cards = {};
 			
 			if (state == INTRO) {
 				addChild (decksContainer);
 				countBar.setMode (0);
-				//addChild (closeButton);
-				
+				addChild (createCardsButton);
+				addChild (countBar);
+				books = createBooks (booksData);
+
 			} else if (state == EDIT) {
 				countBar.setMode (1);
 				countBar.setCount (0);
 				addChild (deckItemsContainer);
 				addChild (heroTitle);
 				addChild (resetButton);
-				
+				addChild (countBar);
+				books = createBooks (booksData);
+			
+			} else if (state == CRAFT) {
+				addChild (craftWidget);
+				craftWidget.setDust (dust);
+				books = createCraftBooks (booksData);
 			}
 			
-			addChild (countBar);
 			
 			
-			books = [];
-			cards = { };
 			
+			
+			
+			
+			toolbar = new BooksToolbar (booksData.length);
+			toolbar.y = 10;
+			toolbar.x = 20;
+			toolbar.addEventListener (ToolbarButtonEvent.CLICK, onToolbarClick)
+			addChild (toolbar);
+			toolbar.activate (0);
+			
+			if (books[1]) {
+				var book:Book = books[0] as Book;
+				booksStack.addChild (book.getActualPage());
+			}
+			
+			pageIndex = 0;
+			bookIndex = 0;
+		}
+		
+		private function createBooks (booksData:Array) :Array {
+			var books:Array = [];
 			var bookData:BookData;
 			var book:Book;
 			var bookCards:Object;
@@ -191,21 +253,36 @@ package com.la.mvc.view.collection
 				addCards (cards, bookCards);
 				books.push(book);
 			}
-			
-			toolbar = new BooksToolbar (booksData.length);
-			toolbar.y = 10;
-			toolbar.x = 20;
-			toolbar.addEventListener (ToolbarButtonEvent.CLICK, onToolbarClick)
-			addChild (toolbar);
-			toolbar.activate (0);
-			
-			if (books[1]) {
-				book = books[0] as Book;
-				booksStack.addChild (book.getActualPage());
+			return books;
+		}
+		
+		public function setDust (value:int) :void {
+			dust = value;
+			craftWidget.setDust (dust);
+		}
+		
+		
+		private function createCraftBooks (booksData:Array) :Array {
+		var books:Array = [];
+			var bookData:BookData;
+			var book:Book;
+			var bookCards:Object;
+			for (var i:int = 0; i < booksData.length; i ++) {
+				bookData = booksData[i] as BookData;
+				book = new CraftBook (bookData, dust);
+				bookCards = book.getCardsList();
+				addCards (cards, bookCards);
+				books.push(book);
 			}
-			
-			pageIndex = 0;
-			bookIndex = 0;
+			return books;
+		}
+		
+		public function restateCards () :void {
+			var book:CraftBook;
+			for (var i:int = 0; i < books.length; i ++) {
+				book = books[i];
+				book.restateCards (dust);
+			}
 		}
 		
 		private function addCards (list:Object, cardsList:Object) :void {
@@ -330,6 +407,10 @@ package com.la.mvc.view.collection
 		
 		public function setState (value:int) :void {
 			this.state = value;
+		}
+		
+		public function getState () :int {
+			return state;
 		}
 		
 		public function addDeckItem (data:CollectionCardData) :void {

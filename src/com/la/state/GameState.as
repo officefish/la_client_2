@@ -25,6 +25,8 @@ public class GameState extends UintEnumeration {
 	public static const COLLECTION_PREVIEW:GameState    =  new GameState(16);
 	public static const EDIT_DECK:GameState             =  new GameState(17);
 	public static const CLOSE_MATCH_INTRO:GameState     =  new GameState(18); 
+	public static const CRAFT_COLLECTION:GameState      =  new GameState(19);
+	public static const SPELL_SELECT:GameState			=  new GameState(20);
 
 
 

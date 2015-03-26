@@ -20,6 +20,7 @@ public class PlayerDeckMediator extends Mediator {
         eventMap.mapListener(playerDeck, DeckEvent.FIND_POSITION, listener);
         eventMap.mapListener(playerDeck, DeckEvent.STOP_FIND_POSITION, listener);
         eventMap.mapListener(playerDeck, DeckEvent.PLAYER_CARD_PLAY, listener);
+		eventMap.mapListener(playerDeck, DeckEvent.SPELL_SELECT, listener);
 		
 		eventMap.mapListener(playerDeck, ConsoleEvent.DEBUG, debug);
 		eventMap.mapListener(playerDeck, ScenarioEvent.ACTION, scenario);

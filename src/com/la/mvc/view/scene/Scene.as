@@ -53,6 +53,8 @@ public class Scene extends Sprite implements IScene{
 	private var previewContainer:Sprite;
 
 	private var stepTimer:StepTimerWidget;
+	
+	private var blockSprite:Sprite;
 
     public function Scene() {
 		this.placeCardLevel = new Sprite();
@@ -86,6 +88,8 @@ public class Scene extends Sprite implements IScene{
 		addChild(previewContainer);
 		
 		this.mouseEnabled = false;
+		
+		
 		
 		
     }
@@ -330,6 +334,10 @@ public class Scene extends Sprite implements IScene{
 		dispatchEvent (new SceneEvent(SceneEvent.WARNING_CONFIRM, {}));
 	}
 	
+	public function stopWarning() :void {
+		while (preflopContainer.numChildren) preflopContainer.removeChildAt(0);
+	}
+	
 	private function onCancel () :void {
 		clearPreflop();
 		dispatchEvent (new SceneEvent(SceneEvent.WARNING_CANCEL, {}));
@@ -396,7 +404,10 @@ public class Scene extends Sprite implements IScene{
     }
 
     public function darken () :void {
-        if (!contains(darkenSprite)) {
+		
+		TweenLite.killTweensOf(darkenSprite);
+		
+		if (!contains(darkenSprite)) {
 			addChildAt(darkenSprite, 1);
 		}
 		darkenSprite.alpha = 1;
@@ -504,6 +515,23 @@ public class Scene extends Sprite implements IScene{
 		while (trajectoryLevel.numChildren) trajectoryLevel.removeChildAt(0);
 	}
 
+	public function block() :void {
+		if (!blockSprite) {
+			blockSprite = new Sprite();
+		}
+		blockSprite.graphics.beginFill(0x222222, 0.1);
+		blockSprite.graphics.drawRect (0, 0, stageWidth, stageHeight);
+		blockSprite.graphics.endFill();
+		addChild(blockSprite);
+	}
+	
+	public function stopBlock () :void {
+		if (blockSprite) {
+			if (contains(blockSprite)) {
+				removeChild (blockSprite);
+			}
+		}
+	}
 
 
 

@@ -172,6 +172,22 @@ import ru.flasher.utils.StringUtil
 		public function getPrice () :int {
 			return price;
 		}
+		
+		public function setPrice (value:int) :void {
+			price = value;
+			if (price > defaultPrice) {
+				mirrorPriceLabel.defaultTextFormat = CardFormater.mirrorExpensiveFormat
+                priceLabel.defaultTextFormat = CardFormater.expensiveFormat;
+			} else if (price == defaultPrice) {
+				mirrorPriceLabel.defaultTextFormat = CardFormater.mirrorFormat;
+                priceLabel.defaultTextFormat = CardFormater.labelFormat;
+			} else {
+				mirrorPriceLabel.defaultTextFormat = CardFormater.mirrorSaleFormat;
+                priceLabel.defaultTextFormat = CardFormater.saleFormat;
+			}
+			mirrorPriceLabel.text = '' + price;
+            priceLabel.text = '' + price;
+		}
 
         public function addSale (value:int) :void {
             price -= value;

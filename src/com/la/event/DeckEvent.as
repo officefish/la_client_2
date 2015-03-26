@@ -18,6 +18,10 @@ public class DeckEvent extends Event {
     public static const PLAYER_CARD_PLAY:String = 'player__CardPlay';
 	public static const SELECT_DECK:String = 'selectDeck';
 	public static const INTRO_EDIT_CLICK:String = 'introEditClick';
+	
+	public static const SPELL_SELECT:String = 'spellSelect';
+	public static const END_SPELL_SELECT:String = 'spellEndSelect';
+	public static const CANSEL_SPELL_SELECT:String = 'cancelSpellSelect';
 
     private var _data:Object;
 

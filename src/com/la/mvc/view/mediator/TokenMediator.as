@@ -52,11 +52,13 @@ package com.la.mvc.view.mediator
 		
 		private function onMouseOver (event:MouseEvent) :void {
 			if (token.cloneFlag) return;
+			if (token.isPreview) return;
 			dispatch (new TokenEvent (TokenEvent.PREVIEW, token));
 		}
 		
 		private function onMouseOut (event:MouseEvent) :void {
 			if (token.cloneFlag) return;
+			if (token.isPreview) return;
 			scene.endPreview(); 
 			if (model.previewTimer) {
 				model.previewTimer.removeEventListener (TimerEvent.TIMER_COMPLETE, model.timerCallback);

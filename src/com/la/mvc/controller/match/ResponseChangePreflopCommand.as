@@ -17,10 +17,7 @@ public class ResponseChangePreflopCommand extends Command {
     public var service:MatchService;
 
     override public function execute():void {
-
-        trace('responseChangePreflopCommand')
         var replacement:Array = event.data.replacement;
-
         service.sendMessage('change_preflop', {'preflop':replacement});
     }
 }

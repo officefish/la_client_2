@@ -70,6 +70,10 @@ package com.la.mvc.view.collection
 			collectionView.setState (value);
 		}
 		
+		public function getState () :int {
+			return collectionView.getState();
+		}
+		
 		public function initHero (heroData:HeroData) :void {
 			collectionView.initHero (heroData) 
 		}
@@ -100,6 +104,14 @@ package com.la.mvc.view.collection
 		
 		public function initDeck (deckData:DeckData) :void {
 			collectionView.initDeck (deckData);
+		}
+		
+		public function setDust (value:int) :void {
+			collectionView.setDust (value);
+		}
+		
+		public function restateCards () :void {
+			collectionView.restateCards();
 		}
 
 
