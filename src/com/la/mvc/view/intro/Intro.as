@@ -20,13 +20,14 @@ package com.la.mvc.view.intro
 			//graphics.endFill();
 			//addEventListener (MouseEvent.CLICK, onClick);
 			
-			menu = new IntroMenu (['В бой', 'Коллекция']);
+			menu = new IntroMenu (['В бой', 'Коллекция', 'Герои']);
 			menu.addEventListener (MouseEvent.CLICK, onClick, true);
 			addChild (menu);
 			
 		}
 		
 		private function onClick (event:MouseEvent) :void {
+			trace('onClick');
 			switch (event.target.parent.getChildIndex(event.target)) {
 				case 0: {
 					dispatchEvent(new IntroEvent(IntroEvent.SELECT_GAME)); 
@@ -34,6 +35,10 @@ package com.la.mvc.view.intro
 				}
 				case 1: {
 					dispatchEvent(new IntroEvent(IntroEvent.SELECT_COLLECTION)); 
+					break;
+				}
+				case 2: {
+					dispatchEvent(new IntroEvent(IntroEvent.SELECT_HEROES)); 
 					break;
 				}
 			}

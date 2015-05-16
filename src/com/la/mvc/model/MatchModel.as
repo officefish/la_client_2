@@ -33,6 +33,8 @@ public class MatchModel extends Actor {
 	
 	private var _previewTimer:Timer;
 	private var _timerCallback:Function;
+	
+	private var _spellMixin:int = 0;
 
     public function MatchModel() {
     }
@@ -97,6 +99,10 @@ public class MatchModel extends Actor {
 		this.scenario = scenario;
 	}
 	
+	public function clear () :void {
+		this.scenario = [];
+	}
+	
 	public function concatScenario (scenario:Array) :void {
 		this.scenario = this.scenario.concat(scenario);
 	}
@@ -158,6 +164,13 @@ public class MatchModel extends Actor {
 	
 	public function get timerCallback () :Function {
 		return _timerCallback;
+	}
+	
+	public function setSpellMixin (value:int) :void {
+		this._spellMixin = value;
+	}
+	public function getSpellMixin () :int {
+		return _spellMixin;
 	}
 
 }

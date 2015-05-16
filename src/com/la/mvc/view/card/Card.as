@@ -1,6 +1,8 @@
 package com.la.mvc.view.card
 {
 
+import com.adobe.utils.IntUtil;
+import com.la.mvc.model.CardEptitude;
 import com.log.Logger;
 import com.la.mvc.model.CardData;
 
@@ -29,6 +31,9 @@ import ru.flasher.utils.StringUtil
 	 
 	public class Card extends Sprite
 	{
+		
+		public static const DEFAULT_GLOW_COLOR:int = 0x00FFFF;
+		public static const SERIES_GLOW_COLOR:int = 0xFFFF00;
 		
 		private var mirror:Sprite
 		private var cardSensor:CardSensor;
@@ -66,6 +71,11 @@ import ru.flasher.utils.StringUtil
         private var mirrorPriceFormat:TextFormat;
         private var mirrorSaleFormat:TextFormat;
         private var mirrorExpensiveFormat:TextFormat;
+		
+		private var _severalTargetsEptitudeFlag:Boolean = false;
+		private var _seriesFlag:Boolean = false;
+		
+		private var glowColor:int = 0x00FFFF;
 	
 		public function Card(cardData:CardData) {
             this.cardData = cardData;
@@ -74,8 +84,43 @@ import ru.flasher.utils.StringUtil
 
             formatCard();
             formatMirror();
-            formatShirt();
+           	formatShirt();
+			
+			// уточняем есть ли у карты способность пассивной аттаки по нескольким существам.
+			validateSeveralTargetsEptitude();
+			
+			//уточняем есть ли у карты способности которые улучшаются при серии приемов
+			validateDrawingSeries();
         }
+		
+		public function get hasSeveralTargetsEptitude() :Boolean {
+			return _severalTargetsEptitudeFlag;
+		}
+		
+		private function validateSeveralTargetsEptitude () :void {
+			
+			for (var i:int = 0; i < cardData.getEptitudes().length; i ++) {
+				var eptitude:CardEptitude = cardData.getEptitudes()[i] as CardEptitude;
+				if (eptitude.getType() == 69) {
+					_severalTargetsEptitudeFlag = true;
+					return;
+				}
+			}
+		}
+		
+		private function validateDrawingSeries () :void {
+			for (var i:int = 0; i < cardData.getEptitudes().length; i ++) {
+				var eptitude:CardEptitude = cardData.getEptitudes()[i] as CardEptitude;
+				if (eptitude.getCondition() == 17) {
+					_seriesFlag = true;
+					return;
+				}
+			}
+		}
+		
+		public function get hasSeriesCondition () :Boolean {
+			return _seriesFlag;
+		}
 
         private function formatCard () :void {
             CardFormater.drawBody(this, getType(), CARD_WIDTH, CARD_HEIGHT);
@@ -162,6 +207,37 @@ import ru.flasher.utils.StringUtil
             smallShirt = new Sprite ();
             CardFormater.drawSmallShirt(smallShirt);
         }
+		
+		public function setSpellMixin (value:int) :void {
+			var list:Array = cardData.getDescription().split('&')
+			if (list.length > 1) {
+				var str:String = '' 
+
+				for (var i:int = 0; i < list.length; i ++) {
+					if (isEven(i)) {
+						str = str.concat(int(list[i]) + value)
+					} else {
+						str = str.concat(list[i])
+					}
+				}
+				mirrorDescriptionLabel.text = str;
+
+			}
+			
+		}
+		
+		private function isEven(value:int):Boolean
+		{
+			//check if the number is odd or even
+			if (value % 2 == 0)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
 
 
 
@@ -282,6 +358,21 @@ import ru.flasher.utils.StringUtil
         public function stopGlowMirror () :void {
             getMirror().filters = [];
         }
+		
+		public function glow () :void {
+			this.filters = [new GlowFilter(glowColor)];
+		}
+		
+		public function stopGlow () :void {
+			this.filters = [];
+		}
+		
+		public function seriesGlow () :void {
+			glowColor = SERIES_GLOW_COLOR;
+		}
+		public function defaultGlow () :void {
+			glowColor = DEFAULT_GLOW_COLOR;
+		}
 		
 		
 	}

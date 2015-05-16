@@ -184,6 +184,9 @@ package com.la.mvc.model
 				if (data.lifecycle) {
 					eptitude.setLifecycle(data.lifecycle);
 				}
+				if (data.condition) {
+					eptitude.setCondition(data.condition);
+				}
 				_eptitudes.push (eptitude);
 			}
 		}

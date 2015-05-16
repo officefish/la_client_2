@@ -653,6 +653,14 @@ package com.la.mvc.view.token
 			if (isFreeze()) {
 				tokenCopy.activateFreeze();
 			}
+			
+			if (isSpellInvisible()) {
+				tokenCopy.activateSpellInvisible();
+			}
+			if (isSpellUp()) {
+				tokenCopy.activateSpellUp();
+			}
+			
 			return tokenCopy;
 		}
 		

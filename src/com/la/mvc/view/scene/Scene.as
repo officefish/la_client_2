@@ -9,6 +9,7 @@ import com.la.mvc.view.card.Card;
 import com.la.mvc.view.card.PreflopCard;
 import com.la.mvc.view.field.IHero;
 import com.la.mvc.model.CardData;
+import com.la.mvc.view.scene.popup.PlayerHeroPopup;
 import com.la.mvc.view.scene.popup.WarningPopup;
 import com.la.mvc.view.ui.StepTimerWidget;
 import flash.events.Event;
@@ -55,6 +56,8 @@ public class Scene extends Sprite implements IScene{
 	private var stepTimer:StepTimerWidget;
 	
 	private var blockSprite:Sprite;
+	
+	private var damageContainer:Sprite;
 
     public function Scene() {
 		this.placeCardLevel = new Sprite();
@@ -76,6 +79,11 @@ public class Scene extends Sprite implements IScene{
         preflopContainer.mouseEnabled = false;
 		preflopContainer.name = 'preflopContainer';
 		addChild(preflopContainer);
+		
+		damageContainer = new Sprite ();
+		damageContainer.mouseEnabled = false;
+		damageContainer.name = 'damageContainer';
+		addChild (damageContainer);
 			
 		trajectoryLevel = new Sprite();
 		trajectoryLevel.name = 'trajectoryLevel';
@@ -87,12 +95,18 @@ public class Scene extends Sprite implements IScene{
 		previewContainer.name = 'previewContainer';
 		addChild(previewContainer);
 		
+		
+		
 		this.mouseEnabled = false;
 		
 		
 		
 		
     }
+	
+	public function addDamage (damage:DisplayObject) :void {
+		damageContainer.addChild (damage);
+	}
 
     public function resize (stageWidth:int, stageHeight:int) :void {
         this.stageWidth = stageWidth;
@@ -110,6 +124,7 @@ public class Scene extends Sprite implements IScene{
 
         for (var i:int = 0; i < cards.length; i ++) {
             card = new PreflopCard(cards[i]);
+			card.setSpellMixin(0)
             preflopContainer.addChild(card);
             card.x = 500 + shift * i;
             card.y = (this.stageHeight - card.getMirror().height) / 2 - 40;
@@ -218,6 +233,7 @@ public class Scene extends Sprite implements IScene{
         var position:Point;
         for (var i:int = 0; i < replacement.length; i ++) {
             var card:PreflopCard = new PreflopCard(replacement[i]);
+			card.setSpellMixin(0);
             preflopContainer.addChild(card);
             card.x = stageWidth + 100;
             card.y = (this.stageHeight - card.getMirror().height) / 2 - 40;
@@ -258,7 +274,6 @@ public class Scene extends Sprite implements IScene{
         }
         _preflopCards.sort(sortByXPosition);
         for (i = 0; i < _preflopCards.length; i ++) {
-
             preflopContainer.addChild(_preflopCards[i]);
         }
     }
@@ -327,6 +342,20 @@ public class Scene extends Sprite implements IScene{
 		if (!confirmFlag && !cancelFlag) {
 			popup.addEventListener (MouseEvent.CLICK, onWarningStageClick);
 		}
+	}
+	
+	public function playerHeroMessage (msg:String, position:Point) :void {
+		while (previewContainer.numChildren) previewContainer.removeChildAt(0);
+		var popup:PlayerHeroPopup = new PlayerHeroPopup(msg);
+		previewContainer.addChild (popup);
+				
+		popup.x = position.x + 10;
+		popup.y = position.y - popup.height / 2;
+		TweenLite.to (popup, 0.2, { delay:1.0, alpha:0.9, onComplete:onPlayerHeroMessageComplete } );
+	}
+	
+	private function onPlayerHeroMessageComplete () :void {
+		while (previewContainer.numChildren) previewContainer.removeChildAt(0);
 	}
 	
 	private function onConfirm () :void {
@@ -532,6 +561,8 @@ public class Scene extends Sprite implements IScene{
 			}
 		}
 	}
+	
+	
 
 
 

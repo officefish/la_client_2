@@ -44,6 +44,11 @@ public interface IAttackAvailable extends IEventDispatcher {
 	
 	function activateFreeze () :void;
 	function deactivateFreeze() :void;
+	
+	function activateSpellInvisible () :void;
+	function  deactivateSpellInvisible () :void;
+	function activateSpellUp () :void;
+	function deactivateSpellUp() :void;
 
 }
 }

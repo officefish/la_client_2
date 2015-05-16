@@ -3,6 +3,8 @@
  */
 package com.la.mvc.controller.bootstrap {
 
+import com.la.mvc.view.achieves.AchieveBrowser;
+import com.la.mvc.view.card.CardSensor;
 import com.la.mvc.view.collection.Collection;
 import com.la.mvc.view.collection.CraftWidget;
 import com.la.mvc.view.field.StepButton;
@@ -35,6 +37,8 @@ public class BootstrapClasses {
         
 		injector.mapClass(IIntro, Intro);
         injector.mapSingletonOf(ICollection, Collection, 'collection');
+		
+		injector.mapSingletonOf(AchieveBrowser, AchieveBrowser, 'achieves');
         
 		injector.mapSingletonOf(IScene, Scene, 'scene');
         injector.mapSingletonOf(IField, Field, 'field');
@@ -54,8 +58,10 @@ public class BootstrapClasses {
         injector.mapSingletonOf(DeckList, DeckList, 'deckList');
 		injector.mapSingletonOf(Console, Console, 'appConsole');
 		injector.mapClass (StepButton, StepButton);
-		
+				
 		injector.mapSingletonOf(CraftWidget, CraftWidget, 'craftWidget');
+		
+		injector.mapClass(CardSensor, CardSensor);
 
     }
 }

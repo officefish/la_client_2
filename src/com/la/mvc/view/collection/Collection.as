@@ -4,6 +4,7 @@ package com.la.mvc.view.collection
 	import com.greensock.TweenLite;
 	import com.hurlant.util.der.OID;
 	import com.la.event.CollectionEvent;
+	import com.la.event.HeroesViewEvent;
 	import com.la.mvc.model.BookData;
 	import com.la.mvc.model.CollectionCardData;
 	import com.la.mvc.model.DeckData;
@@ -33,6 +34,11 @@ package com.la.mvc.view.collection
 			addChild (collectionView);
 			
 			heroesView = new HeroesView ();
+			heroesView.addEventListener(HeroesViewEvent.SELECT, onHeroSelect);
+		}
+		
+		private function onHeroSelect (event:HeroesViewEvent) :void {
+			dispatchEvent (new CollectionEvent (CollectionEvent.SELECT_HERO, {'hero_id':event.getHeroId()})); 
 		}
 		
 		public function resize (stageWidth:int, stageHeight:int) :void {

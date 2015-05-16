@@ -16,6 +16,8 @@ package com.la.mvc.view.field {
 		function get isPreview() :Boolean;
 		function get hasWidget() :Boolean;
 		function activateWidget () :void;
+		
+		
 
 
 	}

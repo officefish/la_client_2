@@ -154,8 +154,138 @@ package com.la.mvc.model
 					str = 'UNIT_CONVERTION(превращение юнита в другого)'
 					break;
 				}
-				
-				
+				case 37: {
+					str = 'ACTIVATE';
+					break;
+				}
+				case 38: {
+					str = 'DEFAULT_ATTACK';
+					break;
+				}
+				case 39: {
+					str = 'DEFAULT_HEALTH';
+					break;
+				}
+				case 40: {
+					str = 'INCREASE_ATTACK_AND_HEALTH_DEPENDS_ON_TOKENS';
+					break;
+				}
+				case 41: {
+					str = 'UNIT_FROM_DECK';
+					break;
+				}
+				case 42: {
+					str = 'INCREASE_CARD_PRICE';
+					break;
+				}
+				case 43: {
+					str = 'DECREASE_CARD_PRICE';
+					break;
+				}
+				case 44: {
+					str = 'INCREASE_HEALTH_DEPENDS_ON_ASSOCIATE_CARDS';
+					break;
+				}
+				case 45: {
+					str = 'INCREASE_HEALTH_DEPENDS_ON_OPPONENT_CARDS';
+					break;
+				}
+				case 46: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_TOKENS';
+					break;
+				}
+				case 47: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_PLAYER_CARDS';
+					break;
+				}
+				case 48: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_OPPONENT_CARDS';
+					break;
+				}
+				case 49: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_HERO_HEALTH';
+					break;
+				}
+				case 50: {
+					str = 'INCREASE_CARD_PRICE_MIXIN';
+					break;
+				}
+				case 51: {
+					str = 'DECREASE_CARD_PRICE_MIXIN';
+					break;
+				}
+				case 52: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_RACE_TOKENS';
+					break;
+				}
+				case 53: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_SHIELD_TOKENS';
+					break;
+				}
+				case 54: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_DIE_UNITS';
+					break;
+				}
+				case 55: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_FROZEN_TOKENS';
+					break;
+				}
+				case 56: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_PLAYER_SPELLS';
+					break;
+				}
+				case 57: {
+					str = 'DECREASE_PRICE_DEPENDS_ON_OPPONENT_SPELLS';
+					break;
+				}
+				case 58: {
+					str = 'REPLACE_CARD_AND_TOKEN';
+					break;
+				}
+				case 59: {
+					str = 'FREEZE';
+					break;
+				}
+				case 60: {
+					str = 'SHIELD_PROVOCATION_OR_DOUBLE_ATTACK';
+					break;
+				}
+				case 61: {
+					str = 'PICK_CARD_TILL';
+					break;
+				}
+				case 62: {
+					str = 'CHANGE_EXTRA_ATTACK_TILL';
+					break;
+				}
+				case 63: {
+					str = 'CHANGE_UNIT_TO_RANDOM_FOR_SAME_PRICE';
+					break;
+				}
+				case 64: {
+					str = 'ATTACK_RANDOM_UNIT';
+					break;
+				}
+				case 65: {
+					str = 'PRIMARY_TARGET';
+					break;
+				}
+				case 66: {
+					str = 'INCREASE_MANA';
+					break;
+				}
+				case 67: {
+					str = 'DECREASE_MANA';
+					break;
+				}
+				case 68: {
+					str = 'PASSIVE_ATTACK_SERIES';
+					break;
+				}
+				case 69: {
+					str = 'PASSIVE_ATTACK_FOR_SEVERAL_TARGETS';
+					break;
+				}
 			}
 			return str;
 		}

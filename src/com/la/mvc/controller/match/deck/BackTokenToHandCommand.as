@@ -47,8 +47,6 @@ package com.la.mvc.controller.match.deck
 		
 		override public function execute():void 
 		{
-			console.debug ('BackTokenToHandCommand::execute');
-			//console.debug (event.data.cardData);
 			var token:DisplayObject = event.data.token;
 			
 			var targetIndex:int = event.data.targetIndex;

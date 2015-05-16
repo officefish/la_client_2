@@ -2,6 +2,7 @@ package com.la.mvc.controller.match.scenario
 {
 	import com.la.event.MatchServiceEvent;
 	import com.la.event.ScenarioEvent;
+	import com.la.mvc.model.DeckModel;
 	import com.la.mvc.model.MatchModel;
 	import com.la.mvc.model.RootModel;
 	import com.la.mvc.view.deck.PlayerDeck;
@@ -27,9 +28,10 @@ package com.la.mvc.controller.match.scenario
 		
 		[Inject (name = 'rootModel')]
 		public var rootModel:RootModel;
+	
+		[Inject (name='deckModel')]
+		public var deckModel:DeckModel; 
 		
-		[Inject (name='playerDeck')]
-		public var playerDeck:PlayerDeck; 
 		
 		
 		override public function execute():void 
@@ -39,9 +41,8 @@ package com.la.mvc.controller.match.scenario
 			} else {
 				matchModel.setScenario (event.getData().scenario);
 			}
-			
-			
-			playerDeck.block();
+						
+			deckModel.block = true;
 			
 			if (rootModel.currentState == GameState.OPPONENT_STEP) {
 				rootModel.currentState = GameState.OPPONENT_STEP_ACTION;

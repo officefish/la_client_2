@@ -1,6 +1,7 @@
 package com.la.mvc.service 
 {
 	import com.la.event.ApiServiceEvent;
+	import com.la.mvc.model.AchieveData;
 	import com.la.mvc.model.BookData;
 	import com.la.mvc.model.CollectionCardData;
 	import com.la.mvc.model.DeckData;
@@ -29,6 +30,41 @@ package com.la.mvc.service
 		}
 		private function errorHandler(event:LoaderEvent):void {
 			trace("error occured with " + event.target + ": " + event.text);
+		}
+		
+		public function editAchieves (userId:int, heroId:int) :void {
+			var url:String = 'http://127.0.0.1:8000/api/achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteAchievesList, onError:errorHandler});
+			loader.load()
+		}
+		
+		public function onCompleteAchievesList (event:LoaderEvent) :void {
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			var serviceData:Object = { }
+			serviceData['achieves'] = getAchievesData (response.achieves);
+			serviceData['heroId'] = response.hero_id;
+			serviceData['heroVocation'] = response.hero_vocation;
+			if (response.status == 'success') {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVES_LIST_INIT, serviceData));
+			}
+		}
+		
+		private function getAchievesData (achieves:Array) :Vector.<AchieveData> {
+			var list:Vector.<AchieveData> = new Vector.<AchieveData>();
+			var achieveResponseData:Object;
+			var achieveData:AchieveData;
+			for (var i:int = 0; i < achieves.length; i ++) {
+				achieveResponseData = achieves[i];
+				achieveData = new AchieveData();
+				achieveData.id = achieveResponseData.id;
+				achieveData.title = achieveResponseData.title;
+				achieveData.description = achieveResponseData.description;
+				achieveData.autonomic = achieveResponseData.autonomic;
+				achieveData.type = achieveResponseData.type;
+				achieveData.price = achieveResponseData.price;
+				list.push(achieveData);
+			}
+			return list;
 		}
 		
 		public function destroyCard(userId:int, cardId:int, goldenFlag:Boolean) :void {

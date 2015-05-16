@@ -1,5 +1,6 @@
 package com.la.mvc.controller.match.scenario 
 {
+	import com.la.event.DeckEvent;
 	import com.la.event.ScenarioEvent;
 	import com.la.event.SceneEvent;
 	import com.la.locale.Warning;
@@ -61,7 +62,7 @@ package com.la.mvc.controller.match.scenario
 				var action:Object = matchModel.getScenarioAction ();
 				playAction (action);
 			} else {
-				playerDeck.unblock();
+				deckModel.block = false;
 				if (rootModel.currentState == GameState.OPPONENT_STEP_ACTION) { 
 					rootModel.currentState = GameState.OPPONENT_STEP;
 				} else if (rootModel.currentState == GameState.PLAYER_STEP_ACTION) {
@@ -87,27 +88,191 @@ package com.la.mvc.controller.match.scenario
 			var token:IToken;
 			var indexList:Array;
 			var index:int;
-
+			var targets:Array = []
 	
 			var clientId:String = rootModel.userId + " :: " 
 			console.debug (clientId + 'playAction::' + data.type);
 			
 			var initiatorDO:DisplayObject;
 			var targetDO:DisplayObject;
-			var initiatorAttachment:Boolean;
-			var targetAttachment:Boolean;
+			var initiatorAttachment:int;
+			var targetAttachment:int;
 			var clientFlag:Boolean;
 			var target:IAttackAvailable;
 			var value:int;
-			var eventData:Object = {};
+			var eventData:Object = { };
+			var spellClientFlag:Boolean = false;
+			var associateTargets:Array = [];
+			var opponentTargets:Array = [];
 			
 			switch (data.type) {
+				case 'calculate_cards': {
+					clientFlag = data.client == rootModel.userId;
+					if (clientFlag) {
+						field.calculateCards(data.clientCardsCount, data.opponentCardsCount);
+					} else {
+						field.calculateCards(data.opponentCardsCount, data.clientCardsCount);
+					}
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break;
+				}
+				
+				case 'end_match': {
+					clientFlag = data.client == rootModel.userId;
+					
+					eventData = {}
+					eventData.client = clientFlag;
+					eventData.playerWin = data.playerWin;
+					eventData.opponentWin = data.opponentWin;
+					dispatch(new SceneEvent(SceneEvent.END_MATCH, eventData))
+					break;
+				}
+
+				
+				case 'burn_card': {
+					clientFlag = data.client == rootModel.userId;
+					cardData = CardData.converToData(data.card);
+					eventData = { }
+					eventData.client = clientFlag;
+					eventData.attachment = data.attachment;
+					eventData.card = cardData;
+					dispatch(new SceneEvent(SceneEvent.BURN_CARD, eventData))
+					break;
+				}
+				
+				case 'attrition': {
+					eventData = { }
+					eventData.damage = data.damage;
+					dispatch(new SceneEvent(SceneEvent.ATTRITION, eventData))
+					break;
+				}
+				
+				case 'copy_unit_cards_to_hand': {
+					clientFlag = data.client == rootModel.userId;
+					for (i = 0; i < data.associateTargets.length; i ++) {
+						targetIndex = data.associateTargets[i].index;
+						targetAttachment = data.associateTargets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						associateTargets.push(
+							{target:target, 
+							damage:data.associateTargets[i].damage,
+							card:CardData.converToData(data.associateTargets[i].card),
+							cardIndex:data.associateTargets[i].cardIndex
+							})
+					}
+					
+					for (i = 0; i < data.opponentTargets.length; i ++) {
+						targetIndex = data.opponentTargets[i].index;
+						targetAttachment = data.opponentTargets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						opponentTargets.push(
+							{target:target, 
+							damage:data.opponentTargets[i].damage,
+							card:CardData.converToData(data.opponentTargets[i].card),
+							cardIndex:data.opponentTargets[i].cardIndex
+							})
+					}
+					eventData.associateTargets = associateTargets;
+					eventData.opponentTargets = opponentTargets;
+					eventData.client = clientFlag;
+					
+					dispatch(new SceneEvent(SceneEvent.COPY_UNIT_CARDS_TO_HAND, eventData))
+					
+					
+					break;
+				}
+				
+				
+				case 'back_several_tokens_to_hand': {
+					
+					clientFlag = data.client == rootModel.userId;
+				
+					
+					var deathTargets:Array = [];
+					
+					for (i = 0; i < data.associateTargets.length; i ++) {
+						targetIndex = data.associateTargets[i].index;
+						targetAttachment = data.associateTargets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						associateTargets.push(
+							{target:target, 
+							damage:data.associateTargets[i].damage,
+							card:CardData.converToData(data.associateTargets[i].card),
+							cardIndex:data.associateTargets[i].cardIndex
+							})
+					}
+					
+					for (i = 0; i < data.opponentTargets.length; i ++) {
+						targetIndex = data.opponentTargets[i].index;
+						targetAttachment = data.opponentTargets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						opponentTargets.push(
+							{target:target, 
+							damage:data.opponentTargets[i].damage,
+							card:CardData.converToData(data.opponentTargets[i].card),
+							cardIndex:data.opponentTargets[i].cardIndex
+							})
+					}
+					
+					for (i = 0; i < data.deathTargets.length; i ++) {
+						targetIndex = data.deathTargets[i].index;
+						targetAttachment = data.deathTargets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						deathTargets.push( { target:target } );
+					}
+					
+					eventData.associateTargets = associateTargets;
+					eventData.opponentTargets = opponentTargets;
+					eventData.deathTargets = deathTargets;
+					eventData.client = clientFlag;
+					
+					dispatch(new SceneEvent(SceneEvent.BACK_SEVERAL_TOKENS_TO_HAND, eventData))
+					break;
+				}
+				case 'damage': {
+					clientFlag = data.client == rootModel.userId;
+					for (i = 0; i < data.targets.length; i ++) {
+						targetIndex = data.targets[i].index;
+						targetAttachment = data.targets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						targets.push({target:target, damage:data.targets[i].damage})
+					}
+					
+					eventData.targets = targets;
+					dispatch(new SceneEvent (SceneEvent.DAMAGE, eventData))
+					break;
+				}
+				case 'shuffle_unit_to_deck': {
+					clientFlag = data.client == rootModel.userId;
+					for (i = 0; i < data.targets.length; i ++) {
+						targetIndex = data.targets[i].index;
+						targetAttachment = data.targets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						targets.push({target:target, card:CardData.converToData(data.targets[i].card)})
+					}
+					eventData.targets = targets;
+					dispatch(new SceneEvent (SceneEvent.SHUFFLE_UNIT_INTO_DECK, eventData))
+					break;
+				}
+				case 'massive_kill': {
+					clientFlag = data.client == rootModel.userId;
+					for (i = 0; i < data.targets.length; i ++) {
+						targetIndex = data.targets[i].index;
+						targetAttachment = data.targets[i].attachment;
+						target = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag) as IAttackAvailable;
+						targets.push({target:target})
+					}
+					
+					eventData.targets = targets;
+					dispatch(new SceneEvent (SceneEvent.MASSIVE_KILL, eventData))
+					break;
+				}
 				case 'step_price': {
 					
 					endAnimationFlag = data.endAnimationFlag
 					if (data.client == rootModel.userId) {
-						playerDeck.price = int(data.price)
-						field.setPlayerPrice (data.price, endAnimationFlag, true)
+						deckModel.price = int(data.price);
+						field.setPlayerPrice (data.price, endAnimationFlag, true, data.overload)
 					} else {
 						field.setOpponentPrice (data.price, endAnimationFlag, true) 	
 					}
@@ -117,16 +282,35 @@ package com.la.mvc.controller.match.scenario
 				case 'pick_card': {
 					cardData = CardData.converToData (data.card)
 					if (data.client == rootModel.userId) {
-						if (data.attachment) {
+						if (!data.attachment) {
 							playerDeck.addCard(cardData, true);
 						} else {
 							enemyDeck.addCard(cardData, true);
 						}
 					} else {
-						if (data.attachment) {
+						if (!data.attachment) {
 							enemyDeck.addCard(cardData, true);
 						} else {
 							playerDeck.addCard(cardData, true);
+						}
+					}
+					break;
+				}
+				
+				case 'card': {
+					cardData = CardData.converToData (data.card)
+					var attachment:int = data.attachment
+					if (data.client == rootModel.userId) {
+						if (attachment == 0) {
+							playerDeck.newCard(cardData, true);
+						} else {
+							enemyDeck.newCard(cardData, true);
+						}
+					} else {
+						if (attachment == 0) {
+							enemyDeck.newCard(cardData, true);
+						} else {
+							playerDeck.newCard(cardData, true);
 						}
 					}
 					break;
@@ -138,22 +322,30 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				
-				case 'step': {
+				case 'end_step': {
 					if (data.client == rootModel.userId) {
-						rootModel.currentState = GameState.PLAYER_STEP;
-						playerDeck.unblock();
-						playerDeck.glowAvailableCards();
-						field.setOpponentPrice(0, false, false);	
-						field.enableStepButton ();
-					} else {
 						rootModel.currentState = GameState.OPPONENT_STEP;
 						field.disableStepButton();
 						field.blockTokens ();
 						field.setPlayerPrice (0, false, false)
-						playerDeck.block();
+						deckModel.block = true;
 						playerDeck.stopGlowCards ();
 					}
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break;
+				}
+				
+				case 'step': {
+					if (data.client == rootModel.userId) {
+						rootModel.currentState = GameState.PLAYER_STEP;
+						deckModel.block = false;
+						field.setOpponentPrice(0, false, false);	
+						field.enableStepButton ();
+						dispatch (new DeckEvent (DeckEvent.GLOW_CARDS, { } ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					
 					break;
 				}
 				
@@ -164,8 +356,10 @@ package com.la.mvc.controller.match.scenario
 					endAnimationFlag = data.endAnimationFlag;
 										
 					if (data.client == rootModel.userId) {
-						card = playerDeck.getActualCard ();
+						card = deckModel.drawingCard;
+						playerDeck.destroyCard(deckModel.drawingCard);
 						field.playPlayerCardUnit(cardData, position, card, endAnimationFlag);
+						
 					} else {
 						cardIndex = data.cardIndex;
 						card = enemyDeck.getCard (cardIndex);
@@ -176,6 +370,38 @@ package com.la.mvc.controller.match.scenario
 					}
 					break;
 				}
+				
+				case 'play_card_spell': {
+															
+					if (data.client == rootModel.userId) {
+						card = deckModel.drawingCard;
+						playerDeck.destroyCard(deckModel.drawingCard);
+						field.playPlayerCardUnit(cardData, position, card, endAnimationFlag);
+						
+					} else {
+						cardIndex = data.cardIndex;
+						card = enemyDeck.getCard (cardIndex);
+						var mirrorPosition:Point = new Point (card.x, card.y);
+						mirrorPosition = card.parent.localToGlobal (mirrorPosition);
+						enemyDeck.removeCardAt (cardIndex);
+					}
+					break;
+				}
+				
+				case 'destroy_actual_card': {
+					clientFlag = data.client == rootModel.userId;
+					
+					if (clientFlag) {
+						playerDeck.destroyCard(deckModel.drawingCard);
+					} else {
+						if (data.enemy) {
+							enemyDeck.removeCardAt(data.cardIndex);
+						}
+					}
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					break; 
+				}
+				
 				
 				case 'sort_deck': {
 					
@@ -193,28 +419,23 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'set_row_length': {
-					if (data.client == rootModel.userId) {
-						playerDeck.setTokenRowLength (data.length);
-					}
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					break;
 				}
 				
 				case 'unblock_deck': {
-					//console.debug (clientId + 'action:unblock_deck');
 					if (data.client == rootModel.userId) {
-						endAnimationFlag = data.endAnimationFlag;
-						playerDeck.unblock (endAnimationFlag, true);
-					} else {
-						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						deckModel.block = false;
 					}
+					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					break;
 				}
 				case 'glow_cards': {
 					//console.debug (clientId + 'action:glow_cards');
 					if (data.client == rootModel.userId) {
 						endAnimationFlag = data.endAnimationFlag;
-						playerDeck.glowAvailableCards (endAnimationFlag, true);
+						dispatch(new DeckEvent (DeckEvent.GLOW_CARDS, {}))
+						//playerDeck.glowAvailableCards (endAnimationFlag, true);
 					} else {
 						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					}
@@ -379,7 +600,7 @@ package com.la.mvc.controller.match.scenario
 						position = data.position;
 						field.placeUnitRowPosition ();
 						endAnimationFlag = data.endAnimationFlag;
-						card = playerDeck.getActualCard ();
+						card = deckModel.drawingCard;
 						field.playPlayerCardUnit(cardData, position, card, endAnimationFlag);
 					} else {
 						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -427,9 +648,41 @@ package com.la.mvc.controller.match.scenario
 					
 					initiatorDO = initUnitbyAttachment (initiatorIndex, initiatorAttachment, clientFlag);
 					targetDO = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetDO || !initiatorDO) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 										
 					dispatch (new SceneEvent (SceneEvent.PASSIVE_ATTACK, { initiator:initiatorDO, target:targetDO } ));
 					break;
+				}
+				
+				case 'passive_attack_for_several_targets': {
+					clientFlag = data.client == rootModel.userId;
+										
+					var targetData:Object;
+					for (i = 0; i < data.targets.length; i ++) {
+						targetData = data.targets[i];
+						targetIndex = targetData.index;
+						targetAttachment = targetData.attachment;
+						targetDO = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+						targets.push (targetDO);
+					}
+					
+					initiatorAttachment = data.initiatorAttachment;
+					initiatorIndex = data.initiatorIndex;
+					initiatorDO = initUnitbyAttachment (initiatorIndex, initiatorAttachment, clientFlag);
+
+					
+					if (!targets.length || !initiatorDO) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+										
+					dispatch (new SceneEvent (SceneEvent.PASSIVE_ATTACK_FOR_SEVERAL_TARGETS, { initiator:initiatorDO, targets:targets } ));
+					break;
+					
 				}
 				
 				case 'health_after_passive_attack': {
@@ -438,6 +691,11 @@ package com.la.mvc.controller.match.scenario
 					targetUnitHealth = data.targetUnitHealth;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 					
 					(targetUnit as IAttackAvailable).setHealth (targetUnitHealth);
 					
@@ -475,9 +733,16 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.targetAttachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					var power:int = data.power;
 					
 					var target:IAttackAvailable = targetUnit as IAttackAvailable;
+					
                     target.setMaxHealth (target.getMaxHealth() + power)
 					target.setHealth (target.getHealth() + power);
 					target.setAttack(target.getAttack() + power)
@@ -485,13 +750,19 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				
-				case 'increase_health':
+				case 'change_health':
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
-					value = data.value;
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
+					value = data.health;
 					
 					target = targetUnit as IAttackAvailable;
 					if (data.maxHealth) {
@@ -527,6 +798,11 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.targetAttachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 					   
 					cardData = CardData.converToData(data.card);
 					
@@ -552,20 +828,20 @@ package com.la.mvc.controller.match.scenario
 					field.disableStepButton();
 					field.blockTokens ();
 
-					enemyDeck.price = data.price;
 					enemyDeck.addCard(cardData, true);
 
-					playerDeck.block();
+					deckModel.block = true;
 					playerDeck.stopGlowCards ();
 
-					field.setOpponentPrice(enemyDeck.price);
+					field.setOpponentPrice(data.price);
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					break;
 				}
 				case 'new_unit': {
 					cardData = CardData.converToData (data.cardData);
 					targetAttachment = data.attachment
-					targetIndex = data.index
+					targetIndex = data.index;
+					field.placeUnitRowPosition ();
 					if (data.client == rootModel.userId) {
 						field.addToken (targetAttachment, cardData, targetIndex);
 					} else {
@@ -582,6 +858,11 @@ package com.la.mvc.controller.match.scenario
 					clientFlag = data.client == rootModel.userId;
 					power = data.power
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+										
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 					
 					target = targetUnit as IAttackAvailable;
 					var attackBob:int = target.getAttackBob();
@@ -601,6 +882,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.setHealth (data.health);
 					
@@ -614,6 +901,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.setAttack (data.attack);
 					
@@ -621,26 +914,15 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				
-				case 'glow_last_card':
-				{
-					if (data.client == rootModel.userId) {
-						var card:Card = playerDeck.getLastCard();
-						var price:int = playerDeck.price
-						var cardPrice:int = card.getPrice();
-						if (price > cardPrice) {
-							if (!playerDeck.getTokenLimitFlag()) {
-								playerDeck.glowCard(card);
-							}
-							
-						}
-						
-					}
-					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
-					break;
-				}
-				
 				case 'massive_attack': {
-					// field.massiveAttackAnimation();
+					clientFlag = data.client == rootModel.userId;
+					for (i = 0; i < data.targets.length; i ++) {
+						targetData = data.targets[i];
+						targetIndex = targetData.index;
+						targetAttachment = targetData.attachment;
+						targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+						(targetUnit as IAttackAvailable).setHealth (data.targets[i].health);
+					}
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					break;
 				}
@@ -651,6 +933,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.activateShield ();
 					
@@ -664,6 +952,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.destroyShield ();
 					
@@ -676,6 +970,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.activateShadow();
 					
@@ -688,6 +988,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.destroyShadow ();
 					
@@ -711,6 +1017,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.activateDoubleAttack();
 					
@@ -724,7 +1036,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
-										
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.setMaxHealth(target.getDefaultHealth())
 					target.setHealth(data.health)
@@ -735,6 +1052,8 @@ package com.la.mvc.controller.match.scenario
 					target.destroyShield();
 					target.deactivateProvocation();
 					target.deactivateFreeze();
+					target.deactivateSpellInvisible();
+					target.deactivateSpellUp();
 					
 					target.canAttack = data.canAttack;
 					
@@ -756,6 +1075,11 @@ package com.la.mvc.controller.match.scenario
 					
 					initiatorDO = initUnitbyAttachment (initiatorIndex, initiatorAttachment, clientFlag);
 					targetDO = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetDO || !initiatorDO) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 										
 					dispatch (new SceneEvent (SceneEvent.FREEZE_ATTACK, { initiator:initiatorDO, target:targetDO } ));
 					break;
@@ -768,6 +1092,11 @@ package com.la.mvc.controller.match.scenario
 					clientFlag = data.client == rootModel.userId;
 					
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.activateFreeze();
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -779,7 +1108,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment;
 					clientFlag = data.client == rootModel.userId;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
-										
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					target = targetUnit as IAttackAvailable;
 					target.deactivateFreeze();
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -811,6 +1145,11 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.initiatorAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
+					
 					var associate:Boolean = initAssociate(targetAttachment, clientFlag);
 					
 					cardData = CardData.converToData (data.unit);
@@ -826,6 +1165,27 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				
+				case 'unit_from_hand': {
+					
+					targetAttachment = data.cardAttachment;
+					targetIndex = data.cardIndex;
+					clientFlag = data.client == rootModel.userId;
+					card = initCardbyAttachment (targetIndex, targetAttachment, clientFlag);
+					targetIndex = data.initiatorIndex;
+					
+					var associate:Boolean = initAssociate(targetAttachment, clientFlag);
+					var cardData:CardData = CardData.converToData (data.card);
+				
+					eventData['targetCard'] = card;
+					eventData['index'] = targetIndex;
+					eventData['cardData'] = cardData;
+					eventData['associate'] = associate;
+					eventData['endAnimationFlag'] = data.endAnimationFlag;
+					
+					dispatch (new SceneEvent (SceneEvent.UNIT_FROM_HAND, eventData ));
+					break;
+				}
+				
 				case 'entice_unit':
 				{
 					//
@@ -834,8 +1194,12 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
-					eventData['targetToken'] = targetUnit;
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 					
+					eventData['targetToken'] = targetUnit;
 					dispatch (new SceneEvent (SceneEvent.ENTICE_UNIT, eventData ));
 					break;
 				}
@@ -846,6 +1210,11 @@ package com.la.mvc.controller.match.scenario
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (!targetUnit) {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						break;
+					}
 					
 					cardData = CardData.converToData (data.cardData);
 					token = field.changeToken(targetUnit as IToken, cardData)
@@ -872,11 +1241,16 @@ package com.la.mvc.controller.match.scenario
 					if (data.dumbness) {
 						token.dumbness()
 					}
+					if (data.spellUp) {
+						token.activateSpellUp()
+					}
+					if (data.spellInvisible) {
+						token.activateSpellInvisible()
+					}
+					
 					token.setAttack(data.attack);
 					token.setHealth(data.health);
-					
-					
-										
+														
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					break; 
 				}
@@ -887,19 +1261,237 @@ package com.la.mvc.controller.match.scenario
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					if (targetUnit) {
+						eventData['targetToken'] = targetUnit;
+						dispatch (new SceneEvent (SceneEvent.ACTIVATE_WIDGET, eventData ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
 					
-					eventData['targetToken'] = targetUnit;
-					dispatch (new SceneEvent (SceneEvent.ACTIVATE_WIDGET, eventData ));
+					
 					break;
 				}
 				
-				case 'destroy_actual_card': {
+				case 'spell_target_warning': {
 					clientFlag = data.client == rootModel.userId;
 					if (clientFlag) {
-						playerDeck.destroyActualCard();
+						dispatch (new DeckEvent(DeckEvent.WRONG_SPELL_SELECT_TARGET, {effect:data.effect}))
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 					}
-					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
-					break; 
+					break;
+				}
+				
+				case 'increase_spell': {
+					clientFlag = data.client == rootModel.userId;
+					spellClientFlag  = data.spellClient == rootModel.userId; 
+				
+					targetIndex = data.targetIndex;
+					targetAttachment = data.targetAttachment;
+					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					eventData['targetToken'] = targetUnit;
+					eventData['playerSpellMixinFlag'] = spellClientFlag;
+					eventData['spellMixin'] = data.spellMixin
+					
+					if (targetUnit) {
+						dispatch (new SceneEvent (SceneEvent.INCREASE_SPELL, eventData ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					break;
+				}
+				
+				case 'decrease_spell': {
+					clientFlag = data.client == rootModel.userId;
+					spellClientFlag  = data.spellClient == rootModel.userId; 
+					
+					targetIndex = data.targetIndex;
+					targetAttachment = data.targetAttachment;
+					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					var playerSpellMixinFlag:Boolean = false;
+					
+					eventData['targetToken'] = targetUnit;
+					eventData['playerSpellMixinFlag'] = spellClientFlag;
+					eventData['spellMixin'] = data.spellMixin
+					
+					
+					dispatch (new SceneEvent (SceneEvent.DECREASE_SPELL, eventData ));
+					break;
+				}
+				
+				case 'spell_invisible': {
+					clientFlag = data.client == rootModel.userId;
+					targetIndex = data.targetIndex;
+					targetAttachment = data.targetAttachment;
+					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
+					
+					if (targetUnit) {
+						(targetUnit as IAttackAvailable).activateSpellInvisible();
+						dispatch (new SceneEvent (SceneEvent.DECREASE_SPELL, eventData ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					
+				
+					break;
+				}
+				
+				case 'change_mana': {
+					clientFlag = data.client == rootModel.userId;
+					eventData = { }
+					
+					eventData.clientFlag = clientFlag;
+					eventData.attachment = data.attachment;
+					eventData.price = data.price;
+					eventData.playerPrice = data.playerPrice;
+					eventData.opponentPrice = data.opponentPrice;
+					eventData.overload = data.overload;
+					
+										
+					dispatch (new SceneEvent (SceneEvent.CHANGE_MANA, eventData ));
+					break;
+				}
+				
+				case 'activate_drawing_series': {
+					clientFlag = data.client == rootModel.userId;
+					if (clientFlag) {
+						dispatch (new SceneEvent (SceneEvent.ACTIVATE_DRAWING_SERIES, {}));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					break;
+				}
+				
+				case 'deactivate_drawing_series': {
+					clientFlag = data.client == rootModel.userId;
+					if (clientFlag) {
+						dispatch (new SceneEvent (SceneEvent.DEACTIVATE_DRAWING_SERIES, {}));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					break;
+				}
+				
+				case 'overload': {
+					clientFlag = data.client == rootModel.userId;
+					eventData = { }
+					
+					eventData.clientFlag = clientFlag;
+					eventData.attachment = data.attachment;
+					eventData.playerPrice = data.playerPrice;
+					eventData.opponentPrice = data.opponentPrice;
+					eventData.playerOverload = data.playerOverload;
+					eventData.opponentOverload = data.opponentOverload;
+										
+					dispatch (new SceneEvent (SceneEvent.OVERLOAD, eventData ));
+					break;
+				}
+				
+				case "clear_overload":
+				{
+					clientFlag = data.client == rootModel.userId;
+					eventData = {}
+					
+					eventData.clientFlag = clientFlag;
+					dispatch (new SceneEvent (SceneEvent.CLEAR_OVERLOAD, eventData ));
+					break;
+				}
+				
+				case 'drop_cards':
+				{
+					clientFlag = data.client == rootModel.userId;
+					targetAttachment = data.attachment;
+					
+					var cardsData:Array = data.cards as Array;
+					var serverCardData:Object = { }
+					var eventCardData:Object;
+					var cards:Array = [] 
+					
+					eventData = {}
+					eventData.clientFlag = clientFlag;
+					eventData.attachment = targetAttachment;
+					eventData.cards = cards;
+					
+				
+					for (i = 0; i < cardsData.length; i ++) {
+						serverCardData = cardsData[i]
+						targetIndex = serverCardData.index;
+						cardData = CardData.converToData (serverCardData.card);
+						card = initCardbyAttachment (targetIndex, targetAttachment, clientFlag);
+						eventCardData = { }
+						eventCardData['card'] = card;
+						eventCardData['model'] = cardData; 
+						eventCardData['index'] = targetIndex;
+						cards.push(eventCardData);
+					}
+					
+					dispatch (new SceneEvent (SceneEvent.DROP_CARDS, eventData ));
+					break;
+
+				}
+				
+				case 'select_effect':
+				{
+					clientFlag = data.client == rootModel.userId;
+					
+					if (clientFlag) {
+						var selectCards:Array = [];
+						var dataCards:Array = data.cards;
+						
+						for (i = 0; i < dataCards.length; i ++) {
+							cardData = CardData.converToData (dataCards[i]);
+							selectCards.push(cardData)
+						}
+												
+						eventData = { }
+						eventData['cards'] = selectCards;
+						dispatch (new SceneEvent (SceneEvent.SELECT_EFFECT, eventData ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					
+				
+					break;
+				}
+				
+				case 'select_guise':
+				{
+					clientFlag = data.client == rootModel.userId;
+					
+					if (clientFlag) {
+						var selectCards:Array = [];
+						var dataCards:Array = data.cards;
+						
+						for (i = 0; i < dataCards.length; i ++) {
+							cardData = CardData.converToData (dataCards[i]);
+							selectCards.push(cardData)
+						}
+												
+						eventData = { }
+						eventData['cards'] = selectCards;
+						dispatch (new SceneEvent (SceneEvent.SELECT_GUISE, eventData ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					
+				
+					break;
+				}
+				
+				case 'select_for_effect':
+				{
+					clientFlag = data.client == rootModel.userId;
+					
+					if (clientFlag) {
+						dispatch (new SceneEvent (SceneEvent.SELECT_TARGET_FOR_EFFECT, {} ));
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					
+				
+					break;
 				}
 					
 				
@@ -950,7 +1542,7 @@ package com.la.mvc.controller.match.scenario
 			return associate;
 		}
 		
-		private function initUnitbyAttachment (index:int, attachment:Boolean, client:Boolean) :DisplayObject {
+		private function initUnitbyAttachment (index:int, attachment:int, client:Boolean) :DisplayObject {
 			var _do:DisplayObject;
 			if (client) {
 				if (index >= 0) {
@@ -960,9 +1552,9 @@ package com.la.mvc.controller.match.scenario
 						_do = field.getOpponentToken(index) as DisplayObject;
 					}
 				} else {
-					if (attachment) {
+					if (attachment == 1) {
 						_do = field.getPlayerHero() as DisplayObject;
-					} else {
+					} else if (attachment == 0) {
 						_do = field.getOpponentHero() as DisplayObject;;
 					}
 				}
@@ -974,9 +1566,9 @@ package com.la.mvc.controller.match.scenario
 						_do = field.getPlayerToken(index) as DisplayObject;
 					}
 				} else {
-					if (attachment) {
+					if (attachment == 1) {
 						_do = field.getOpponentHero() as DisplayObject;
-					} else {
+					} else if (attachment == 0) {
 						_do = field.getPlayerHero() as DisplayObject;;
 					}
 				}

@@ -24,6 +24,8 @@ public class PlayerDeckMediator extends Mediator {
 		
 		eventMap.mapListener(playerDeck, ConsoleEvent.DEBUG, debug);
 		eventMap.mapListener(playerDeck, ScenarioEvent.ACTION, scenario);
+		
+		eventMap.mapListener(playerDeck, DeckEvent.START_DRAWING, listener);
     }
 	
 	private function listener (event:DeckEvent) :void {

@@ -20,7 +20,11 @@ public class ResponseCardPlayCommand extends Command {
     public var service:MatchService;
 
     override public function execute():void {
-        service.sendMessage('play_card', {'index':event.data.index, 'position':field.getTokenPreviewIndex()});
+        var serviceData:Object = { }
+		serviceData.index = event.data.index;
+		serviceData.cardType = event.data.cardType;
+		serviceData.position = field.getTokenPreviewIndex()
+		service.sendMessage('play_card', serviceData);
     }
 }
 }

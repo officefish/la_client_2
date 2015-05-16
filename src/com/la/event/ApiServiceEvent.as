@@ -24,6 +24,8 @@ package com.la.event
 		public static const REQUEST:String = 'request';
 		public static const REQUEST_COMPLETE:String = 'request_complete';
 		
+		public static const ACHIEVES_LIST_INIT:String = 'achievesListInit';
+		
 		public function ApiServiceEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false) {
 			this._data = data;
 			super(type, bubbles, cancelable)

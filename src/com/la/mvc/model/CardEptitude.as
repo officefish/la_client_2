@@ -11,19 +11,17 @@ package com.la.mvc.model {
 		private var _level:int;
 		private var _power:int;
 		private var _lyfecycle:int;
+		private var _condition:int = 0;
 		
 		public function setType (value:int) :void {
 			this._type = value;
 		}
-		
 		public function setPeriod (value:int) :void {
 			this._period = value;
 		}
-		
 		public function setLevel (value:int) :void {
 			this._level = value;
 		}
-		
 		public function setPower (value:int) :void {
 			this._power = value;
 		}
@@ -50,6 +48,14 @@ package com.la.mvc.model {
 		
 		public function getLifecycle() :int {
 			return _lyfecycle;
+		}
+		
+		public function setCondition (value:int) :void {
+			_condition = value;
+		}
+		
+		public function getCondition () :int {
+			return _condition;
 		}
 		
 		public function toString() :String {

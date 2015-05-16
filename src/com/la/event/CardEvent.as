@@ -12,6 +12,8 @@ public class CardEvent extends Event {
 	public static const COLLECTION_CLICK:String = 'collectionClick';
 	public static const DRAG_CARD:String = 'DragCardCollection';
 	public static const DRAG_SLOT:String = 'DragSlotCollection';
+	public static const DRAG_ACHIEVE_CARD:String = 'dragAchieveCard';
+	public static const DRAG_ACHIEVE_SLOT:String = 'dragAchieveSlot'; 
 
     public function CardEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
         _data = data;

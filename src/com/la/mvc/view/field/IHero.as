@@ -9,6 +9,7 @@ public interface IHero extends IAttackAvailable {
     function showHealth () :void;
     function setType(value:int):void;
 	function clone () :IHero;
+	function clear():void;
    
 }
 }

@@ -2,6 +2,10 @@
  * Created by root on 10/23/14.
  */
 package com.la.mvc.controller.bootstrap {
+import com.la.mvc.view.achieves.AchieveBrowser;
+import com.la.mvc.view.achieves.AchieveSlot;
+import com.la.mvc.view.card.AchieveCard;
+import com.la.mvc.view.card.CardSensor;
 import com.la.mvc.view.card.CollectionCard;
 import com.la.mvc.view.collection.CraftWidget;
 import com.la.mvc.view.collection.DeckItemSlot;
@@ -9,6 +13,10 @@ import com.la.mvc.view.collection.DeckSlot;
 import com.la.mvc.view.field.IToken;
 import com.la.mvc.view.field.StepButton;
 import com.la.mvc.view.collection.ICollection;
+import com.la.mvc.view.mediator.AchieveCardMediator;
+import com.la.mvc.view.mediator.AchieveMediator;
+import com.la.mvc.view.mediator.AchieveSlotMediator;
+import com.la.mvc.view.mediator.CardSensorMediator;
 import com.la.mvc.view.mediator.CraftMediator;
 
 import com.la.mvc.view.IIntro;
@@ -50,10 +58,15 @@ public class BootstrapView {
 		mediatorMap.mapView(StepButton, StepButtonMediator);
 		mediatorMap.mapView(IToken, TokenMediator);
 		mediatorMap.mapView(CollectionCard, CollectionCardMediator);
+		mediatorMap.mapView(AchieveCard, AchieveCardMediator);
+		mediatorMap.mapView(AchieveSlot, AchieveSlotMediator);
 		mediatorMap.mapView(ICollection, CollectionMediator);
 		mediatorMap.mapView(DeckItemSlot, DeckItemSlotMediator);
 		mediatorMap.mapView(DeckSlot, DeckSlotMediator);
 		mediatorMap.mapView(CraftWidget, CraftMediator);
+		mediatorMap.mapView(CardSensor, CardSensorMediator);
+		mediatorMap.mapView(AchieveBrowser, AchieveMediator);
+		
 
 
 

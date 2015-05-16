@@ -22,6 +22,15 @@ public class DeckEvent extends Event {
 	public static const SPELL_SELECT:String = 'spellSelect';
 	public static const END_SPELL_SELECT:String = 'spellEndSelect';
 	public static const CANSEL_SPELL_SELECT:String = 'cancelSpellSelect';
+	public static const WRONG_SPELL_SELECT_TARGET:String = 'wronr_spell_select_target';
+	
+	public static const START_DRAWING:String = 'startDrawing';
+	public static const SKIP_DRAWING:String = 'skipDrawing';
+	
+	public static const GLOW_CARDS:String = 'glowCards';
+	
+	public static const CANCEL_SPELL_SELECT_FOR_EFFECT:String = 'cancelSpellSelectForEffect';
+	public static const END_SPELL_SELECT_FOR_EFFECT:String = 'endSpellSelectForEffect';
 
     private var _data:Object;
 

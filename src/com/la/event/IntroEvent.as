@@ -13,6 +13,7 @@ public class IntroEvent extends Event {
     public static const SELECT_QUEST:String = 'selectQuest';
     public static const SELECT_ARENA:String = 'selectArena';
     public static const COMPLETE:String = 'introComplete';
+	public static const SELECT_HEROES:String = 'selectHeroes';
 
     public function IntroEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
         super(type, bubbles, cancelable)

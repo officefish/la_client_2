@@ -48,5 +48,9 @@ public interface IScene extends IEventDispatcher{
 	
 	function placePreview (value:DisplayObject) :void;
 	function endPreview () :void;
+	
+	function playerHeroMessage (msg:String, position:Point) :void;
+	
+	function addDamage (damage:DisplayObject): void;
 }
 }

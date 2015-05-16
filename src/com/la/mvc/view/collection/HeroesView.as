@@ -1,6 +1,7 @@
 package com.la.mvc.view.collection 
 {
 	import com.la.event.CollectionEvent;
+	import com.la.event.HeroesViewEvent;
 	import com.la.mvc.model.HeroData;
 	import com.la.mvc.view.deck.DeckHeroWidget;
 	import flash.display.Sprite;
@@ -82,7 +83,7 @@ package com.la.mvc.view.collection
 		
 		private function onSelectHero (event:MouseEvent) :void {
 			var heroId:int = actualSlot.getData().id;
-			parent.dispatchEvent (new CollectionEvent (CollectionEvent.SELECT_HERO, {'hero_id':heroId})); 
+			dispatchEvent (new HeroesViewEvent(HeroesViewEvent.SELECT, heroId));
 		}
 		
 	}

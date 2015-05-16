@@ -46,12 +46,14 @@ package com.la.mvc.controller.match.deck
 		[Inject (namespace = 'rootModel')]
 		public var rootModel:RootModel; 
 		
+		[Inject (name='playerDeck')]
+		public var playerDeck:PlayerDeck; 
+		
 		override public function execute():void 
 		{
-			console.debug ('SpellSelectCommand::execute');
 			rootModel.currentState = GameState.SPELL_SELECT;
 			
-			playDistance = event.data.playDistance;
+			playDistance = playerDeck.getPlayDistance();
 			
 			var attackUnit:DisplayObject = playerHero as DisplayObject;
 			model.setAttackUnit (attackUnit);
@@ -67,9 +69,7 @@ package com.la.mvc.controller.match.deck
 		
 		private function onMouseUp (event:MouseEvent) :void {
 			contextView.stage.removeEventListener (MouseEvent.MOUSE_UP, onMouseUp); 
-			
-			
-			
+						
 			if  (event.target is IAttackAvailable) { 
 				
 				contextView.stage.removeEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);

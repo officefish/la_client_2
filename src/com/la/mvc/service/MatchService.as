@@ -29,6 +29,7 @@ import com.worlize.websocket.WebSocketErrorEvent;
 		private static const PLAYER_STEP:String = 'player_step';
 		private static const SCENARIO:String = 'scenario';
 		private static const END_STEP_TIMER:String = 'end_step_timer';
+		private static const END_MATCH:String = 'end_match'; 
 
 
         private var wrapper:IWebSocketWrapper;
@@ -161,6 +162,11 @@ import com.worlize.websocket.WebSocketErrorEvent;
 				case END_STEP_TIMER: {
 					dispatch(new MatchServiceEvent(MatchServiceEvent.END_STEP_TIMER, response.data))
                     break;
+				}
+				
+				case END_MATCH: {
+					dispatch(new MatchServiceEvent(MatchServiceEvent.END_MATCH, response.data));
+					break;
 				}
             }
         }

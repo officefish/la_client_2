@@ -19,7 +19,7 @@ public interface IField extends IEventDispatcher{
 	function getOpponentHero() :IHero;
     function enableStepButton () :void;
     function disableStepButton () :void;
-    function setPlayerPrice (value:int, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void;
+    function setPlayerPrice (value:int, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false, overload:int = 0) :void;
     function setOpponentPrice (value:int, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void;
     function findPosition () :void;
     function stopFindPosition () :void;
@@ -44,19 +44,33 @@ public interface IField extends IEventDispatcher{
 	function classicAttack (initiatorIndex:int, targetIndex:int, playerFlag:Boolean = true, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void;
 	function backUnitToPosition (unit:DisplayObject,  position:Point, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void;
 	function removeToken (index:int, playerFlag:Boolean, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void;
-
+	function remove(token:DisplayObject) :void;
+	function sortAndCenterize():void;
+	
 	function getPlayerToken (index:int) :IToken;
 	function getOpponentToken (index:int) :IToken;
 	
 	function blur () :void;
 	function stopBlur(): void;
 	
-	function addToken (attachment:Boolean, cardData:CardData, position:int) :void;
+	function addToken (attachment:Boolean, cardData:CardData, position:int, endAnimationFlag:Boolean = true, sygnalFlag:Boolean = true) :void;
 	function changeToken (token:IToken, cardData:CardData) :IToken;
+	function getToken(attachment:Boolean, position:int) :IToken;
 	
 	function placePreviewToOpponentRow (token:DisplayObject) :Point;
 	function sortAndCenter(row:UnitRow):void;
 	function placeTokenToActualRow (token:DisplayObject):void;
+	
+	function getUnitsNumChildren (playerFlag:Boolean = true) :int;
+	
+	function setOverload (price:int, overload:int) :void;
+	function clearOverload () :void;
+	
+	function calculateX(attachment:Boolean, index:int) :int; 
+	
+	function removeAllTokens() :void;
+	function calculateCards(clinetCount:int, opponentCount:int):void;
+	function clear():void;
 
 
 

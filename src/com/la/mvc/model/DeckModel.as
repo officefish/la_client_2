@@ -3,17 +3,27 @@
  */
 package com.la.mvc.model {
 import com.la.mvc.model.CardData;
+import com.la.mvc.view.card.Card;
 import org.robotlegs.mvcs.Actor;
 
 public class DeckModel extends Actor {
 
     private var playerCards:Vector.<CardData>;
     private var opponentCards:Vector.<CardData>;
+	private var _drawingCard:Card;
+	private var _dragMode:Boolean = false;
+	private var _block:Boolean = false;
+	private var _price:int = 0;
 
     public function DeckModel() {
         playerCards = new Vector.<CardData>();
         opponentCards = new Vector.<CardData>();
     }
+	
+	public function clear () :void {
+		playerCards = new Vector.<CardData>();
+        opponentCards = new Vector.<CardData>();
+	}
 
     public function addPlayerCards (vector:Vector.<CardData>) :void {
         playerCards = playerCards.concat(vector);
@@ -46,5 +56,47 @@ public class DeckModel extends Actor {
     public function addOpponentCard (card:CardData) :void{
         opponentCards.push(card);
     }
+	
+	private var _globalMirrorCardUp:Function;
+	public function set onGlobalMirrorCardUp (value:Function) :void {
+		_globalMirrorCardUp = value;
+	}
+	public function get onGlobalMirrorCardUp () :Function {
+		return _globalMirrorCardUp;
+	}
+	
+	private var _globalMouseMove:Function;
+	public function set onGlobalMove (value:Function) :void {
+		_globalMouseMove = value;
+	}
+	public function get onGlobalMove () :Function {
+		return _globalMouseMove;
+	}
+	
+	public function set drawingCard (value:Card) :void {
+		_drawingCard = value;
+	}
+	public function get drawingCard () :Card {
+		return _drawingCard;
+	}
+	public function set drugMode (value:Boolean) :void {
+		_dragMode = value;
+	}
+	public function get drugMode () :Boolean {
+		return _dragMode;
+	}
+	public function set block (value:Boolean) :void {
+		_block = value;
+	}
+	public function get block () :Boolean {
+		return _block;
+	}
+	public function set price (value:int) :void {
+		_price = value;
+	}
+	public function get price () :int {
+		return _price;
+	}
+	
 }
 }

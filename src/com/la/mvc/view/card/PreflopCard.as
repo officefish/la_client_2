@@ -17,13 +17,15 @@ public class PreflopCard extends Card {
        addEventListener(MouseEvent.CLICK, onClick);
     }
 
-    public function glow () :void {
-        _select = true;
+    override public function glow () :void {
+        super.glow();
+		_select = true;
         glowMirror();
     }
 
-    public function stopGlow () :void {
-        _select = false;
+    override public function stopGlow () :void {
+        super.stopGlow();
+		_select = false;
         stopGlowMirror();
     }
 

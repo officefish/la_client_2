@@ -30,6 +30,35 @@ public class SceneEvent extends Event {
 	public static const ENTICE_UNIT:String = 'enticeUnit';
 	
 	public static const ACTIVATE_WIDGET:String = 'activate_widget';
+	public static const INCREASE_SPELL:String = 'increaseSpell';
+	public static const DECREASE_SPELL:String = 'decreaseSpell';
+	public static const CHANGE_MANA:String = 'changeMana';
+	
+	public static const PASSIVE_ATTACK_FOR_SEVERAL_TARGETS:String = 'passiveAttackForSeveral'
+	
+	public static const ACTIVATE_DRAWING_SERIES:String = 'activateDrawingSeries';
+	public static const DEACTIVATE_DRAWING_SERIES:String = 'deactivateDrawingSeries';
+	
+	public static const OVERLOAD:String = 'overload';
+	public static const CLEAR_OVERLOAD:String = 'clear_overload';
+	
+	public static const DROP_CARDS:String = 'drop_cards';
+	public static const SELECT_EFFECT:String = 'select_effect';
+	public static const EFFECT_SELECTED:String = 'effectSelected';
+	public static const SELECT_TARGET_FOR_EFFECT:String = 'selectTargetForEffect';
+	
+	public static const SELECT_GUISE:String = 'select_guise'
+	public static const GUISE_SELECTED:String = 'guise_selected';
+	public static const UNIT_FROM_HAND:String = 'unit_from_hand';
+	
+	public static const DAMAGE:String = 'damage';
+	public static const MASSIVE_KILL:String = 'massive_kill';
+	public static const SHUFFLE_UNIT_INTO_DECK:String = 'shuffleUnitIntoDeck'; 
+	public static const BACK_SEVERAL_TOKENS_TO_HAND:String = 'backSeveralTokensToHand';
+	public static const COPY_UNIT_CARDS_TO_HAND:String = 'copyUnitCardsToHand';
+	public static const BURN_CARD:String = 'burnCard';
+	public static const ATTRITION:String = 'attrition';
+	public static const END_MATCH:String = 'endMatch';
 
 
     public function SceneEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {

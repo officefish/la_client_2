@@ -56,8 +56,8 @@ package com.la.mvc.controller.match.attack
 		}
 		
 		private function alphaComplete () :void {
-			dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 			scene.endCopy();
+			dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 		}
 	}
 

@@ -21,6 +21,7 @@ public class IntroMediator extends Mediator {
         eventMap.mapListener(intro, IntroEvent.SELECT_MARKET, select);
         eventMap.mapListener(intro, IntroEvent.SELECT_COLLECTION, select);
         eventMap.mapListener(intro, IntroEvent.SELECT_STUDY, select);
+		eventMap.mapListener(intro, IntroEvent.SELECT_HEROES, select);
         eventMap.mapListener(intro, IntroEvent.COMPLETE, complete);
     }
 

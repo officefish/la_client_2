@@ -29,7 +29,9 @@ public class WelcomeMatchCommand extends Command {
 
     override public function execute():void {
 
-        playerHero.setType (matchModel.playerHero);
+        matchModel.preflopEndFlag = false; 
+		
+		playerHero.setType (matchModel.playerHero);
         opponentHero.setType (matchModel.opponentHero);
 		opponentHero.isEnemy = true;
 

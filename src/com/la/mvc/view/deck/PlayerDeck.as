@@ -5,6 +5,8 @@ package com.la.mvc.view.deck {
 import adobe.utils.ProductManager;
 import com.greensock.TimelineLite;
 import com.greensock.easing.Expo;
+import com.greensock.TweenLite;
+import com.hurlant.util.der.OID;
 import com.la.event.ConsoleEvent;
 import com.la.event.DeckEvent;
 import com.la.event.ScenarioEvent;
@@ -25,16 +27,9 @@ public class PlayerDeck extends Deck {
 
     private var mirrorStack:Sprite;
     private var sensorStack:Sprite;
-
-    private var actualCard:Card;
-    private var mirror:Sprite;
-
-    private var blockFlag:Boolean = true;
-    private var dragMode:Boolean = false;
-
     private var playDistance:int;
-	private var tokenLimit:int = 7;
-	private var tokenLimitFlag:Boolean = false;
+	private var spellMixin:int = 0;
+	
 
 
     public function PlayerDeck() {
@@ -45,6 +40,26 @@ public class PlayerDeck extends Deck {
         sensorStack = new Sprite ();
         addChild (sensorStack);
     }
+	
+	override public function clear():void 
+	{
+		while (mirrorStack.numChildren) {
+			mirrorStack.removeChildAt(0);
+		}
+		while (sensorStack.numChildren) {
+			sensorStack.removeChildAt(0);
+		}
+		while (cardsStack.numChildren) {
+			cardsStack.removeChildAt(0);
+		}
+	}
+	
+	public function allCardsVisible():void {
+		for (var i:int = 0; i < cardsStack.numChildren; i ++) {
+			var card:DisplayObject = cardsStack.getChildAt(i);
+			card.visible = true;
+		}
+	}
 
     override public function addCards (cards:Vector.<CardData>, quick:Boolean = false) :Vector.<Card> {
         var card:Card;
@@ -61,6 +76,7 @@ public class PlayerDeck extends Deck {
 
     override public function addCard (cardData:CardData, animation:Boolean = false) :Card {
             var card:Card = new Card (cardData);
+			card.setSpellMixin(spellMixin);
 
             //card.setHero(field.getPlayerHero())
 
@@ -88,17 +104,40 @@ public class PlayerDeck extends Deck {
                 timeline.to (cardMirrow, 0.5, { x:cardPosition.x, y:cardPosition.y, scaleX:0.72, scaleY:0.72, ease:Expo.easeInOut});
 
             }
-
-            sensor.addEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver);
-            sensor.addEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
-            sensor.addEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
-            sensor.addEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
-
-
             return card;
 
 
         }
+		
+		public function newCard (cardData:CardData, animation:Boolean = true) :void {
+			var card:Card = new Card (cardData);
+			card.setSpellMixin(spellMixin);
+            cardsStack.addChildAt (card, cardsStack.numChildren);
+            var sensor:CardSensor = card.getSensor();
+            sensorStack.addChild (sensor);
+            sortCollodion ();
+			
+			if (animation) {
+				var yCof:int = card.y;
+				card.y -= 100;
+				TweenLite.to (card, 0.5, { y:yCof, ease:Expo.easeOut, onComplete:onNewCardComplete});
+			} else {
+				dispatchEvent(new ScenarioEvent(ScenarioEvent.ACTION));
+			}
+			
+		}
+		
+		private function onNewCardComplete () :void {
+			dispatchEvent(new ScenarioEvent(ScenarioEvent.ACTION));
+		}
+		
+		public function addMirror (mirror:Sprite) :void {
+			mirrorStack.addChild(mirror);
+		}
+		
+		public function clearMirrorStack () :void {
+			while (mirrorStack.numChildren) mirrorStack.removeChildAt(0);
+		}
 		
 		private function onAddCardComplete (card:Card) :void {
             scene.endPlaceCard();
@@ -109,24 +148,17 @@ public class PlayerDeck extends Deck {
 		public function changeCard (card:Card, cardData:CardData) :Card {
 						
 			var newCard:Card = new Card (cardData);
+			card.setSpellMixin(spellMixin);
 			var position:Point = new Point (card.x, card.y);
 			
 			var index:int = cardsStack.getChildIndex (card);
 			var sensor:CardSensor = card.getSensor();
-            sensor.removeEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver)
-            sensor.removeEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
-            sensor.removeEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
-            sensor.removeEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
             sensorStack.removeChild (sensor);
 			cardsStack.removeChildAt (index);
 			
             cardsStack.addChildAt (newCard, index);
 			sensor = newCard.getSensor();
-            sensor.addEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver);
-            sensor.addEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
-            sensor.addEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
-            sensor.addEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
-			sensorStack.addChildAt (sensor, index);
+            sensorStack.addChildAt (sensor, index);
 			
 			newCard.x = sensor.x = position.x;
 			newCard.y = sensor.y = position.y;
@@ -155,243 +187,76 @@ public class PlayerDeck extends Deck {
         override public function get shiftX () :int {
             return cardsStack.x;
         }
-
-        override public function block () :void {
-            blockFlag = true;
-        }
-
-        override public function unblock(endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
-            blockFlag = false;
-			dragMode = false;
-			if (sygnalFlag) {
-				dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));		
-			}
-        }
 		
-		override public function sort(endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false):void 
-		{
-			sortCollodion();
-			
-			if (sygnalFlag) {
-				dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));		
-			}
-		}
-
-        public function glowAvailableCards (endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
-            if (tokenLimitFlag) {
-				dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
-				return;
-			}
-			
+		public function getCards () :Array {
+			var arr:Array = []
 			for (var i:int = 0; i < cardsStack.numChildren; i ++) {
-                var card:Card = cardsStack.getChildAt (i) as Card;
-                if (card.getPrice() <= price) {
-                //if (card.getPrice() <= playerPrice && numChildren < 7) {
-                    card.filters = [new GlowFilter(0x00FFFF)]
-                } else {
-                    card.filters = null;
-                }
-            }
+				arr.push (cardsStack.getChildAt(i));
+			}
+			return arr;
+		}
+
+       // override public function block () :void {
+     //      blockFlag = true;
+     //   }
+
+     /*  
+	 override public function unblock(endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
+            blockFlag = false;
+			_dragMode = false;
 			if (sygnalFlag) {
 				dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));		
 			}
         }
+	*/
 		
-		public function stopGlowCards () :void {
-            for (var i:int = 0; i < cardsStack.numChildren; i ++) {
-                var card:Card = cardsStack.getChildAt (i) as Card;
-                card.filters = null;
-            }
-        }
-
-
-	public function setTokenRowLength (length:int) :void {
-		if (length >= tokenLimit) {
-			tokenLimitFlag = true;
-		} else {
-			tokenLimitFlag = false;
-		}
-	}
-	
-	public function getTokenLimitFlag () :Boolean {
-		return tokenLimitFlag;
-	}
-
-    private function onCardMouseOver (event:MouseEvent) :void {
-
-        if (dragMode) {
-            return;
-        }
-        /*
-        TrajectoryContainer.getInstance().endTokenPreview();
-        */
-        var cardSensor:CardSensor;
-        cardSensor = event.target as CardSensor;
-
-        var card:Card = cardSensor.getCard ();
-        card.visible = false;
-
-        actualCard = card;
-        //actualCard.checkSpell ();
-
-        var mirrorCard:Sprite = card.getMirror ();
-
-        mirrorStack.addChild (mirrorCard);
-        mirrorCard.x = event.target.x + event.target.parent.x - 15;
-        mirrorCard.y = stageHeight - (mirrorCard.height + 20);
-        mirror = mirrorCard;
-    }
-
-    private function onCardMouseOut (event:MouseEvent) :void {
-
-         if (dragMode) {
-         return;
-         }
-
-         while (mirrorStack.numChildren) {
-            mirrorStack.removeChildAt (mirrorStack.numChildren - 1);
-         }
-         actualCard.visible = true;
-
-    }
-
-    private function onCardMouseDown (event:MouseEvent) :void {
-        if (blockFlag) {
-            return;
-        }
-
-        var cardPrice:int = actualCard.getPrice ();
-        if (cardPrice > price) {
-            return;
-        }
-
-        if (tokenLimitFlag) {
-			return;
-		}
-
-        dragMode = true;
-        mirror.startDrag ();
-
-		stage.addEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
-		if (actualCard.getType() ==  CardType.SPELL_TO_TARGET) {
-			stage.addEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
-		}
-		if (actualCard.getType() == CardType.UNIT) {
-			dispatchEvent(new DeckEvent(DeckEvent.FIND_POSITION, {}));
-		}
-        
-    }
-	
-	private function onMouseMove (event:MouseEvent) :void {
-				
-		if (mouseY < playDistance) {
-			stage.removeEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
-			stage.removeEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
-			mirror.visible = false;
-			dispatchEvent (new DeckEvent (DeckEvent.SPELL_SELECT, {playDistance:playDistance}))
-		}
-	}
-	
-	public function cancelSpellSelect (mouseX:int, mouseY:int) :void {
-		mirror.x = mouseX - (mirror.width / 2);
-		mirror.y = mouseY - (mirror.height / 2);
-		mirror.visible = true;
-		stage.addEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
-		stage.addEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
-	}
-
-    private function onMirrowCardUp (event:MouseEvent) :void {
-
-		mirror.stopDrag();
+	override public function sort(endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false):void 
+	{
+		sortCollodion();
 		
-		if (actualCard.getType() ==  CardType.SPELL_TO_TARGET) {
-			stage.removeEventListener (MouseEvent.MOUSE_MOVE, onMouseMove);
-			stage.removeEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp); 
-			skipPlaingCard ();
-			 return;
+		if (sygnalFlag) {
+			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));		
 		}
-				
-        if (actualCard.getType() == CardType.UNIT) {
-            dispatchEvent(new DeckEvent(DeckEvent.STOP_FIND_POSITION, {}));
-        }
+	}
+
+	public function stopGlowCards () :void {
+		for (var i:int = 0; i < cardsStack.numChildren; i ++) {
+			var card:Card = cardsStack.getChildAt (i) as Card;
+			card.filters = null;
+		}
+	}
+
+
+	public function getPlayDistance() :int {
+		return playDistance;
+	}
 	
-
-
-        stage.removeEventListener (MouseEvent.MOUSE_UP, onMirrowCardUp);
-
-        if (mouseY < playDistance) {
-
-            var sensor:CardSensor = actualCard.getSensor();
-            sensor.removeEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver)
-            sensor.removeEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
-            sensor.removeEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
-            sensor.removeEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
-            sensorStack.removeChild (sensor);
-			
-			var cardIndex:int = cardsStack.getChildIndex(actualCard);
-			
-			stopGlowCards ();
-			
-			cardsStack.removeChild (actualCard);
-            actualCard.filters = null;
-
-            dispatchEvent (new DeckEvent(DeckEvent.PLAYER_CARD_PLAY, {index: cardIndex}));
-			
-        } else {
-
-            skipPlaingCard ();
-        }
-
-    }
 	
-	public function destroyActualCard () :void {
-		var sensor:CardSensor = actualCard.getSensor();
-        sensor.removeEventListener (MouseEvent.MOUSE_OVER, onCardMouseOver)
-        sensor.removeEventListener (MouseEvent.MOUSE_OUT, onCardMouseOut);
-        sensor.removeEventListener (MouseEvent.MOUSE_DOWN, onCardMouseDown);
-        sensor.removeEventListener (MouseEvent.MOUSE_UP, onCardMouseUp);
-        sensorStack.removeChild (sensor);
-		
+    public function destroyCard (card:Card) :void {
+		var sensor:CardSensor = card.getSensor();
+        if (sensorStack.contains(sensor)) {
+			sensorStack.removeChild (sensor);
+		}
+		var mirror:Sprite = card.getMirror();
 		if (mirror.parent) {
 			mirror.parent.removeChild(mirror);
 		}
+		if (cardsStack.contains(card)) {
+			cardsStack.removeChild (card);
+		}
 		mirror.visible = true;
-		cardsStack.removeChild (actualCard);
-        actualCard.filters = null;
+	    card.filters = null;
 		stopGlowCards ();
+		
+		sortCollodion ();
 	}
 	
-	public function getActualCardIndex () :int {
-		var cardIndex:int = cardsStack.getChildIndex(actualCard);
+	public function getCardIndex (card:Card) :int {
+		var cardIndex:int = cardsStack.getChildIndex(card);
 		return cardIndex;
 	}
 	
-	public function getActualCard () :Card {
-		return actualCard;
-	}
-
-    public function removePlayingCard () :void {
-        dragMode = false;
-        if (mirrorStack.contains(mirror)) {
-            mirrorStack.removeChild (mirror);
-        }
-        sortCollodion ();
-    }
-
-    private function onCardMouseUp (event:MouseEvent) :void {
-        dragMode = false;
-        mirror.stopDrag ();
-        skipPlaingCard ();
-    }
-
-    private function skipPlaingCard () :void {
-        if (mirrorStack.contains(mirror)) {
-            mirrorStack.removeChild (mirror);
-        }
-        actualCard.visible = true;
-		dragMode = false;
-    }
-
+	
     public function setPlayDistance (value:int) :void {
         playDistance = value;
     }
@@ -403,11 +268,20 @@ public class PlayerDeck extends Deck {
 	public function getCardByIndex (index:int) :Card {
 		return cardsStack.getChildAt (index) as Card;
 	}
-	
-	
+		
 	public function glowCard (card:Card) :void {
 		 card.filters = [new GlowFilter(0x00FFFF)]
 	}
+	
+	public function setSpellMixin (value:int) :void {
+		spellMixin = value;
+		for (var i:int = 0; i < cardsStack.numChildren; i ++) {
+			var card:Card = cardsStack.getChildAt(i) as Card;
+			card.setSpellMixin(spellMixin);
+		}
+	}
+	
+	
 
 }
 }

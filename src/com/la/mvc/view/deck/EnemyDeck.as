@@ -22,8 +22,23 @@ public class EnemyDeck extends Deck {
 
     public function EnemyDeck() {
         this.cardsStack = new Sprite();
+		this.cardsStack.tabEnabled = true;
         addChildAt(cardsStack, 0);
     }
+	
+	override public function clear():void 
+	{
+		while (cardsStack.numChildren) {
+			cardsStack.removeChildAt(0);
+		}
+	}
+	
+	public function allCardsVisible():void {
+		for (var i:int = 0; i < cardsStack.numChildren; i ++) {
+			var card:DisplayObject = cardsStack.getChildAt(i);
+			card.visible = true;
+		}
+	}
 
     override public function addCards(cards:Vector.<CardData>, animation:Boolean = false):Vector.<Card> {
         var card:Card;
@@ -95,7 +110,6 @@ public class EnemyDeck extends Deck {
     }
 
     override public function addCard (cardData:CardData, animation:Boolean = true) :Card {
-        trace ('addCard');
 		
 		var card:Card = new Card (cardData);
         card.graphics.clear();
@@ -113,6 +127,34 @@ public class EnemyDeck extends Deck {
 		return card;
 
     }
+	
+	public function centerize () :void {
+		centerizeCollodion (false);
+	}
+
+	
+	public function newCard (cardData:CardData, animation:Boolean = true) :void {
+		var card:Card = new Card (cardData);
+		card.graphics.clear();
+		while (card.numChildren) card.removeChildAt (0);
+        card.addChild (card.getSmallShirt());
+        cardsStack.addChild (card);
+		
+		sortCollodion(0, false);
+		centerizeCollodion (false);
+		
+		if (animation) {
+			var yCof:int = card.y;
+			card.y += 100;
+			TweenLite.to (card, 0.5, { y:yCof, ease:Expo.easeOut, onComplete:onNewCardComplete});
+		} else {
+			dispatchEvent(new ScenarioEvent(ScenarioEvent.ACTION));
+		}
+	}
+		
+	private function onNewCardComplete () :void {
+		dispatchEvent(new ScenarioEvent(ScenarioEvent.ACTION));
+	}
 	
 	public function changeCard (card:Card, cardData:CardData) :Card {
 						
@@ -143,6 +185,14 @@ public class EnemyDeck extends Deck {
 			sortCollodion();
 			centerizeCollodion ();
 		}
+	}
+	
+	public function destroyCard(card:Card) :void {
+		if (cardsStack.contains(card)) {
+			cardsStack.removeChild(card);
+		}
+		sortCollodion();
+		centerizeCollodion ();
 	}
 
 	override public function sort(endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false):void 

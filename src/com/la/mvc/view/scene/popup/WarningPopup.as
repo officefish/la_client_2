@@ -32,8 +32,6 @@ package com.la.mvc.view.scene.popup
 			_confirmCallBack = confirmCallback;
 			_cancelCallback = cancelCallback;
 			
-			trace (_confirmCallBack);
-			
 			graphics.beginFill (0xEEEEEE, 1);
 			graphics.drawRect (0, 0, 450, 200);
 			graphics.endFill();

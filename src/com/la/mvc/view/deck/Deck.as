@@ -11,8 +11,6 @@ import flash.display.Sprite;
 public class Deck extends Sprite implements IDeck {
 
     protected var cardsStack:Sprite;
-    protected var _price:int = 0;
-    protected var _sales:Array;
     protected var stageWidth:int;
     protected var stageHeight:int;
     protected var scene:IScene;
@@ -31,12 +29,7 @@ public class Deck extends Sprite implements IDeck {
         this.stageWidth = stageWidth;
         this.stageHeight = stageHeight;
     }
-    public function set price (value:int) :void {
-        this._price = value;
-    }
-    public function get price () :int {
-        return _price;
-    }
+   
 
     public function get shiftX () :int {
         return 0;
@@ -45,14 +38,20 @@ public class Deck extends Sprite implements IDeck {
     public function setScene (scene:IScene) :void {
         this.scene = scene;
     }
+	
+	public function clear () :void {
+		
+	}
 
-    public function unblock (endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
+    /*
+	public function unblock (endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
 
     }
 
     public function block () :void {
 
     }
+	*/
 	
 	public function sort (endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false):void {
 		

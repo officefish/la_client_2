@@ -14,6 +14,7 @@ import com.la.mvc.view.card.Card;
 import com.la.mvc.view.scene.IScene;
 import com.la.mvc.view.token.Token;
 import com.la.mvc.model.CardData;
+import flash.display.DisplayObjectContainer;
 import flash.filters.BlurFilter;
 import com.la.mvc.view.token.Token;
 import flash.display.DisplayObject;
@@ -34,6 +35,8 @@ public class Field extends Sprite implements IField {
 
     private var playerPriceWidget:PriceWidget;
     private var opponentPriceWidget:PriceWidget;
+	
+	private var overloadWidget:OverloadWidget;
 
 
     private var playerRow:UnitRow;
@@ -44,6 +47,9 @@ public class Field extends Sprite implements IField {
 	private var actualToken:Token;
 	private var _sygnal:Boolean = false;
 	private var scene:IScene;
+	
+	private var clientCardsWidget:DeckWidget;
+	private var opponentCardsWidget:DeckWidget;
 	
 	private function set sygnal (value:Boolean) :void {
 		this._sygnal = value;
@@ -56,10 +62,6 @@ public class Field extends Sprite implements IField {
 	public function setScene (scene:IScene) :void {
 		this.scene = scene;
 	}
-
-    public function clear () :void {
-        while (numChildren) removeChildAt(0);
-    }
 
     public function resize (stageWidth:int, stageHeight:int) :void {
         this.stageWidth = stageWidth;
@@ -78,7 +80,12 @@ public class Field extends Sprite implements IField {
         playerPriceWidget.x = this.width - playerPriceWidget.width;
         playerPriceWidget.y = stageHeight - 90;
         addChild (playerPriceWidget);
-
+		
+		overloadWidget = new OverloadWidget ();
+		overloadWidget.x = playerPriceWidget.x;
+		overloadWidget.y = playerPriceWidget.y + playerPriceWidget.height;
+		addChild(overloadWidget);
+		
         opponentPriceWidget = new PriceWidget();
         opponentPriceWidget.x = this.width - opponentPriceWidget.width;
         opponentPriceWidget.y = 40;
@@ -93,7 +100,33 @@ public class Field extends Sprite implements IField {
         playerRow.y = 260;
         playerRow.x = (this.width - (UnitRow.PADDING + Token.WIDTH)) / 2;
         addChild(playerRow);
+		
+		clientCardsWidget = new DeckWidget();
+		clientCardsWidget.x = (this.width - clientCardsWidget.width);
+		clientCardsWidget.y = stepButton.y + 80;
+		addChild(clientCardsWidget)
+		
+		opponentCardsWidget = new DeckWidget();
+		opponentCardsWidget.x = clientCardsWidget.x;
+		opponentCardsWidget.y = stepButton.y - 60;
+		addChild(opponentCardsWidget)
+		
     }
+	
+	public function clear () :void {
+		while (this.numChildren) this.removeChildAt(0);
+		removeAllTokens();
+		clientCardsWidget.clear();
+		opponentCardsWidget.clear();
+		playerPriceWidget.clear();
+		opponentPriceWidget.clear();
+		resize(this.stageWidth, this.stageHeight);
+	}
+	
+	public function calculateCards(clientCount:int, opponentCount:int) :void {
+		clientCardsWidget.setCount(clientCount);
+		opponentCardsWidget.setCount(opponentCount);
+	}
 
     public function setBackground (background:IBackground) :void {
 
@@ -124,12 +157,20 @@ public class Field extends Sprite implements IField {
         stepButton.disable();
     }
 
-    public function setPlayerPrice (value:int,  endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
-        playerPriceWidget.setPrice(value);
+    public function setPlayerPrice (value:int,  endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false, overload:int = 0) :void {
+        playerPriceWidget.setPrice(value, overload);
 		if (sygnalFlag) {
 			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
 		}
     }
+	
+	public function setOverload (price:int, overload:int) :void {
+		overloadWidget.drawOwerload(price, overload);
+	}
+	
+	public function clearOverload () :void {
+		overloadWidget.clear();
+	}
 	
 	public function clearPlayerPrice() :void {
 		 playerPriceWidget.setPrice(0);
@@ -308,6 +349,19 @@ public class Field extends Sprite implements IField {
 
         return new Point (xPos, unitRow.y);
     }
+	
+	public function calculateX (attachment:Boolean, index:int) :int {
+		var unitRow:UnitRow;
+		if (attachment) {
+			unitRow = playerRow; 
+		} else {
+			unitRow = opponentRow;
+		}
+		
+		var result:int = (UnitRow.PADDING + Token.WIDTH) * index;
+		result += (this.width - ((UnitRow.PADDING * (unitRow.numChildren - 1)) + (Token.WIDTH * unitRow.numChildren))) / 2;
+		return result;
+	}
 
     public function getVisibleTokens (row:UnitRow) :Array {
         var arr:Array = [];
@@ -320,6 +374,14 @@ public class Field extends Sprite implements IField {
         }
         return arr;
     }
+	
+	public function getUnitsNumChildren (playerFlag:Boolean = true) :int {
+		if (playerFlag) {
+			return playerRow.numChildren;
+		} else {
+			return opponentRow.numChildren;
+		}
+	}
 	
 	public function placeUnitRowPosition () :void {
 		playerRow.y = stageHeight / 2 + 40;
@@ -379,7 +441,10 @@ public class Field extends Sprite implements IField {
         
     }
 	
-	public function addToken (attachment:Boolean, cardData:CardData, position:int) :void {
+	public function addToken (attachment:Boolean, cardData:CardData, position:int, endAnimationFlag:Boolean = true , sygnalFlag:Boolean = true) :void {
+		
+		configureSygnal (endAnimationFlag, sygnalFlag);	
+		
 		var playingCard:Card = new Card (cardData);
         actualToken = new Token (playingCard, !attachment);
 		actualToken.alpha = 0;
@@ -395,9 +460,27 @@ public class Field extends Sprite implements IField {
 		}
 	}
 	
+	public function getToken(attachment:Boolean, position:int) :IToken {
+		if (attachment) {
+			return (playerRow as DisplayObjectContainer).getChildAt(position) as IToken;
+		} else {
+			return (opponentRow as DisplayObjectContainer).getChildAt(position) as IToken;
+		}
+	}
+	
 	private function addTokenComplete () :void {
-		actualToken.alpha = 1;
-		dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
+		for (var i:int = 0; i < playerRow.numChildren; i ++) {
+			var _do:DisplayObject = playerRow.getChildAt(i);
+			_do.alpha = 1;
+		}
+		for (i = 0; i < opponentRow.numChildren; i ++) {
+				_do = opponentRow.getChildAt(i);
+			_do.alpha = 1;
+		}
+		if (sygnal) {
+			sygnal = false;
+			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
+		}
 	}
 	
 	public function getTokenIndex (token:DisplayObject, opponentFlag:Boolean = false) :int {
@@ -545,13 +628,51 @@ public class Field extends Sprite implements IField {
 			dispatchEvent (new ScenarioEvent (ScenarioEvent.ACTION));
 		}
 	}
+	public function remove(token:DisplayObject) :void {
+		if (playerRow.contains(token)) {
+			playerRow.removeChild(token);
+		} 
+		if (opponentRow.contains(token)) {
+			opponentRow.removeChild(token);
+		}
+		if ((token as IToken).getMirror().parent) {
+			(token as IToken).getMirror().parent.removeChild((token as IToken).getMirror());
+		}
+	}
+	
+	public function removeAllTokens() :void {
+		while (playerRow.numChildren) {
+			playerRow.removeChildAt(0);
+		}
+		while (opponentRow.numChildren) {
+			opponentRow.removeChildAt(0);
+		}
+	}
+	
+	
+	
+	public function sortAndCenterize() :void {
+		sortUnitRow (playerRow);
+		centerizeRow (playerRow);
+		sortUnitRow (opponentRow);
+		centerizeRow (opponentRow);
+	}
+	
 	public function removeToken (index:int, playerFlag:Boolean, endAnimationFlag:Boolean = false, sygnalFlag:Boolean = false) :void {
 		configureSygnal (endAnimationFlag, sygnalFlag);
 		if (playerFlag) {
+			var token:IToken = playerRow.getChildAt(index) as IToken;
+			if (token.getMirror().parent) {
+				token.getMirror().parent.removeChild(token.getMirror());
+			}
 			playerRow.removeChildAt(index);
 			sortUnitRow (playerRow);
 			centerizeRow (playerRow, onEndRemove);
 		} else {
+			var token:IToken = opponentRow.getChildAt(index) as IToken;
+			if (token.getMirror().parent) {
+				token.getMirror().parent.removeChild(token.getMirror());
+			}
 			opponentRow.removeChildAt(index);
 			sortUnitRow(opponentRow);
 			centerizeRow(opponentRow, onEndRemove);

@@ -7,6 +7,11 @@ import com.la.event.ApiServiceEvent;
 import com.la.event.CardEvent;
 import com.la.event.CollectionEvent;
 import com.la.event.DeckEvent;
+import com.la.event.HeroesEvent;
+import com.la.mvc.controller.achieves.AchievesListInitCommand;
+import com.la.mvc.controller.achieves.DragAchieveCardCommand;
+import com.la.mvc.controller.achieves.DragAchieveSlotCommand;
+import com.la.mvc.controller.achieves.RequestEditAchievesCommand;
 import com.la.mvc.controller.collection.CardCreatedCommand;
 import com.la.mvc.controller.collection.CardDestroyedCommand;
 import com.la.mvc.controller.collection.CraftReadyCommand;
@@ -14,15 +19,48 @@ import com.la.mvc.controller.collection.FullCollectionInitCommand;
 import com.la.mvc.controller.collection.RequestCraftCardCommand;
 import com.la.mvc.controller.collection.RequestDestroyCardCommand;
 import com.la.mvc.controller.collection.RequestFullCollectionCommand;
+import com.la.mvc.controller.deck.ClearOverloadCommand;
+import com.la.mvc.controller.deck.DropCardsCommand;
+import com.la.mvc.controller.deck.OverloadCommand;
+import com.la.mvc.controller.intro.SelectHeroesCommand;
 import com.la.mvc.controller.loading.PreloadingCommand;
 import com.la.mvc.controller.loading.PreloadingCompleteCommand;
 import com.la.mvc.controller.match.attack.FreezeAttackCommand;
+import com.la.mvc.controller.match.attack.MassiveKillCommand;
+import com.la.mvc.controller.match.attack.PassiveAttackForSeveralTargets;
+import com.la.mvc.controller.match.deck.AttritionCommand;
+import com.la.mvc.controller.match.deck.BackSeveralTokensToHandCommand;
+import com.la.mvc.controller.match.deck.BurnCardCommand;
 import com.la.mvc.controller.match.deck.CancelSpellSelectCommand;
+import com.la.mvc.controller.match.deck.CancelSpellSelectForEffectCommand;
+import com.la.mvc.controller.match.deck.CopyUnitCardsToHandCommand;
+import com.la.mvc.controller.match.deck.drawing.SkipDrawingCommand;
+import com.la.mvc.controller.match.deck.drawing.StartDrawingCommand;
 import com.la.mvc.controller.match.deck.EndSpellSelectCommand;
+import com.la.mvc.controller.match.deck.EndSpellSelectForEffectCommand;
+import com.la.mvc.controller.match.deck.GlowCardsCommand;
+import com.la.mvc.controller.match.deck.ShuffleTokenIntoDeckCommand;
 import com.la.mvc.controller.match.deck.SpellSelectCommand;
+import com.la.mvc.controller.match.deck.WrongSpellSelectTargetCommand;
+import com.la.mvc.controller.match.EndMatchCommand;
+import com.la.mvc.controller.match.RequestEndMatchCommand;
 import com.la.mvc.controller.match.scenario.actions.ActivateWidgetCommand;
+import com.la.mvc.controller.match.scenario.actions.ChangeManaCommand;
+import com.la.mvc.controller.match.scenario.actions.DamageCommand;
+import com.la.mvc.controller.match.scenario.actions.DecreaseSpellCommand;
 import com.la.mvc.controller.match.scenario.actions.EnticeTokenCommand;
+import com.la.mvc.controller.match.scenario.actions.IncreaseSpellCommand;
 import com.la.mvc.controller.match.scenario.actions.ReplaceCardAndToken;
+import com.la.mvc.controller.match.scenario.actions.SelectEffectCommand;
+import com.la.mvc.controller.match.scenario.actions.SelectGuiseCommand;
+import com.la.mvc.controller.match.scenario.actions.SelectTargetForEffectCommand;
+import com.la.mvc.controller.match.scenario.actions.SelectTargetForEffectCommand;
+import com.la.mvc.controller.match.scenario.actions.UnitFromHandCommand;
+import com.la.mvc.controller.match.scenario.glow.ActivateDrawingSeriesCommand;
+import com.la.mvc.controller.match.scenario.glow.DeactivateDrawingSeriesCommand;
+import com.la.mvc.controller.match.select.ResponseEffectSelectedCommand;
+import com.la.mvc.controller.match.select.ResponseGuiseSelectedCommand;
+import com.la.mvc.view.card.AttritionCard;
 
 import com.la.event.FieldEvent;
 import com.la.event.LobbyEvent;
@@ -142,6 +180,7 @@ public class BootstrapController {
         commandMap.mapEvent(IntroEvent.SELECT_MARKET, SelectMarketCommand, IntroEvent);
         commandMap.mapEvent(IntroEvent.SELECT_QUEST, SelectQuestCommand, IntroEvent);
         commandMap.mapEvent(IntroEvent.SELECT_ARENA, SelectArenaCommand, IntroEvent);
+		commandMap.mapEvent(IntroEvent.SELECT_HEROES, SelectHeroesCommand, IntroEvent);
         commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
 		
 		// api service
@@ -152,7 +191,7 @@ public class BootstrapController {
 		commandMap.mapEvent(ApiServiceEvent.COLLECTION_INIT, CollectionInitCommand, ApiServiceEvent); 
 		commandMap.mapEvent(CardEvent.COLLECTION_CLICK, PreviewCollectionCardCommand, CardEvent);
 		commandMap.mapEvent(CollectionEvent.CLOSE, CloseCollectionCommand, CollectionEvent);
-		commandMap.mapEvent(CollectionEvent.NEW_DECK, RequestHeroesCommand, CollectionEvent);
+		commandMap.mapEvent(CollectionEvent.NEW_DECK, RequestHeroesCommand);
 		commandMap.mapEvent(ApiServiceEvent.HEROES_INIT, HeroesInitCommand, ApiServiceEvent);
 		commandMap.mapEvent(CollectionEvent.SELECT_HERO, NewDeckCommand, CollectionEvent);
 		commandMap.mapEvent(ApiServiceEvent.NEW_DECK_INIT, DeckInitCommand, ApiServiceEvent);
@@ -172,6 +211,13 @@ public class BootstrapController {
 		commandMap.mapEvent(ApiServiceEvent.CARD_CREATED, CardCreatedCommand, ApiServiceEvent);
 		commandMap.mapEvent(CollectionEvent.DESTROY_CARD, RequestDestroyCardCommand, CollectionEvent);
         commandMap.mapEvent(ApiServiceEvent.CARD_DESTROYED, CardDestroyedCommand, ApiServiceEvent);
+		
+		// heroes
+		commandMap.mapEvent(HeroesEvent.CHOOSE_HERO_FOR_CRAFT, RequestHeroesCommand);
+		commandMap.mapEvent(HeroesEvent.SELECT_HERO, RequestEditAchievesCommand, HeroesEvent);
+		commandMap.mapEvent(ApiServiceEvent.ACHIEVES_LIST_INIT, AchievesListInitCommand, ApiServiceEvent);
+		commandMap.mapEvent(CardEvent.DRAG_ACHIEVE_CARD, DragAchieveCardCommand, CardEvent);
+		commandMap.mapEvent(CardEvent.DRAG_ACHIEVE_SLOT, DragAchieveSlotCommand, CardEvent);
 		
 		// deckList
         commandMap.mapEvent(DeckEvent.STARTUP_DECK_LIST, StartupDeckListCommand, DeckEvent);
@@ -267,7 +313,47 @@ public class BootstrapController {
 		commandMap.mapEvent(DeckEvent.SPELL_SELECT, SpellSelectCommand, DeckEvent); 
 		commandMap.mapEvent(DeckEvent.END_SPELL_SELECT, EndSpellSelectCommand, DeckEvent);
 		commandMap.mapEvent(DeckEvent.CANSEL_SPELL_SELECT, CancelSpellSelectCommand, DeckEvent);
-
-    }
+		commandMap.mapEvent(DeckEvent.WRONG_SPELL_SELECT_TARGET, WrongSpellSelectTargetCommand, DeckEvent);
+		
+		// increase/decrease spell mixin
+		commandMap.mapEvent(SceneEvent.INCREASE_SPELL, IncreaseSpellCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.DECREASE_SPELL, DecreaseSpellCommand, SceneEvent);
+		
+		commandMap.mapEvent(SceneEvent.CHANGE_MANA, ChangeManaCommand, SceneEvent); 
+		commandMap.mapEvent(SceneEvent.PASSIVE_ATTACK_FOR_SEVERAL_TARGETS, PassiveAttackForSeveralTargets, SceneEvent);
+		
+		commandMap.mapEvent(DeckEvent.START_DRAWING, StartDrawingCommand, DeckEvent);
+		commandMap.mapEvent(DeckEvent.SKIP_DRAWING, SkipDrawingCommand, DeckEvent);
+		commandMap.mapEvent(DeckEvent.GLOW_CARDS, GlowCardsCommand, DeckEvent);
+		
+		commandMap.mapEvent(SceneEvent.ACTIVATE_DRAWING_SERIES, ActivateDrawingSeriesCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.DEACTIVATE_DRAWING_SERIES, DeactivateDrawingSeriesCommand, SceneEvent);
+		
+		commandMap.mapEvent(SceneEvent.OVERLOAD, OverloadCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.CLEAR_OVERLOAD, ClearOverloadCommand, SceneEvent);
+		
+		commandMap.mapEvent(SceneEvent.DROP_CARDS, DropCardsCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.SELECT_EFFECT, SelectEffectCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.EFFECT_SELECTED, ResponseEffectSelectedCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.SELECT_TARGET_FOR_EFFECT, SelectTargetForEffectCommand, SceneEvent);
+		commandMap.mapEvent(DeckEvent.CANCEL_SPELL_SELECT_FOR_EFFECT, CancelSpellSelectForEffectCommand, DeckEvent);
+		commandMap.mapEvent(DeckEvent.END_SPELL_SELECT_FOR_EFFECT, EndSpellSelectForEffectCommand, DeckEvent);
+		
+		commandMap.mapEvent(SceneEvent.SELECT_GUISE, SelectGuiseCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.GUISE_SELECTED, ResponseGuiseSelectedCommand, SceneEvent);
+		
+		commandMap.mapEvent(SceneEvent.DAMAGE, DamageCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.UNIT_FROM_HAND, UnitFromHandCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.MASSIVE_KILL, MassiveKillCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.SHUFFLE_UNIT_INTO_DECK, ShuffleTokenIntoDeckCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.BACK_SEVERAL_TOKENS_TO_HAND, BackSeveralTokensToHandCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.COPY_UNIT_CARDS_TO_HAND, CopyUnitCardsToHandCommand, SceneEvent);
+		
+		commandMap.mapEvent(SceneEvent.BURN_CARD, BurnCardCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.ATTRITION, AttritionCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.END_MATCH, RequestEndMatchCommand, SceneEvent);
+		commandMap.mapEvent(MatchServiceEvent.END_MATCH, EndMatchCommand, MatchServiceEvent);
+		
+		}
 }
 }

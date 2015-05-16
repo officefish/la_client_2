@@ -18,6 +18,7 @@ public class MatchServiceEvent extends Event {
 	public static const PLAYER_STEP:String = 'player_step';
 	public static const SCENARIO:String = 'scenario';
 	public static const END_STEP_TIMER:String = 'endStepTimer';
+	public static const END_MATCH:String = 'end_match_in_service';
 	
     public function MatchServiceEvent(type:String,  data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
         this.data = data;

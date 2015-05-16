@@ -76,6 +76,11 @@ public class Hero extends Sprite implements IHero{
 		freezeSprite.mouseEnabled = false;
 	
     }
+	
+	public function clear () :void {
+		while (this.numChildren) this.removeChildAt(0);
+		freezeFlag = false;
+	}
 
     public function set isEnemy (value:Boolean) :void {
         enemy = value;
@@ -227,6 +232,21 @@ public class Hero extends Sprite implements IHero{
 	
 	public function isFreeze () :Boolean {
 		return freezeFlag;
+	}
+	
+	public function activateSpellInvisible () :void {
+     
+    }
+    public function deactivateSpellInvisible () :void {
+           
+    }
+	
+	public function activateSpellUp() :void {
+		
+	}
+	
+	public function deactivateSpellUp () :void {
+		
 	}
 
 
