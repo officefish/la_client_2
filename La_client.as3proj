@@ -4,12 +4,12 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="..\server\la_server\static\swf\laclient.swf" />
+    <movie path="bin\laclient.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="11" />
-    <movie minorVersion="3" />
+    <movie version="14" />
+    <movie minorVersion="0" />
     <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
     <movie preferredSDK="Flex 4.6.0, AIR 3.1;4.6.0, 3.1;" />

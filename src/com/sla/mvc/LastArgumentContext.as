@@ -20,10 +20,14 @@ package com.sla.mvc
 		
 		override public function startup():void 
 		{
+			
 			bootstrap();
 			super.startup();
 		}
 		
+		/*
+		 *  init model,view, controller, inject classes and servises 
+		 */
 		private function bootstrap () :void {
 			new BootstrapClasses(injector);
 			new BootstrapController(commandMap);

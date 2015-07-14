@@ -17,7 +17,7 @@ package com.sla
 		{
 			super();
 			
-			// configure context
+			// configure starling context
 			context = new LastArgumentContext(this);
 			
 		}

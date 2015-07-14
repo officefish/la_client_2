@@ -1,6 +1,7 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	import org.robotlegs.core.IInjector;
+	import com.sla.mvc.view.intro.*;
 	/**
 	 * ...
 	 * @author inozemcev
@@ -10,7 +11,7 @@ package com.sla.mvc.controller.bootstrap
 		
 		public function BootstrapClasses(injector:IInjector)  
 		{
-			
+			injector.mapClass(IIntro, Intro);
 		}
 		
 	}
