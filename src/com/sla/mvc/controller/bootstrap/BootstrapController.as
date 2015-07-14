@@ -1,6 +1,10 @@
 package com.sla.mvc.controller.bootstrap 
 {
+	import com.sla.event.LAContextEvent;
+	import com.sla.mvc.controller.intro.StartupIntroCommand;
+	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.core.ICommandMap;
+	import com.sla.mvc.controller.init.*;
 	/**
 	 * ...
 	 * @author inozemcev
@@ -9,13 +13,24 @@ package com.sla.mvc.controller.bootstrap
 	{
 		public function BootstrapController(commandMap:ICommandMap)  
 		{
-			// Launch application;
+			
+			// -- Initialisation --
+			/* All initialisation realise in bootstrap classes but here we can configure some special things
+			 * for example add some flashvars to model, configure service links, starling settings and so on 
+			 */
 			// init model
-			//commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitModelCommand, ContextEvent);
+			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitModelCommand, ContextEvent);
 			// init services
-			//commandMap.mapEvent(GameContextEvent.MODEL_INIT_COMPLETE, InitServiceCommand, GameContextEvent);
+			commandMap.mapEvent(LAContextEvent.MODEL_INIT, InitServiceCommand, LAContextEvent);
 			// init view
-			//commandMap.mapEvent(GameContextEvent.SERVICE_INIT_COMPLETE, InitViewCommand, GameContextEvent);
+			commandMap.mapEvent(LAContextEvent.SERVICE_INIT, InitViewCommand, LAContextEvent);
+			
+			// -- Intro --
+			/*
+			 *  Finally we launch our intro menu 
+			 */  
+			
+			commandMap.mapEvent(LAContextEvent.VIEW_INIT, StartupIntroCommand);
 		}
 		
 	}

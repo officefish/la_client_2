@@ -26,7 +26,7 @@ import org.robotlegs.mvcs.StarlingContext;
 	 * ...
 	 * @author 
 	 */
-    [SWF(frameRate = 60, width="800", height="600", backgroundColor="#000000")]
+    [SWF(frameRate = 60, width="800", height="600", backgroundColor="#0")]
     public class Main extends Sprite
 	{
 		//private var context:GameContext;
@@ -52,6 +52,7 @@ import org.robotlegs.mvcs.StarlingContext;
 			
 			// new client with starling now alive!!!
 			_starling = new Starling(LastArgumentGame, stage);
+			_starling.start();
 			
 			
 			

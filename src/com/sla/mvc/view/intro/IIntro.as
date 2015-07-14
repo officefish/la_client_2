@@ -8,7 +8,8 @@ package com.sla.mvc.view.intro
 	 */
 	public interface IIntro 
 	{
-		function asStarlingSprite() :Sprite;
+		function get asStarlingSprite() :Sprite;
+		function resize(stageWidth:int, stageHeight:int) :void; 
 	}
 	
 }
