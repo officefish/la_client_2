@@ -31,6 +31,7 @@ package com.la.mvc.view.card
 		private var descriptionLabel:TextField;
 		private var mirrorDescriptionLabel:TextField;
 		private var typeLabel:TextField;
+		private var countLabel:TextField;
 		
 		private var copy:Sprite;
 		
@@ -83,6 +84,15 @@ package com.la.mvc.view.card
 			blockSprite.graphics.beginFill(0x222222, 0.5);
 			blockSprite.graphics.drawRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
 			blockSprite.graphics.endFill();
+			
+			countLabel = CardFormater.getCountLabel(20);
+			countLabel.y = CARD_HEIGHT;
+			countLabel.x = (CARD_WIDTH - countLabel.width) / 2;
+			if (data.count > 1) {
+				countLabel.text = 'x' + data.count;
+				body.addChild(countLabel);
+			}
+			
 		}
 		
 		public function block() :void {

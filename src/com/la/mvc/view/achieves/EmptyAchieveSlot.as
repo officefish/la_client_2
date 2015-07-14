@@ -19,6 +19,10 @@ package com.la.mvc.view.achieves
 			graphics.endFill();
 		}
 		
+		public function getId():int {
+			return id;
+		}
+		
 	}
 
 }

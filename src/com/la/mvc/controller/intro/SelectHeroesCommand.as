@@ -22,9 +22,8 @@ package com.la.mvc.controller.intro
 		{
 
 			rootModel.currentState = GameState.HEROES; 
-			
-			contextView.addChild(achieves);
 			achieves.resize(contextView.stage.stageWidth, contextView.stage.stageHeight);
+			achieves.clear();
 			contextView.addChild(achieves);
 			
 			dispatch(new HeroesEvent(HeroesEvent.CHOOSE_HERO_FOR_CRAFT));

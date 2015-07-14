@@ -31,7 +31,12 @@ public class DeckEvent extends Event {
 	
 	public static const CANCEL_SPELL_SELECT_FOR_EFFECT:String = 'cancelSpellSelectForEffect';
 	public static const END_SPELL_SELECT_FOR_EFFECT:String = 'endSpellSelectForEffect';
-
+	
+	public static const PREVIEW_FIELD_DECK_SLOT:String = 'previewFieldDeckSlot';
+	public static const FIELD_DECK_SLOT_DOWN:String = 'fieldDeckSlotDown';
+	public static const REPLACE_DECK_ITEMS:String = 'replaceDeckItems';
+	public static const WRONG_ACHIEVE_TARGET:String = 'wrongAchieveTarget';
+	
     private var _data:Object;
 
     public function DeckEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {

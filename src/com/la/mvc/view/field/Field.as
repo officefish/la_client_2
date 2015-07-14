@@ -2,15 +2,18 @@
  * Created by root on 10/24/14.
  */
 package com.la.mvc.view.field {
+import com.la.mvc.controller.collection.requests.RequestNewDeckCommand;
 import com.demonsters.debugger.MonsterDebugger;
 import com.greensock.TimelineLite;
 import com.greensock.TweenLite;
 import com.greensock.easing.Expo;
 import com.greensock.easing.ExpoOut;
 import com.hurlant.util.der.OID;
-import com.la.event.FieldEvent;
 import com.la.event.ScenarioEvent;
+import com.la.mvc.controller.collection.requests.RequestNewDeckCommand;
+import com.la.mvc.model.FieldAchieveData;
 import com.la.mvc.view.card.Card;
+import com.la.mvc.view.field.deck.FieldDeckWidget;
 import com.la.mvc.view.scene.IScene;
 import com.la.mvc.view.token.Token;
 import com.la.mvc.model.CardData;
@@ -50,6 +53,17 @@ public class Field extends Sprite implements IField {
 	
 	private var clientCardsWidget:DeckWidget;
 	private var opponentCardsWidget:DeckWidget;
+	
+	private var playerHeroPosition:Point;
+	private var opponentHeroPosition:Point;
+	
+	private var playerAchievesPositions:Vector.<Point>;
+	private var opponentAchievesPositions:Vector.<Point>;
+	
+	private var playerAchieveSlots:Object;
+	private var opponentAchieveSlots:Object;
+	
+	private var playerDeckWidget:FieldDeckWidget;
 	
 	private function set sygnal (value:Boolean) :void {
 		this._sygnal = value;
@@ -113,6 +127,75 @@ public class Field extends Sprite implements IField {
 		
     }
 	
+	public function initDeck(value:Array) :void {
+		if (!playerDeckWidget) {
+			playerDeckWidget = new FieldDeckWidget();
+		}
+		addChild(playerDeckWidget);
+		playerDeckWidget.initDeck(value);
+		playerDeckWidget.x = playerPriceWidget.x + 3;
+		playerDeckWidget.y = playerPriceWidget.y - 110;
+	}
+	
+	public function getDeckWidget() :FieldDeckWidget {
+		return playerDeckWidget;
+	}
+		
+	
+	public function initAchieves (playerAchieves:Vector.<FieldAchieveData>, 
+	opponentAchieves:Vector.<FieldAchieveData>, playerHeroPosition:Point, opponentHeroPosition:Point) :void {
+		playerAchieveSlots = { }
+		opponentAchieveSlots = {}
+		this.playerHeroPosition = playerHeroPosition;
+		this.opponentHeroPosition = opponentHeroPosition;
+		initAchievesPositions();
+		var slot:FieldAchieveSlot;
+		var position:Point;
+		var achieveData:FieldAchieveData;
+		for (var i:int = 0; i < playerAchieves.length; i ++) {
+			achieveData = playerAchieves[i]
+			slot = new FieldAchieveSlot(achieveData);
+			position = playerAchievesPositions[achieveData.position];
+			slot.x = position.x;
+			slot.y = position.y;
+			playerAchieveSlots[achieveData.position] = slot;
+			addChild(slot);
+		}
+		for (i = 0; i < opponentAchieves.length; i ++) {
+			achieveData = opponentAchieves[i]
+			slot = new FieldAchieveSlot(achieveData, false);
+			position = opponentAchievesPositions[achieveData.position];
+			slot.x = position.x;
+			slot.y = position.y;
+			opponentAchieveSlots[achieveData.position] = slot;
+			addChild(slot);
+		}
+	}
+	
+	private function initAchievesPositions() :void {
+		playerAchievesPositions = new Vector.<Point>();
+		playerAchievesPositions.push(new Point(playerHeroPosition.x + 100, playerHeroPosition.y + 15));
+		playerAchievesPositions.push(new Point(playerHeroPosition.x - 80, playerHeroPosition.y + 15));
+		playerAchievesPositions.push(new Point(playerHeroPosition.x - 160, playerHeroPosition.y + 15));
+		playerAchievesPositions.push(new Point(playerHeroPosition.x - 240, playerHeroPosition.y + 15));
+
+		opponentAchievesPositions = new Vector.<Point>();
+		opponentAchievesPositions.push(new Point(opponentHeroPosition.x + 100, opponentHeroPosition.y + 5));
+		opponentAchievesPositions.push(new Point(opponentHeroPosition.x - 80, opponentHeroPosition.y + 5));
+		opponentAchievesPositions.push(new Point(opponentHeroPosition.x - 160, opponentHeroPosition.y + 5));
+		opponentAchievesPositions.push(new Point(opponentHeroPosition.x - 240, opponentHeroPosition.y + 5));
+	}
+	
+	public function getAchieveSlot (position:int, playerFlag:Boolean) :FieldAchieveSlot {
+		var slots:Object;
+		if (playerFlag) {
+			slots = playerAchieveSlots;
+		} else {
+			slots = opponentAchieveSlots;
+		}
+		return slots[position];
+	}
+	
 	public function clear () :void {
 		while (this.numChildren) this.removeChildAt(0);
 		removeAllTokens();
@@ -121,6 +204,9 @@ public class Field extends Sprite implements IField {
 		playerPriceWidget.clear();
 		opponentPriceWidget.clear();
 		resize(this.stageWidth, this.stageHeight);
+		if (playerDeckWidget) {
+			playerDeckWidget.clear();
+		}
 	}
 	
 	public function calculateCards(clientCount:int, opponentCount:int) :void {

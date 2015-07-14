@@ -21,6 +21,8 @@ public class CollectionModel extends Actor {
     private var cards:Vector.<CardData>
 	
 	private var _cardPreview:Bitmap;
+	
+	private var _previewFunction:Function;
 
     public function CollectionModel() {
 
@@ -91,6 +93,14 @@ public class CollectionModel extends Actor {
 	
 	public function getPreview () :Bitmap {
 		return _cardPreview;
+	}
+	
+	public function setPreviewFunction (value:Function) :void {
+		_previewFunction = value;
+	}
+	
+	public function getPreviewFunction () :Function {
+		return _previewFunction;
 	}
 }
 }

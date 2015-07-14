@@ -13,7 +13,8 @@ public class CardEvent extends Event {
 	public static const DRAG_CARD:String = 'DragCardCollection';
 	public static const DRAG_SLOT:String = 'DragSlotCollection';
 	public static const DRAG_ACHIEVE_CARD:String = 'dragAchieveCard';
-	public static const DRAG_ACHIEVE_SLOT:String = 'dragAchieveSlot'; 
+	public static const DRAG_ACHIEVE_SLOT:String = 'dragAchieveSlot';
+	public static const CRAFT_ACHIEVE:String = 'craftAchieve';
 
     public function CardEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
         _data = data;

@@ -21,7 +21,7 @@ public class StartupMatchServiceCommand extends Command {
 
     override public function execute():void {
         service.init(matchModel.matchId);
-        service.setUserData({'id':model.userId})
+        service.setUserData({'id':model.lobbyId})
         service.connect();
     }
 }

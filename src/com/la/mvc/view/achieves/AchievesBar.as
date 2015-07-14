@@ -3,6 +3,8 @@ package com.la.mvc.view.achieves
 	import com.la.assets.Assets;
 	import com.transform.Transform;
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.text.AntiAliasType;
@@ -41,6 +43,15 @@ package com.la.mvc.view.achieves
 						
 		}
 		
+		public function addSlot (slot:AchieveSlot, position:int) :void {
+			var eSlot:EmptyAchieveSlot = getSlotById(position);
+			(eSlot as DisplayObjectContainer).addChild(slot); 
+		}
+		
+		private function getSlotById (id:int) :EmptyAchieveSlot {
+			return slots[id];
+		}
+		
 		public function initHero(vocation:int):void {
 			while (this.numChildren) this.removeChildAt(0);
 			
@@ -59,6 +70,7 @@ package com.la.mvc.view.achieves
 				var position:Point = positions[i];
 				slot.x = position.x;
 				slot.y = position.y;
+				slots.push(slot);
 			}
 			
 			if (!labelsInit) {
@@ -124,6 +136,21 @@ package com.la.mvc.view.achieves
 				_labelFormat.align = TextFormatAlign.CENTER;
 			}
 			return _labelFormat;
+		}
+		
+		public function getSetupData() :Array {
+			var data:Array = [] 
+			var slot:EmptyAchieveSlot
+			for (var i:int = 0; i < slots.length; i ++ ) {
+				slot = slots[i] as EmptyAchieveSlot;
+				if (slot.numChildren) {
+					var slotData:Object = { }
+					slotData.position = slot.getId();
+					slotData.achieve = (slot.getChildAt(0) as AchieveSlot).achieveId;
+					data.push(slotData)
+				}
+			}
+			return data;
 		}
 		
 	}

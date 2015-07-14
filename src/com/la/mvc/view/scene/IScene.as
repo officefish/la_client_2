@@ -22,7 +22,7 @@ public interface IScene extends IEventDispatcher{
 
     function setPlayerHero (hero:IHero) :void;
     function setOpponentHero (hero:IHero) :void;
-    function welcomeAnimation () :void;
+    function welcomeAnimation () :Object;
     function darken () :void;
     function lighten (dispatch:Boolean = true) :void;
 	
@@ -35,9 +35,7 @@ public interface IScene extends IEventDispatcher{
 	
 	function block () :void;
 	function stopBlock() :void;
-	
-	
-		
+			
 	function clear ():void;
 	
 	function placeCopy (copy:DisplayObject) :void;

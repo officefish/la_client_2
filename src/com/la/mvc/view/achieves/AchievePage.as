@@ -28,7 +28,7 @@ package com.la.mvc.view.achieves
 			return cardsStack.numChildren;
 		}
 		
-		public function addCard (card:AchieveCard):void {
+		public function addCard (card:Sprite):void {
 			card.x = shiftX;
 			card.y = shiftY;
 			cardsStack.addChild (card);

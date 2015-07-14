@@ -22,9 +22,9 @@ public class StartupLobbyServiceCommand extends Command {
 
 
     override public function execute():void {
-        trace('startupLobbyServiceCommand ' + heroModel.type + ', ' + heroModel.level);
         service.init();
-        service.setUserData({'id':model.userId, 'hero_id':heroModel.heroId, 'deck_id':heroModel.deckId, 'hero_uid':heroModel.type, 'level':heroModel.level});
+		model.lobbyId = Math.round(Math.random() * 50000);
+		service.setUserData({'id':model.lobbyId, 'hero_id':heroModel.heroId, 'deck_id':heroModel.deckId, 'hero_uid':heroModel.type, 'level':heroModel.level});
         service.connect();
     }
 }

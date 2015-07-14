@@ -2,23 +2,42 @@
  * Created by root on 10/23/14.
  */
 package com.la.mvc.controller.bootstrap {
+import com.la.event.AchieveEvent;
 import com.la.event.ActionEvent;
 import com.la.event.ApiServiceEvent;
 import com.la.event.CardEvent;
 import com.la.event.CollectionEvent;
 import com.la.event.DeckEvent;
 import com.la.event.HeroesEvent;
+import com.la.mvc.controller.achieves.AchieveCraftCompleteCommand;
+import com.la.mvc.controller.achieves.AchieveDestroyCompleteCommand;
+import com.la.mvc.controller.achieves.AchievesCraftListInitCommand;
 import com.la.mvc.controller.achieves.AchievesListInitCommand;
+import com.la.mvc.controller.achieves.CloseAchievesCommand;
+import com.la.mvc.controller.achieves.CraftAchievePreviewCommand;
+import com.la.mvc.controller.achieves.DisableAchieveCommand;
 import com.la.mvc.controller.achieves.DragAchieveCardCommand;
 import com.la.mvc.controller.achieves.DragAchieveSlotCommand;
-import com.la.mvc.controller.achieves.RequestEditAchievesCommand;
+import com.la.mvc.controller.achieves.EnableAchieveCommand;
+import com.la.mvc.controller.achieves.IncrementAchieveCommand;
+import com.la.mvc.controller.achieves.InitAchieveTatgetCommand;
+import com.la.mvc.controller.achieves.MatchAchievePreviewCommand;
+import com.la.mvc.controller.achieves.requests.RequestAchievesCraftListCommand;
+import com.la.mvc.controller.achieves.requests.RequestAchieveSetupCommand;
+import com.la.mvc.controller.achieves.requests.RequestActivateAchieveCommand;
+import com.la.mvc.controller.achieves.requests.RequestActivateAchieveTotargetCommand;
+import com.la.mvc.controller.achieves.requests.RequestCraftAchieveCommand;
+import com.la.mvc.controller.achieves.requests.RequestDestroyAchieveCommand;
+import com.la.mvc.controller.achieves.requests.RequestEditAchievesCommand;
+import com.la.mvc.controller.achieves.WrongAchieveTargetCommand;
 import com.la.mvc.controller.collection.CardCreatedCommand;
 import com.la.mvc.controller.collection.CardDestroyedCommand;
-import com.la.mvc.controller.collection.CraftReadyCommand;
+import com.la.mvc.controller.collection.requests.RequestCraftReadyCommand;
 import com.la.mvc.controller.collection.FullCollectionInitCommand;
-import com.la.mvc.controller.collection.RequestCraftCardCommand;
-import com.la.mvc.controller.collection.RequestDestroyCardCommand;
-import com.la.mvc.controller.collection.RequestFullCollectionCommand;
+import com.la.mvc.controller.collection.requests.RequestCraftCardCommand;
+import com.la.mvc.controller.collection.requests.RequestCraftReadyCommand;
+import com.la.mvc.controller.collection.requests.RequestDestroyCardCommand;
+import com.la.mvc.controller.collection.requests.RequestFullCollectionCommand;
 import com.la.mvc.controller.deck.ClearOverloadCommand;
 import com.la.mvc.controller.deck.DropCardsCommand;
 import com.la.mvc.controller.deck.OverloadCommand;
@@ -34,11 +53,15 @@ import com.la.mvc.controller.match.deck.BurnCardCommand;
 import com.la.mvc.controller.match.deck.CancelSpellSelectCommand;
 import com.la.mvc.controller.match.deck.CancelSpellSelectForEffectCommand;
 import com.la.mvc.controller.match.deck.CopyUnitCardsToHandCommand;
+import com.la.mvc.controller.match.deck.DragFieldDeckSlotCommand;
 import com.la.mvc.controller.match.deck.drawing.SkipDrawingCommand;
 import com.la.mvc.controller.match.deck.drawing.StartDrawingCommand;
 import com.la.mvc.controller.match.deck.EndSpellSelectCommand;
 import com.la.mvc.controller.match.deck.EndSpellSelectForEffectCommand;
 import com.la.mvc.controller.match.deck.GlowCardsCommand;
+import com.la.mvc.controller.match.deck.PreviewFieldDeckSlotCommand;
+import com.la.mvc.controller.match.deck.ReplaceDeckItemsCommand;
+import com.la.mvc.controller.match.deck.RequestReplaceDeckItemsCommand;
 import com.la.mvc.controller.match.deck.ShuffleTokenIntoDeckCommand;
 import com.la.mvc.controller.match.deck.SpellSelectCommand;
 import com.la.mvc.controller.match.deck.WrongSpellSelectTargetCommand;
@@ -58,6 +81,7 @@ import com.la.mvc.controller.match.scenario.actions.SelectTargetForEffectCommand
 import com.la.mvc.controller.match.scenario.actions.UnitFromHandCommand;
 import com.la.mvc.controller.match.scenario.glow.ActivateDrawingSeriesCommand;
 import com.la.mvc.controller.match.scenario.glow.DeactivateDrawingSeriesCommand;
+import com.la.mvc.controller.match.scenario.ShiftDeckSlotCommand;
 import com.la.mvc.controller.match.select.ResponseEffectSelectedCommand;
 import com.la.mvc.controller.match.select.ResponseGuiseSelectedCommand;
 import com.la.mvc.view.card.AttritionCard;
@@ -78,19 +102,19 @@ import com.la.mvc.controller.collection.DeckInitCommand;
 import com.la.mvc.controller.collection.HeroesInitCommand;
 import com.la.mvc.controller.collection.PreviewCollectionCardCommand;
 import com.la.mvc.controller.collection.RemoveDeckItemCommand;
-import com.la.mvc.controller.collection.NewDeckCommand;
-import com.la.mvc.controller.collection.RequestEditDeckCommand;
-import com.la.mvc.controller.collection.RequestHeroesCommand;
+import com.la.mvc.controller.collection.requests.RequestNewDeckCommand;
+import com.la.mvc.controller.collection.requests.RequestEditDeckCommand;
+import com.la.mvc.controller.collection.requests.RequestHeroesCommand;
 import com.la.mvc.controller.collection.DragCollectionItemCommand;
-import com.la.mvc.controller.collection.RequestRemoveDeckCommand;
+import com.la.mvc.controller.collection.requests.RequestRemoveDeckCommand;
 import com.la.mvc.controller.collection.ResetDeckCommand;
 import com.la.mvc.controller.collection.SaveDeckCommand;
 import com.la.mvc.controller.deck.CardsAddedCommand;
 import com.la.mvc.controller.deck.DeckListInitCommand;
 import com.la.mvc.controller.deck.DeckSelectCommand;
-import com.la.mvc.controller.deck.RequestIntroEditDeckCommand;
-import com.la.mvc.controller.deck.ResquestSelectDeckCommand;
-import com.la.mvc.controller.deck.RequestDeckListCommand;
+import com.la.mvc.controller.deck.requests.RequestIntroEditDeckCommand;
+import com.la.mvc.controller.deck.requests.ResquestSelectDeckCommand;
+import com.la.mvc.controller.deck.requests.RequestDeckListCommand;
 import com.la.mvc.controller.deck.StartupDeckListCommand;
 import com.la.mvc.controller.init.InitModelCommand;
 import com.la.mvc.controller.init.InitServiceCommand;
@@ -193,7 +217,7 @@ public class BootstrapController {
 		commandMap.mapEvent(CollectionEvent.CLOSE, CloseCollectionCommand, CollectionEvent);
 		commandMap.mapEvent(CollectionEvent.NEW_DECK, RequestHeroesCommand);
 		commandMap.mapEvent(ApiServiceEvent.HEROES_INIT, HeroesInitCommand, ApiServiceEvent);
-		commandMap.mapEvent(CollectionEvent.SELECT_HERO, NewDeckCommand, CollectionEvent);
+		commandMap.mapEvent(CollectionEvent.SELECT_HERO, RequestNewDeckCommand, CollectionEvent);
 		commandMap.mapEvent(ApiServiceEvent.NEW_DECK_INIT, DeckInitCommand, ApiServiceEvent);
 		commandMap.mapEvent(CardEvent.DRAG_CARD, DragCollectionItemCommand, CardEvent);
 		commandMap.mapEvent(CollectionEvent.ADD_DECK_ITEM, AddDectItemCommand, CollectionEvent);
@@ -206,7 +230,7 @@ public class BootstrapController {
 		commandMap.mapEvent(ApiServiceEvent.EDIT_DECK_INIT, DeckInitCommand, ApiServiceEvent);
 		commandMap.mapEvent(CollectionEvent.CREATE_CARDS, RequestFullCollectionCommand, CollectionEvent);
 		commandMap.mapEvent(ApiServiceEvent.FULL_COLLECTION_INIT, FullCollectionInitCommand, ApiServiceEvent);
-		commandMap.mapEvent(CollectionEvent.CRAFT_READY, CraftReadyCommand, CollectionEvent);
+		commandMap.mapEvent(CollectionEvent.CRAFT_READY, RequestCraftReadyCommand, CollectionEvent);
 		commandMap.mapEvent(CollectionEvent.CRAFT_CARD, RequestCraftCardCommand, CollectionEvent);	
 		commandMap.mapEvent(ApiServiceEvent.CARD_CREATED, CardCreatedCommand, ApiServiceEvent);
 		commandMap.mapEvent(CollectionEvent.DESTROY_CARD, RequestDestroyCardCommand, CollectionEvent);
@@ -218,6 +242,16 @@ public class BootstrapController {
 		commandMap.mapEvent(ApiServiceEvent.ACHIEVES_LIST_INIT, AchievesListInitCommand, ApiServiceEvent);
 		commandMap.mapEvent(CardEvent.DRAG_ACHIEVE_CARD, DragAchieveCardCommand, CardEvent);
 		commandMap.mapEvent(CardEvent.DRAG_ACHIEVE_SLOT, DragAchieveSlotCommand, CardEvent);
+		commandMap.mapEvent(AchieveEvent.SAVE, RequestAchieveSetupCommand, AchieveEvent);
+		commandMap.mapEvent(ApiServiceEvent.SETUP_SERVICE_COMPLETE, CloseAchievesCommand);
+		commandMap.mapEvent(AchieveEvent.CLOSE, CloseAchievesCommand);
+		commandMap.mapEvent(AchieveEvent.CREATE, RequestAchievesCraftListCommand, AchieveEvent);
+		commandMap.mapEvent(ApiServiceEvent.ACHIEVES_CRAFT_LIST_INIT, AchievesCraftListInitCommand, ApiServiceEvent);
+		commandMap.mapEvent(CardEvent.CRAFT_ACHIEVE, CraftAchievePreviewCommand, CardEvent);
+		commandMap.mapEvent(AchieveEvent.CRAFT, RequestCraftAchieveCommand, AchieveEvent);
+		commandMap.mapEvent(AchieveEvent.DESTROY, RequestDestroyAchieveCommand, AchieveEvent);
+		commandMap.mapEvent(ApiServiceEvent.ACHIEVE_CRAFT_COMPLETE, AchieveCraftCompleteCommand, ApiServiceEvent);
+		commandMap.mapEvent(ApiServiceEvent.ACHIEVE_DESTROY_COMPLETE, AchieveDestroyCompleteCommand, ApiServiceEvent);
 		
 		// deckList
         commandMap.mapEvent(DeckEvent.STARTUP_DECK_LIST, StartupDeckListCommand, DeckEvent);
@@ -353,6 +387,24 @@ public class BootstrapController {
 		commandMap.mapEvent(SceneEvent.ATTRITION, AttritionCommand, SceneEvent);
 		commandMap.mapEvent(SceneEvent.END_MATCH, RequestEndMatchCommand, SceneEvent);
 		commandMap.mapEvent(MatchServiceEvent.END_MATCH, EndMatchCommand, MatchServiceEvent);
+		
+		// match achieves
+		commandMap.mapEvent(FieldEvent.ACHIEVE_PREVIEW, MatchAchievePreviewCommand, FieldEvent);
+		commandMap.mapEvent(SceneEvent.INCREMENT_ACHIEVE, IncrementAchieveCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.DISABLE_ACHIEVE, DisableAchieveCommand, SceneEvent);
+		commandMap.mapEvent(SceneEvent.ENABLE_ACHIEVE, EnableAchieveCommand, SceneEvent);
+		commandMap.mapEvent(FieldEvent.ACTIVATE_SPELL_ACHIEVE, RequestActivateAchieveCommand, FieldEvent);
+		commandMap.mapEvent(FieldEvent.ACTIVATE_SPELL_TO_TARGET_ACHIEVE, InitAchieveTatgetCommand, FieldEvent);
+		commandMap.mapEvent(FieldEvent.ACHIEVE_TARGET_INIT, RequestActivateAchieveTotargetCommand, FieldEvent);
+		
+		//
+		commandMap.mapEvent(DeckEvent.PREVIEW_FIELD_DECK_SLOT, PreviewFieldDeckSlotCommand, DeckEvent);
+		commandMap.mapEvent(DeckEvent.FIELD_DECK_SLOT_DOWN, DragFieldDeckSlotCommand, DeckEvent);
+		commandMap.mapEvent(DeckEvent.REPLACE_DECK_ITEMS, RequestReplaceDeckItemsCommand, DeckEvent);
+		commandMap.mapEvent(MatchServiceEvent.REPLACE_DECK_ITEMS, ReplaceDeckItemsCommand, MatchServiceEvent);
+		commandMap.mapEvent(ScenarioEvent.SHIFT_DECK_SLOT, ShiftDeckSlotCommand, ScenarioEvent);
+		
+		commandMap.mapEvent(DeckEvent.WRONG_ACHIEVE_TARGET, WrongAchieveTargetCommand, DeckEvent);
 		
 		}
 }

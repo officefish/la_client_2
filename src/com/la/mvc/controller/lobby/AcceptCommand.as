@@ -21,7 +21,7 @@ public class AcceptCommand extends Command{
 
 
     override public function execute () :void {
-        service.sendMessage('accept_invite', {'player1': event.getId(), 'player2': model.userId, 'mode':event.getMode()})
+        service.sendMessage('accept_invite', {'player1': event.getId(), 'player2': model.lobbyId, 'mode':event.getMode()})
     }
 }
 }

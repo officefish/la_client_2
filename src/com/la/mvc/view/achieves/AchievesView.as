@@ -1,8 +1,11 @@
 package com.la.mvc.view.achieves 
 {
+	import com.la.event.AchieveEvent;
 	import com.la.mvc.model.AchieveData;
 	import com.la.mvc.view.card.AchieveCard;
 	import com.la.mvc.view.collection.CollectionCursor;
+	import com.la.mvc.view.collection.LargeButton;
+	import com.la.mvc.view.ui.SmallButton;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
@@ -27,6 +30,11 @@ package com.la.mvc.view.achieves
 		
 		private var cardLinks:Object;
 		
+		private var saveButton:LargeButton;
+		private var closeButton:SmallButton; 
+		
+		private var createAchievesButton:SmallButton;
+		
 		public function AchievesView() 
 		{
 			graphics.beginFill(0x222222, 1);
@@ -38,6 +46,45 @@ package com.la.mvc.view.achieves
 			
 			bar = new AchievesBar();
 			addChild(bar);
+			
+			saveButton = new LargeButton('Сохранить', 170);
+			saveButton.addEventListener(MouseEvent.CLICK, onSaveClick);
+			saveButton.x = this.width - 175;
+			saveButton.y = this.height - 60;
+			addChild(saveButton);
+			
+			closeButton = new SmallButton("закрыть");
+			closeButton.addEventListener(MouseEvent.CLICK, onCloseClick);
+			closeButton.x = this.width - 75;
+			closeButton.y = 5;
+			addChild(closeButton);
+			
+			createAchievesButton = new SmallButton('Создание способностей', 165, 35);
+			createAchievesButton.addEventListener (MouseEvent.CLICK, onCreateAchievesClick);
+			createAchievesButton.x = 430;
+			createAchievesButton.y = 127;
+			addChild(createAchievesButton)
+		}
+		
+		private function onCreateAchievesClick (event:MouseEvent) :void {
+			parent.dispatchEvent(new AchieveEvent(AchieveEvent.CREATE, null))
+		}
+		
+		public function setup(id:int, position:int) :void {
+			var achieveCard:AchieveCard = getAchieveCardById(id);
+			achieveCard.block();
+			var achieveSlot:AchieveSlot = new AchieveSlot(achieveCard.getData());
+			bar.addSlot(achieveSlot, position);
+		}
+		
+		public function onCloseClick(event:MouseEvent) :void {
+			parent.dispatchEvent(new AchieveEvent(AchieveEvent.CLOSE, null))
+
+		}
+		
+		public function onSaveClick(event:MouseEvent) :void {
+			var data:Array = bar.getSetupData();
+			parent.dispatchEvent(new AchieveEvent(AchieveEvent.SAVE, {'setup':data}))
 		}
 		
 		public function initHero(vocation:int) :void {

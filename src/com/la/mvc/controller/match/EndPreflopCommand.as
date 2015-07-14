@@ -10,6 +10,7 @@ import com.la.mvc.model.RootModel;
 import com.la.mvc.view.card.Card;
 import com.la.mvc.view.debug.Console;
 import com.la.mvc.view.deck.PlayerDeck;
+import com.la.mvc.view.field.IField;
 import com.la.mvc.view.scene.IScene;
 import com.la.state.GameState;
 import com.la.mvc.model.CardData;
@@ -37,6 +38,9 @@ public class EndPreflopCommand extends Command {
 	
 	[Inject (name='appConsole')]
 	public var console:Console; 
+	
+	[Inject (name='field')]
+    public var field:IField; 
 		
 
     override public function execute():void {
@@ -51,17 +55,21 @@ public class EndPreflopCommand extends Command {
                     return;
                 }
                 matchModel.preflopEndFlag = true;
-
-                console.debug('moveDownPreflop');
-				
 				var vectorData:Vector.<CardData> = getCardDataVector(event.getData().preflop);
                 moveDownPreflop(vectorData);
+				
+				if (event.getData().mode == 2) {
+					matchModel.initDeck(event.getData().deck);
+					field.initDeck(matchModel.getDeck());
+				}
+				
+				
+
                 break;
             }
             case GameState.PREFLOP:
             {
                 console.debug('changePreflopCards');
-				
 				scene.changePreflopCards ();
                 break;
             }

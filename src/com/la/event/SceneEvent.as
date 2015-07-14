@@ -59,6 +59,11 @@ public class SceneEvent extends Event {
 	public static const BURN_CARD:String = 'burnCard';
 	public static const ATTRITION:String = 'attrition';
 	public static const END_MATCH:String = 'endMatch';
+	
+	public static const INCREMENT_ACHIEVE:String = 'incrementAchieve';
+	public static const DISABLE_ACHIEVE:String = 'disableAchieve';
+	public static const ENABLE_ACHIEVE:String = 'enableAchieve';
+	
 
 
     public function SceneEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false) {

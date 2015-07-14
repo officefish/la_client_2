@@ -36,11 +36,8 @@ public class CloseLobbyCommand extends Command {
         if (contextView.contains(lobby)) {
             contextView.removeChild(lobby);
         }
-
         matchModel.matchId = event.getData().match_id;
-
         rootModel.currentState = GameState.MATCH;
-
         dispatch(new LobbyEvent(LobbyEvent.CLOSE));
     }
 }

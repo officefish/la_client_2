@@ -19,6 +19,9 @@ public class Lobby extends Sprite {
     private var darkenSprite:Sprite;
     private var chooseModeWidget:ChooseModeWidget;
     private var id:int;
+	
+	public static const NO_SELF_DATA:Boolean = false;
+	public static const SELF_DATA:Boolean = true;	
 
     public function Lobby() {
 
@@ -41,11 +44,7 @@ public class Lobby extends Sprite {
         addEventListener(SuggestionUnit.CANCEL, onCancel, true);
         addEventListener(InviteUnit.ACCEPT, onAccept, true);
         addEventListener(InviteUnit.REJECT, onReject, true);
-
-
     }
-
-
 
     public function clear () :void {
         playersStack.clear ();
@@ -58,7 +57,6 @@ public class Lobby extends Sprite {
         id = unit.getId();
         darken();
         chooseMode();
-
     }
 
     private function chooseMode () :void {
@@ -111,7 +109,6 @@ public class Lobby extends Sprite {
     private function onAccept (event:Event) :void {
         var unit:IUnit = event.target as IUnit;
         var id:int = unit.getId();
-        trace(unit);
         var mode:int = (unit as InviteUnit).getMode();
         var e:LobbyEvent = new LobbyEvent(LobbyEvent.ACCEPT);
         e.setId(id);

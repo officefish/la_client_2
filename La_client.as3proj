@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\laclient.swf" />
+    <movie path="..\server\la_server\static\swf\laclient.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />

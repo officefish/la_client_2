@@ -65,6 +65,8 @@ package com.la.mvc.view.collection
 			this.state = state;
 		}
 		
+		
+		
 		public function getState () :int {
 			return state;
 		}

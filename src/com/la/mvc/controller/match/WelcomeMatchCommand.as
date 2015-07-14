@@ -42,10 +42,15 @@ public class WelcomeMatchCommand extends Command {
 
         playerHero.hideHealth();
         opponentHero.hideHealth();
-
+		
         scene.setPlayerHero(playerHero);
         scene.setOpponentHero(opponentHero);
-        scene.welcomeAnimation();
-    }
+        var positions:Object = scene.welcomeAnimation();
+		
+		field.initAchieves(matchModel.playerAchieves, matchModel.opponentAchieves, positions.player, positions.opponent);
+    
+		
+		
+	}
 }
 }

@@ -400,7 +400,7 @@ public class Scene extends Sprite implements IScene{
         return opponentHero as DisplayObject;
     }
 
-    public function welcomeAnimation () :void {
+    public function welcomeAnimation () :Object {
 
         playerHeroDO.x = (stageWidth/2 - playerHeroDO.width) / 2;
         playerHeroDO.y = (stageHeight - playerHeroDO.height) / 2;
@@ -423,7 +423,12 @@ public class Scene extends Sprite implements IScene{
 
         TweenLite.to (playerHeroDO, 1.0, {delay:1.5, x:playerPosition.x, y:playerPosition.y, ease:Expo.easeOut, onComplete:onWelcomeComplete});
         TweenLite.to (opponentHeroDO, 1.0, {delay:1.5, x:opponentPosition.x, y:opponentPosition.y, ease:Expo.easeOut,onComplete:onWelcomeComplete});
-    }
+    
+		var positions:Object = { }
+		positions.player = playerPosition;
+		positions.opponent = opponentPosition;
+		return positions;
+	}
 
     private function onWelcomeComplete () :void {
         animationCof --;

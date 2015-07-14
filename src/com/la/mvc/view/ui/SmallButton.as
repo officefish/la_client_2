@@ -63,6 +63,13 @@ package com.la.mvc.view.ui
 			graphics.endFill ();
 		}
 		
+		public function defaultState() :void {
+			graphics.clear();
+			graphics.beginFill (0x151B54);
+			graphics.drawRect (0, 0, bWidth, bHeight);
+			graphics.endFill ();
+		}
+		
 		private function onMouseOut (event:MouseEvent) :void {
 			if (blockFlag) return;
 			graphics.clear();

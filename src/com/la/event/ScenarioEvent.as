@@ -10,6 +10,7 @@ package com.la.event
 	{
 		
 		public static const ACTION:String = 'scenarioAction';
+		public static const SHIFT_DECK_SLOT:String = 'shiftDeckSlot';
 				
 		public function ScenarioEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

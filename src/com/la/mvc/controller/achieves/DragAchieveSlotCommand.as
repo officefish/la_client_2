@@ -8,6 +8,8 @@ package com.la.mvc.controller.achieves
 	import com.la.mvc.view.achieves.EmptyAchieveSlot;
 	import com.la.mvc.view.card.AchieveCard;
 	import com.la.mvc.view.scene.IScene;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -40,6 +42,8 @@ package com.la.mvc.controller.achieves
 		
 		override public function execute():void 
 		{
+			contextView.addChild (scene as DisplayObject); 
+			
 			distance = achieves.y + 120;
 			
 			slot = event.data.slot;
@@ -86,7 +90,7 @@ package com.la.mvc.controller.achieves
 				scene.placeCard(copy);
 				copy.startDrag();
 				addCardListeners();
-			}
+			} 
 		}
 		
 		private function onSlotModeMouseLeave(event:Event):void {
@@ -98,7 +102,31 @@ package com.la.mvc.controller.achieves
 		private function onSlotMouseUp(event:MouseEvent) :void {
 			slot.stopDrag();
 			destroySlotListeners();
-			TweenLite.to (slot, 0.5, { x:position.x, y:position.y, ease:Expo.easeOut, onComplete:onBackComplete } );
+			
+			var slotPosition:Point = new Point (slot.x, slot.y);
+			slotPosition = slot.parent.localToGlobal(slotPosition);
+			if (slotPosition.x == position.x && slotPosition.y == position.y) {
+				scene.endPlaceCard();	
+				card.unblock();
+			} else if (event.target.dropTarget is EmptyAchieveSlot) {
+				(event.target.dropTarget as DisplayObjectContainer).addChild(slot);
+				slot.x = 0;
+				slot.y = 0;
+			}else if (event.target.dropTarget is AchieveSlot) {
+				slot.x = 0;
+				slot.y = 0;
+				var replaceSlot:AchieveSlot = event.target.dropTarget as AchieveSlot;
+				(replaceSlot as DisplayObject).parent.addChild(slot);
+				(emptySlot as DisplayObjectContainer).addChild(replaceSlot);
+			}else if (event.target.dropTarget.parent is AchieveSlot) {
+				slot.x = 0;
+				slot.y = 0;
+				replaceSlot = event.target.dropTarget.parent as AchieveSlot;
+				(replaceSlot as DisplayObject).parent.addChild(slot);
+				(emptySlot as DisplayObjectContainer).addChild(replaceSlot);
+			} else {
+				TweenLite.to (slot, 0.5, { x:position.x, y:position.y, ease:Expo.easeOut, onComplete:onBackComplete } );
+			}
 		}
 		
 		private function onBackComplete() :void {

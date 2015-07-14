@@ -39,7 +39,6 @@ public class DeckService extends Actor {
     }
 
     function completeResponseDeckList(event:LoaderEvent):void {
-        trace(event.target.content);
         parseDeckList (event.target.content)
     }
 

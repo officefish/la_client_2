@@ -2,6 +2,7 @@ package
 {
 
 import com.la.mvc.GameContext;
+import com.sla.LastArgumentGame;
 import flash.display.Stage;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -9,23 +10,16 @@ import flash.events.Event;
 import com.demonsters.debugger.MonsterDebugger;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.system.Security;
 
 import com.log.Logger;
-import com.ps.collection.Collection;
-import com.ps.collection.view.CollectionView;
-import com.ps.collection.LocalCollection;
-import com.ps.collection.SpellCollection;
-import com.ps.connection.Connection;
-import com.ps.game.Game;
-	import com.ps.game.GameEvent;
-import com.ps.intro.Intro;
-import com.ps.popup.Popup;
-	import com.ps.trajectory.TrajectoryContainer;
-	import flash.display.Sprite;
-    import flash.display.Stage;
+import flash.display.Sprite;
+import flash.display.Stage;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.Event;
+import starling.core.Starling;
+import org.robotlegs.mvcs.StarlingContext;
 
 	
 	/**
@@ -35,14 +29,10 @@ import flash.events.Event;
     [SWF(frameRate = 60, width="800", height="600", backgroundColor="#555555")]
     public class Main extends Sprite
 	{
-		//private var card:Card
-		//private var game:Game;
-        //private var _lobby:Intro;
-        //private var collectionView:CollectionView;
+		//private var context:GameContext;
+		private var _starling:Starling;
+        private var _starlingContext:StarlingContext; 
 
-       // private var collection:Collection;
-
-        private var context:GameContext;
 
 		public function Main():void
 		{
@@ -50,9 +40,6 @@ import flash.events.Event;
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
-
-		
-
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
@@ -62,9 +49,19 @@ import flash.events.Event;
 
 
 			MonsterDebugger.initialize (this);
+			
+			// new client with starling now alive!!!
+			_starling = new Starling(LastArgumentGame, stage);
+			
+			
+			
 			//MonsterDebugger.trace(this, "Hello World!");
 			
-            context = new GameContext(this);
+			//Security.allowDomain("*"); 
+			//Security.loadPolicyFile("http://127.0.0.1:8000/crossdomain.xml")
+			//Security.loadPolicyFile("xmlsocket://127.0.0.1:8000")
+			
+            //context = new GameContext(this);
 			
 			//this.stage.addEventListener (MouseEvent.MOUSE_DOWN, onMouseDown)
 

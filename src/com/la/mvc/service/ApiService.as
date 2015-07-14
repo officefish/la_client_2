@@ -32,6 +32,78 @@ package com.la.mvc.service
 			trace("error occured with " + event.target + ": " + event.text);
 		}
 		
+		public function destroyAchieve(userId:int, heroId:int, achieveId:int) :void {
+			var url:String = 'http://127.0.0.1:8000/api/destroy_achieve/?user_id=' + userId + '&hero_id=' + heroId + '&achieve_id=' + achieveId;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDestroyAchieve, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function onCompleteDestroyAchieve (event:LoaderEvent) :void {
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			if (response.status == 'success') {
+				var serviceData:Object = {}
+				serviceData['achieveId'] = response.achieve_id;
+				serviceData['dust'] = response.dust
+				serviceData['count'] = response.count
+				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVE_DESTROY_COMPLETE, serviceData));
+
+			} else if (response.status == 'error') {
+				trace ('Error:' + response.message); 
+			}
+			
+		}
+		
+		public function craftAchieve (userId:int, heroId:int, achieveId:int) :void {
+			var url:String = 'http://127.0.0.1:8000/api/craft_achieve/?user_id=' + userId + '&hero_id=' + heroId + '&achieve_id=' + achieveId;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftAchieve, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function onCompleteCraftAchieve (event:LoaderEvent) :void {
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			if (response.status == 'success') {
+				var serviceData:Object = {}
+				serviceData['achieveId'] = response.achieve_id;
+				serviceData['dust'] = response.dust
+				serviceData['count'] = response.count
+				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVE_CRAFT_COMPLETE, serviceData));
+
+			} else if (response.status == 'error') {
+				trace ('Error:' + response.message); 
+			}
+			
+		}
+		
+		public function craftAchievesList (userId:int, heroId:int) :void {
+			var url:String = 'http://127.0.0.1:8000/api/craft_achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftAchievesList, onError:errorHandler});
+			loader.load();
+		}
+		
+		private function onCompleteCraftAchievesList(event:LoaderEvent) :void {
+			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
+			var serviceData:Object = { }
+			serviceData['achieves'] = getAchievesData (response.achieves);
+			serviceData['dust'] = response.dust
+			if (response.status == 'success') {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVES_CRAFT_LIST_INIT, serviceData));
+			}
+		}
+		
+		
+		public function saveAchieves (userId:int, heroId:int, setup:Array) :void {
+			var data:Object = {}
+			data['setup'] = setup
+			var params:String = com.adobe.serialization.json.JSON.encode (data);
+			var url:String = 'http://127.0.0.1:8000/api/setup_achieves/?user_id=' + userId + '&hero_id=' + heroId + '&data=' + params;
+			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteSetupAchieves, onError:errorHandler});
+			loader.load();
+		}
+		
+		private function onCompleteSetupAchieves(event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent (ApiServiceEvent.SETUP_SERVICE_COMPLETE, null));
+		}
+		
 		public function editAchieves (userId:int, heroId:int) :void {
 			var url:String = 'http://127.0.0.1:8000/api/achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
 			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteAchievesList, onError:errorHandler});
@@ -44,6 +116,7 @@ package com.la.mvc.service
 			serviceData['achieves'] = getAchievesData (response.achieves);
 			serviceData['heroId'] = response.hero_id;
 			serviceData['heroVocation'] = response.hero_vocation;
+			serviceData['setup'] = response.setup;
 			if (response.status == 'success') {
 				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVES_LIST_INIT, serviceData));
 			}
@@ -62,6 +135,11 @@ package com.la.mvc.service
 				achieveData.autonomic = achieveResponseData.autonomic;
 				achieveData.type = achieveResponseData.type;
 				achieveData.price = achieveResponseData.price;
+				achieveData.access = achieveResponseData.access;
+				achieveData.max_access = achieveResponseData.max_access;
+				achieveData.count = achieveResponseData.count;
+				achieveData.buyCost = achieveResponseData.buyCost;
+				achieveData.saleCost = achieveResponseData.saleCost;
 				list.push(achieveData);
 			}
 			return list;

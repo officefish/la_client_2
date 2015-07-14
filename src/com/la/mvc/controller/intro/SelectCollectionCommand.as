@@ -27,7 +27,7 @@ public class SelectCollectionCommand extends Command {
         contextView.addChildAt(collection as DisplayObject, 0);
 		collection.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
         rootModel.currentState = GameState.COLLECTION;
-		service.requestCollection (1);
+		service.requestCollection (rootModel.userId);
 
     }
 }

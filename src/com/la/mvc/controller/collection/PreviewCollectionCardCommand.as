@@ -32,7 +32,7 @@ package com.la.mvc.controller.collection
 		[Inject (name='collection')]
 		public var collection:ICollection; 
 		
-		[Inject (namespace = 'rootModel')]
+		[Inject (name = 'rootModel')]
 		public var rootModel:RootModel; 
 		
 		[Inject (name='scene')]
@@ -40,7 +40,7 @@ package com.la.mvc.controller.collection
 		
 		private var item:Sprite;
 		
-		[Inject (namespace = 'craftWidget')]
+		[Inject (name = 'craftWidget')]
 		public var craftWidget:CraftWidget;
 
 		

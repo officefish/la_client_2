@@ -16,7 +16,7 @@ package com.la.mvc.view.collection
 		
 		private var actualSlot:HeroSlot;
 	    private var widget:DeckHeroWidget; 
-		private var selectHeroButton:SelectHeroButton;
+		private var selectHeroButton:LargeButton;
 
 		
 		public function HeroesView() 
@@ -30,7 +30,7 @@ package com.la.mvc.view.collection
 			graphics.endFill();	
 			
 			widget = new DeckHeroWidget ();
-			selectHeroButton = new SelectHeroButton ();
+			selectHeroButton = new LargeButton ('Выбрать героя');
 		}
 		
 		public function initHeroes (heroes:Array) :void {

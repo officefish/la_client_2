@@ -2,7 +2,9 @@
  * Created by root on 10/24/14.
  */
 package com.la.mvc.view.field {
+import com.la.mvc.model.FieldAchieveData;
 import com.la.mvc.view.card.Card;
+import com.la.mvc.view.field.deck.FieldDeckWidget;
 import com.la.mvc.view.scene.IScene;
 import com.la.mvc.model.CardData;
 import flash.display.DisplayObject;
@@ -71,6 +73,14 @@ public interface IField extends IEventDispatcher{
 	function removeAllTokens() :void;
 	function calculateCards(clinetCount:int, opponentCount:int):void;
 	function clear():void;
+	
+	function initAchieves (playerAchieves:Vector.<FieldAchieveData>, 
+	opponentAchieves:Vector.<FieldAchieveData>, playerPosition:Point, opponentPosition:Point) :void; 
+	function getAchieveSlot (position:int, playerFlag:Boolean) :FieldAchieveSlot;
+	
+	function initDeck(value:Array) :void;
+	function getDeckWidget() :FieldDeckWidget;
+
 
 
 

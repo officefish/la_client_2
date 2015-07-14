@@ -37,7 +37,7 @@ public class MatchConnectionInitCommand extends Command {
         model.addOpponentCards (cardDatas);
 
         matchModel.mode = int (event.getData().mode);
-
+		
         matchModel.playerHero = event.getData().hero;
         matchModel.opponentHero = event.getData().opponent_hero;
 
@@ -45,6 +45,9 @@ public class MatchConnectionInitCommand extends Command {
         matchModel.opponentHeroHealth = event.getData().opponent_health;
 		
 		matchModel.whiteFlag = event.getData().white;
+		
+		matchModel.initPlayerAchieves(event.getData().achieves);
+		matchModel.initOpponentAchieves(event.getData().opponent_achieves);
 
         dispatch(new MatchServiceEvent(MatchServiceEvent.PREFLOP_INIT, {}))
 

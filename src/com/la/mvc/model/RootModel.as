@@ -3,6 +3,7 @@
  */
 package com.la.mvc.model {
 import com.la.event.GameContextEvent;
+import com.la.mvc.view.deck.IDeck;
 import com.la.state.GameState;
 
 import org.robotlegs.mvcs.Actor;
@@ -12,6 +13,8 @@ public class RootModel extends Actor {
     private var _currentState:GameState;
     private var _currentCollectionId:int;
     private var _userId:int;
+	private var _username:String;
+	private var _lobbyId:int;
 	
     public function RootModel() {
     }
@@ -38,6 +41,22 @@ public class RootModel extends Actor {
 
     public function get userId () :int {
         return _userId;
+    }
+	
+	public function set lobbyId (value:int) :void {
+        _lobbyId = value;
+    }
+
+    public function get lobbyId () :int {
+        return _lobbyId;
+    }
+	
+	 public function set username (value:String) :void {
+        _username = value;
+    }
+
+    public function get username () :String {
+        return _username;
     }
 
     public function init () :void {

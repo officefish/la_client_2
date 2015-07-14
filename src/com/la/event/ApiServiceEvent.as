@@ -25,6 +25,10 @@ package com.la.event
 		public static const REQUEST_COMPLETE:String = 'request_complete';
 		
 		public static const ACHIEVES_LIST_INIT:String = 'achievesListInit';
+		public static const SETUP_SERVICE_COMPLETE:String = 'setupServiceComplete';
+		public static const ACHIEVES_CRAFT_LIST_INIT:String = 'achievesCraftListInit';
+		public static const ACHIEVE_CRAFT_COMPLETE:String = 'achieveCraftComplete';
+		public static const ACHIEVE_DESTROY_COMPLETE:String = 'achieveDestroyComplete';
 		
 		public function ApiServiceEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false) {
 			this._data = data;

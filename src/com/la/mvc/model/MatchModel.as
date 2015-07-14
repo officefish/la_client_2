@@ -3,6 +3,7 @@
  */
 package com.la.mvc.model {
 import com.greensock.plugins.Positions2DPlugin;
+import com.hurlant.util.der.OID;
 import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.utils.Timer;
@@ -34,10 +35,60 @@ public class MatchModel extends Actor {
 	private var _previewTimer:Timer;
 	private var _timerCallback:Function;
 	
+	private var _playerAchieves:Vector.<FieldAchieveData>
+	private var _opponentAchieves:Vector.<FieldAchieveData>
+	
 	private var _spellMixin:int = 0;
+	
+	private var _deck:Array;
+	private var _controlFlag:Boolean = false;
 
     public function MatchModel() {
     }
+	
+	public function initAchieves(vector:Vector.<FieldAchieveData>, list:Array) :void {
+		
+		var _achieveData:FieldAchieveData;
+		var _responseData:Object;
+		for (var i:int = 0; i < list.length; i ++) {
+			_responseData = list[i];
+			_achieveData = new FieldAchieveData();
+			_achieveData.title = _responseData.data.title;
+			_achieveData.description = _responseData.data.description;
+			_achieveData.price = _responseData.data.price;
+			_achieveData.autonomic = _responseData.data.autonomic;
+			_achieveData.type = _responseData.data.type;
+			_achieveData.position = _responseData.position;
+		
+			vector.push(_achieveData)
+		}
+	}
+	
+	public function initPlayerAchieves(list:Array) :void {
+		_playerAchieves = new Vector.<FieldAchieveData>();
+		initAchieves(_playerAchieves, list)
+	}
+	
+	public function initOpponentAchieves(list:Array) :void {
+		_opponentAchieves = new Vector.<FieldAchieveData>();
+		initAchieves(_opponentAchieves, list)
+	}
+	
+	public function get playerAchieves () :Vector.<FieldAchieveData> {
+		return _playerAchieves;
+	}
+	
+	public function get opponentAchieves () :Vector.<FieldAchieveData> {
+		return _opponentAchieves;
+	}
+	
+	public function set controlFlag (value:Boolean) :void {
+		_controlFlag = value;
+	}
+	
+	public function get controlFlag () :Boolean {
+		return _controlFlag;
+	}
 
     public function set matchId (value:int) :void {
         _matchId = value;
@@ -101,6 +152,7 @@ public class MatchModel extends Actor {
 	
 	public function clear () :void {
 		this.scenario = [];
+		_controlFlag = false;
 	}
 	
 	public function concatScenario (scenario:Array) :void {
@@ -171,6 +223,20 @@ public class MatchModel extends Actor {
 	}
 	public function getSpellMixin () :int {
 		return _spellMixin;
+	}
+	
+	public function initDeck(list:Array) :void {
+		_deck = []
+		var cardData:Object;
+		for (var i:int = 0; i < list.length; i++) {
+			cardData = list[i];
+			var miniData:MiniCardData = new MiniCardData(cardData.title, cardData.price, cardData.index);
+			_deck.push(miniData);
+		}
+	}
+	
+	public function getDeck() :Array {
+		return _deck;
 	}
 
 }

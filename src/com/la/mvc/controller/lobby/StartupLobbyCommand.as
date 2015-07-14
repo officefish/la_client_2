@@ -19,7 +19,6 @@ public class StartupLobbyCommand extends Command {
 
     override public function execute():void {
         contextView.addChildAt(lobby, 0);
-
         rootModel.currentState = GameState.LOBBY;
     }
 }

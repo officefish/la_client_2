@@ -4,6 +4,7 @@
 package com.la.mvc.controller.bootstrap {
 
 import com.la.mvc.view.achieves.AchieveBrowser;
+import com.la.mvc.view.achieves.CraftAchieveWidget;
 import com.la.mvc.view.card.CardSensor;
 import com.la.mvc.view.collection.Collection;
 import com.la.mvc.view.collection.CraftWidget;
@@ -60,6 +61,7 @@ public class BootstrapClasses {
 		injector.mapClass (StepButton, StepButton);
 				
 		injector.mapSingletonOf(CraftWidget, CraftWidget, 'craftWidget');
+		injector.mapSingletonOf(CraftAchieveWidget, CraftAchieveWidget, 'craftAchieveWidget');
 		
 		injector.mapClass(CardSensor, CardSensor);
 

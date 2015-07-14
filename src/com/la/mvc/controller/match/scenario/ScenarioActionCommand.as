@@ -17,6 +17,7 @@ package com.la.mvc.controller.match.scenario
 	import com.la.mvc.view.field.IToken;
 	import com.la.mvc.view.scene.IScene;
 	import com.la.state.GameState;
+	import com.ps.cards.eptitude.EptitudeAttachment;
 	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import org.robotlegs.mvcs.Command;
@@ -55,7 +56,7 @@ package com.la.mvc.controller.match.scenario
 		override public function execute():void 
 		{
 			//console.debug ('scenarioActionCommand::execute');
-			var clientId:String = rootModel.userId + " :: " 
+			var clientId:String = rootModel.lobbyId + " :: " 
 			console.debug (clientId + 'scenarioLength: ' + matchModel.scenarioLength)
 						
 			if (matchModel.scenarioLength) {
@@ -68,6 +69,8 @@ package com.la.mvc.controller.match.scenario
 				} else if (rootModel.currentState == GameState.PLAYER_STEP_ACTION) {
 					rootModel.currentState = GameState.PLAYER_STEP;
 				}
+				//console.debug ('currentSate:' + rootModel.currentState)
+						
 			}
 		}
 		
@@ -90,7 +93,7 @@ package com.la.mvc.controller.match.scenario
 			var index:int;
 			var targets:Array = []
 	
-			var clientId:String = rootModel.userId + " :: " 
+			var clientId:String = rootModel.lobbyId + " :: " 
 			console.debug (clientId + 'playAction::' + data.type);
 			
 			var initiatorDO:DisplayObject;
@@ -106,8 +109,57 @@ package com.la.mvc.controller.match.scenario
 			var opponentTargets:Array = [];
 			
 			switch (data.type) {
+				case 'shift_deck_slot': {
+					clientFlag = getClientFlag(data.client);
+					attachment = data.attachment;
+					if (clientFlag) {
+						if (attachment == EptitudeAttachment.ASSOCIATE) {
+							dispatch(new ScenarioEvent(ScenarioEvent.SHIFT_DECK_SLOT))
+						} else {
+							dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						}
+					} else {
+						if (attachment == EptitudeAttachment.OPPONENT) {
+							dispatch(new ScenarioEvent(ScenarioEvent.SHIFT_DECK_SLOT))
+						} else {
+							dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+						}
+					}
+					break;
+				}
+				
+				case 'enable_achieve': {
+					clientFlag = getClientFlag(data.client);
+					eventData = { }
+					eventData.position = data.position;
+					eventData.client = clientFlag;
+					dispatch(new SceneEvent(SceneEvent.ENABLE_ACHIEVE, eventData))
+					break;
+				}
+				
+				case 'disable_achieve': {
+					clientFlag = getClientFlag(data.client);
+					eventData = { }
+					eventData.position = data.position;
+					eventData.client = clientFlag;
+					dispatch(new SceneEvent(SceneEvent.DISABLE_ACHIEVE, eventData))
+					break;
+				}
+					
+				
+				case 'increment_achieve': {
+					clientFlag = getClientFlag(data.client);
+					eventData = { }
+					eventData.position = data.position;
+					eventData.increment = data.increment;
+					eventData.client = clientFlag;
+					eventData.enable = data.enable;
+					dispatch(new SceneEvent(SceneEvent.INCREMENT_ACHIEVE, eventData))
+					break;
+				}
+				
 				case 'calculate_cards': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					if (clientFlag) {
 						field.calculateCards(data.clientCardsCount, data.opponentCardsCount);
 					} else {
@@ -118,7 +170,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'end_match': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					eventData = {}
 					eventData.client = clientFlag;
@@ -130,7 +182,7 @@ package com.la.mvc.controller.match.scenario
 
 				
 				case 'burn_card': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					cardData = CardData.converToData(data.card);
 					eventData = { }
 					eventData.client = clientFlag;
@@ -148,7 +200,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'copy_unit_cards_to_hand': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					for (i = 0; i < data.associateTargets.length; i ++) {
 						targetIndex = data.associateTargets[i].index;
 						targetAttachment = data.associateTargets[i].attachment;
@@ -185,7 +237,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'back_several_tokens_to_hand': {
 					
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 				
 					
 					var deathTargets:Array = [];
@@ -230,7 +282,7 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				case 'damage': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					for (i = 0; i < data.targets.length; i ++) {
 						targetIndex = data.targets[i].index;
 						targetAttachment = data.targets[i].attachment;
@@ -243,7 +295,7 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				case 'shuffle_unit_to_deck': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					for (i = 0; i < data.targets.length; i ++) {
 						targetIndex = data.targets[i].index;
 						targetAttachment = data.targets[i].attachment;
@@ -255,7 +307,7 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				case 'massive_kill': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					for (i = 0; i < data.targets.length; i ++) {
 						targetIndex = data.targets[i].index;
 						targetAttachment = data.targets[i].attachment;
@@ -270,7 +322,7 @@ package com.la.mvc.controller.match.scenario
 				case 'step_price': {
 					
 					endAnimationFlag = data.endAnimationFlag
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						deckModel.price = int(data.price);
 						field.setPlayerPrice (data.price, endAnimationFlag, true, data.overload)
 					} else {
@@ -281,7 +333,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'pick_card': {
 					cardData = CardData.converToData (data.card)
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						if (!data.attachment) {
 							playerDeck.addCard(cardData, true);
 						} else {
@@ -300,7 +352,7 @@ package com.la.mvc.controller.match.scenario
 				case 'card': {
 					cardData = CardData.converToData (data.card)
 					var attachment:int = data.attachment
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						if (attachment == 0) {
 							playerDeck.newCard(cardData, true);
 						} else {
@@ -323,7 +375,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'end_step': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						rootModel.currentState = GameState.OPPONENT_STEP;
 						field.disableStepButton();
 						field.blockTokens ();
@@ -336,7 +388,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'step': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						rootModel.currentState = GameState.PLAYER_STEP;
 						deckModel.block = false;
 						field.setOpponentPrice(0, false, false);	
@@ -355,7 +407,7 @@ package com.la.mvc.controller.match.scenario
 					field.placeUnitRowPosition ();
 					endAnimationFlag = data.endAnimationFlag;
 										
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						card = deckModel.drawingCard;
 						playerDeck.destroyCard(deckModel.drawingCard);
 						field.playPlayerCardUnit(cardData, position, card, endAnimationFlag);
@@ -373,7 +425,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'play_card_spell': {
 															
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						card = deckModel.drawingCard;
 						playerDeck.destroyCard(deckModel.drawingCard);
 						field.playPlayerCardUnit(cardData, position, card, endAnimationFlag);
@@ -389,7 +441,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'destroy_actual_card': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					if (clientFlag) {
 						playerDeck.destroyCard(deckModel.drawingCard);
@@ -406,7 +458,7 @@ package com.la.mvc.controller.match.scenario
 				case 'sort_deck': {
 					
 					endAnimationFlag = data.endAnimationFlag;
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						console.debug (clientId + 'playerDeck.sort');
 						playerDeck.sort (endAnimationFlag, true);
 					} else {
@@ -424,7 +476,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'unblock_deck': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						deckModel.block = false;
 					}
 					dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -432,8 +484,9 @@ package com.la.mvc.controller.match.scenario
 				}
 				case 'glow_cards': {
 					//console.debug (clientId + 'action:glow_cards');
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						endAnimationFlag = data.endAnimationFlag;
+						deckModel.block = false;
 						dispatch(new DeckEvent (DeckEvent.GLOW_CARDS, {}))
 						//playerDeck.glowAvailableCards (endAnimationFlag, true);
 					} else {
@@ -443,7 +496,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				case 'attack_available': {
 					//console.debug (clientId + 'action:attack_available');
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						//console.debug (data.unitList)
 						field.markAttackAvailable (data.unitList, endAnimationFlag, true);
 					} else {
@@ -453,7 +506,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				case 'glow_units': {
 					//console.debug (clientId + 'action:glow_units');
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						field.glowTokens (endAnimationFlag, true);
 					} else {
 						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -465,7 +518,7 @@ package com.la.mvc.controller.match.scenario
 					targetIndex = data.targetIndex;
 					endAnimationFlag = data.endAnimationFlag;
 					
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						attackUnit = field.getAttackUnit(initiatorIndex, true);
 						matchModel.setAttackUnit (attackUnit);
 						matchModel.setAttackUnitPosition ((attackUnit as IAttackAvailable).getPosition());
@@ -484,7 +537,7 @@ package com.la.mvc.controller.match.scenario
 					attackUnitHealth = data.attackUnitHealth;
 					targetUnitHealth = data.targetUnitHealth;
 					
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						attackUnit = field.getAttackUnit(initiatorIndex, true);
 						targetUnit = field.getTargetUnit (targetIndex, true);
 					} else {
@@ -509,7 +562,7 @@ package com.la.mvc.controller.match.scenario
 				case 'attack_token_death': {
 					initiatorIndex = data.initiatorIndex;
 					endAnimationFlag = data.endAnimationFlag;
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						field.removeToken (initiatorIndex, true, endAnimationFlag, true);
 					} else {
 						field.removeToken (initiatorIndex, false, endAnimationFlag, true);
@@ -520,7 +573,7 @@ package com.la.mvc.controller.match.scenario
 				case 'target_token_death': {
 					targetIndex = data.targetIndex;
 					endAnimationFlag = data.endAnimationFlag;
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						field.removeToken (targetIndex, false, endAnimationFlag, true);
 					} else {
 						field.removeToken (targetIndex, true, endAnimationFlag, true);
@@ -581,7 +634,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'provocation_exception': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						scene.darken();
 						field.blur();
 						scene.addEventListener (SceneEvent.WARNING_CLOSE, onWarningClose);
@@ -595,7 +648,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'play_card_selected': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						cardData = CardData.converToData (data.unit);
 						position = data.position;
 						field.placeUnitRowPosition ();
@@ -611,7 +664,7 @@ package com.la.mvc.controller.match.scenario
 				
 				
 				case 'play_card_opponent_selected': {
-					if (data.client != rootModel.userId) {
+					if (data.client != rootModel.lobbyId) {
 						cardData = CardData.converToData (data.unit);
 						position = data.position;
 						field.placeUnitRowPosition ();
@@ -629,7 +682,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'select': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						dispatch (new SceneEvent (SceneEvent.SELECT_FOR_EPTITUDE, {'mask':data.select_mask}));
 					} 
 					//dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -644,7 +697,7 @@ package com.la.mvc.controller.match.scenario
 					initiatorAttachment = data.initiatorAttachment;
 					initiatorIndex = data.initiatorIndex;
 					
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					initiatorDO = initUnitbyAttachment (initiatorIndex, initiatorAttachment, clientFlag);
 					targetDO = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
@@ -659,7 +712,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'passive_attack_for_several_targets': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 										
 					var targetData:Object;
 					for (i = 0; i < data.targets.length; i ++) {
@@ -689,7 +742,7 @@ package com.la.mvc.controller.match.scenario
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnitHealth = data.targetUnitHealth;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -707,7 +760,7 @@ package com.la.mvc.controller.match.scenario
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					endAnimationFlag = data.endAnimationFlag;
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						if (targetAttachment) {
 							field.removeToken (targetIndex, true, endAnimationFlag, true);
 						} else {
@@ -731,7 +784,7 @@ package com.la.mvc.controller.match.scenario
 					console.debug (clientId + 'increase_attack_and_health: ' + matchModel.scenarioLength)
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -754,7 +807,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -777,7 +830,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'stop_select_mode':
 				{
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						dispatch (new SceneEvent(SceneEvent.SCENARIO_END_SELECT_UNIT, { } ));
 					} else {
 						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
@@ -788,7 +841,7 @@ package com.la.mvc.controller.match.scenario
 				case 'back_token_to_hand':
 				{
 					if (data.opponent_ignore) {
-						if (data.client != rootModel.userId) {
+						if (data.client != rootModel.lobbyId) {
 							dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
 							break;
 						}
@@ -796,7 +849,7 @@ package com.la.mvc.controller.match.scenario
 					}
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -842,7 +895,7 @@ package com.la.mvc.controller.match.scenario
 					targetAttachment = data.attachment
 					targetIndex = data.index;
 					field.placeUnitRowPosition ();
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						field.addToken (targetAttachment, cardData, targetIndex);
 					} else {
 						field.addToken (!targetAttachment, cardData, targetIndex);
@@ -855,7 +908,7 @@ package com.la.mvc.controller.match.scenario
 										
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					power = data.power
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 										
@@ -880,7 +933,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -899,7 +952,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -915,7 +968,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'massive_attack': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					for (i = 0; i < data.targets.length; i ++) {
 						targetData = data.targets[i];
 						targetIndex = targetData.index;
@@ -931,7 +984,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -950,7 +1003,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -968,7 +1021,7 @@ package com.la.mvc.controller.match.scenario
 				case 'shadow': {
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -986,7 +1039,7 @@ package com.la.mvc.controller.match.scenario
 				case 'destroy_shadow': {
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -1003,7 +1056,7 @@ package com.la.mvc.controller.match.scenario
 				
 				
 				case 'shadow_exception': {
-					if (data.client == rootModel.userId) {
+					if (getClientFlag(data.client)) {
 						scene.darken();
 						field.blur();
 						scene.addEventListener (SceneEvent.WARNING_CLOSE, onWarningClose);
@@ -1015,7 +1068,7 @@ package com.la.mvc.controller.match.scenario
 				case 'double_attack': {
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -1034,7 +1087,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -1071,7 +1124,7 @@ package com.la.mvc.controller.match.scenario
 					initiatorAttachment = data.initiatorAttachment;
 					initiatorIndex = data.initiatorIndex;
 					
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					initiatorDO = initUnitbyAttachment (initiatorIndex, initiatorAttachment, clientFlag);
 					targetDO = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
@@ -1089,7 +1142,7 @@ package com.la.mvc.controller.match.scenario
 				{
 					targetAttachment = data.attachment;
 					targetIndex = data.index;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					if (!targetUnit) {
@@ -1106,7 +1159,7 @@ package com.la.mvc.controller.match.scenario
 				case 'destroy_freeze': {
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					if (!targetUnit) {
@@ -1123,7 +1176,7 @@ package com.la.mvc.controller.match.scenario
 				case 'change_card_price': {
 					targetIndex = data.index;
 					targetAttachment = data.attachment;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					card = initCardbyAttachment (targetIndex, targetAttachment, clientFlag);
 					if (card) {
 						trace ('changeCardPrice')
@@ -1138,7 +1191,7 @@ package com.la.mvc.controller.match.scenario
 					
 					targetAttachment = data.cardAttachment;
 					targetIndex = data.cardIndex;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					card = initCardbyAttachment (targetIndex, targetAttachment, clientFlag);
 					
 					targetIndex = data.initiatorIndex;
@@ -1169,7 +1222,7 @@ package com.la.mvc.controller.match.scenario
 					
 					targetAttachment = data.cardAttachment;
 					targetIndex = data.cardIndex;
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					card = initCardbyAttachment (targetIndex, targetAttachment, clientFlag);
 					targetIndex = data.initiatorIndex;
 					
@@ -1189,7 +1242,7 @@ package com.la.mvc.controller.match.scenario
 				case 'entice_unit':
 				{
 					//
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
@@ -1206,7 +1259,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'change_unit':
 				{
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
@@ -1257,7 +1310,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'activate_widget': {
 					
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
@@ -1272,8 +1325,18 @@ package com.la.mvc.controller.match.scenario
 					break;
 				}
 				
+				case 'achieve_target_warning': {
+					clientFlag = getClientFlag(data.client);
+					if (clientFlag) {
+						dispatch (new DeckEvent(DeckEvent.WRONG_ACHIEVE_TARGET, {effect:data.effect}))
+					} else {
+						dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+					}
+					break;
+				}
+				
 				case 'spell_target_warning': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					if (clientFlag) {
 						dispatch (new DeckEvent(DeckEvent.WRONG_SPELL_SELECT_TARGET, {effect:data.effect}))
 					} else {
@@ -1283,8 +1346,8 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'increase_spell': {
-					clientFlag = data.client == rootModel.userId;
-					spellClientFlag  = data.spellClient == rootModel.userId; 
+					clientFlag = getClientFlag(data.client);
+					spellClientFlag  = data.spellClient == rootModel.lobbyId; 
 				
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
@@ -1303,8 +1366,8 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'decrease_spell': {
-					clientFlag = data.client == rootModel.userId;
-					spellClientFlag  = data.spellClient == rootModel.userId; 
+					clientFlag = getClientFlag(data.client);
+					spellClientFlag  = data.spellClient == rootModel.lobbyId; 
 					
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
@@ -1322,7 +1385,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'spell_invisible': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetIndex = data.targetIndex;
 					targetAttachment = data.targetAttachment;
 					targetUnit = initUnitbyAttachment (targetIndex, targetAttachment, clientFlag);
@@ -1339,7 +1402,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'change_mana': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					eventData = { }
 					
 					eventData.clientFlag = clientFlag;
@@ -1355,7 +1418,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'activate_drawing_series': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					if (clientFlag) {
 						dispatch (new SceneEvent (SceneEvent.ACTIVATE_DRAWING_SERIES, {}));
 					} else {
@@ -1365,7 +1428,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'deactivate_drawing_series': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					if (clientFlag) {
 						dispatch (new SceneEvent (SceneEvent.DEACTIVATE_DRAWING_SERIES, {}));
 					} else {
@@ -1375,7 +1438,7 @@ package com.la.mvc.controller.match.scenario
 				}
 				
 				case 'overload': {
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					eventData = { }
 					
 					eventData.clientFlag = clientFlag;
@@ -1391,7 +1454,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case "clear_overload":
 				{
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					eventData = {}
 					
 					eventData.clientFlag = clientFlag;
@@ -1401,7 +1464,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'drop_cards':
 				{
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					targetAttachment = data.attachment;
 					
 					var cardsData:Array = data.cards as Array;
@@ -1434,7 +1497,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'select_effect':
 				{
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					if (clientFlag) {
 						var selectCards:Array = [];
@@ -1458,7 +1521,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'select_guise':
 				{
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					if (clientFlag) {
 						var selectCards:Array = [];
@@ -1482,7 +1545,7 @@ package com.la.mvc.controller.match.scenario
 				
 				case 'select_for_effect':
 				{
-					clientFlag = data.client == rootModel.userId;
+					clientFlag = getClientFlag(data.client);
 					
 					if (clientFlag) {
 						dispatch (new SceneEvent (SceneEvent.SELECT_TARGET_FOR_EFFECT, {} ));
@@ -1582,6 +1645,11 @@ package com.la.mvc.controller.match.scenario
 			scene.lighten (false);
 			field.stopBlur();
 			dispatch (new ScenarioEvent (ScenarioEvent.ACTION));
+		}
+		
+		private function getClientFlag (client:int) :Boolean {
+			return client == rootModel.lobbyId;
+						
 		}
 		
 		

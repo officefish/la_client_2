@@ -4,20 +4,28 @@
 package com.la.mvc.controller.bootstrap {
 import com.la.mvc.view.achieves.AchieveBrowser;
 import com.la.mvc.view.achieves.AchieveSlot;
+import com.la.mvc.view.achieves.CraftAchieveWidget;
 import com.la.mvc.view.card.AchieveCard;
+import com.la.mvc.view.card.AchieveCraftCard;
 import com.la.mvc.view.card.CardSensor;
 import com.la.mvc.view.card.CollectionCard;
 import com.la.mvc.view.collection.CraftWidget;
 import com.la.mvc.view.collection.DeckItemSlot;
 import com.la.mvc.view.collection.DeckSlot;
+import com.la.mvc.view.field.deck.FieldDeckSlot;
+import com.la.mvc.view.field.FieldAchieveSlot;
 import com.la.mvc.view.field.IToken;
 import com.la.mvc.view.field.StepButton;
 import com.la.mvc.view.collection.ICollection;
 import com.la.mvc.view.mediator.AchieveCardMediator;
+import com.la.mvc.view.mediator.AchieveCraftCardMediator;
 import com.la.mvc.view.mediator.AchieveMediator;
 import com.la.mvc.view.mediator.AchieveSlotMediator;
 import com.la.mvc.view.mediator.CardSensorMediator;
+import com.la.mvc.view.mediator.CraftAchieveWidgetMediator;
 import com.la.mvc.view.mediator.CraftMediator;
+import com.la.mvc.view.mediator.FieldAchieveSlotMediator;
+import com.la.mvc.view.mediator.FieldDeckSlotMediator;
 
 import com.la.mvc.view.IIntro;
 import com.la.mvc.view.card.PreflopCard;
@@ -66,6 +74,10 @@ public class BootstrapView {
 		mediatorMap.mapView(CraftWidget, CraftMediator);
 		mediatorMap.mapView(CardSensor, CardSensorMediator);
 		mediatorMap.mapView(AchieveBrowser, AchieveMediator);
+		mediatorMap.mapView(AchieveCraftCard, AchieveCraftCardMediator);
+		mediatorMap.mapView(CraftAchieveWidget, CraftAchieveWidgetMediator);
+		mediatorMap.mapView(FieldAchieveSlot, FieldAchieveSlotMediator);
+		mediatorMap.mapView(FieldDeckSlot, FieldDeckSlotMediator);
 		
 
 

@@ -19,7 +19,7 @@ public class InitPlayersCommand extends Command {
         var players:Array = serviceEvent.getData()['players'];
         while (players.length) {
             var playerData:Object = players.shift();
-            lobby.addUnit(playerData.id, playerData.hero_uid, playerData.level, false)
+            lobby.addUnit(playerData.id, playerData.hero_uid, playerData.level, Lobby.NO_SELF_DATA);
         }
     }
 }

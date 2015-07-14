@@ -25,8 +25,8 @@ public class JoinToLobbyCommand extends Command {
         var id:uint = lobbyEvent.getData()['id'];
         var hero_uid:uint = lobbyEvent.getData()['hero_uid'];
         var level:uint = lobbyEvent.getData()['level'];
-        var player:Boolean = false;
-        if (model.userId == id) player = true;
+        var player:Boolean = Lobby.NO_SELF_DATA;
+        if (model.lobbyId == id) player = Lobby.SELF_DATA;
         lobby.addUnit(id, hero_uid, level, player);
     }
 }
