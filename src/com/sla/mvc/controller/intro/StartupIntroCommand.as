@@ -20,7 +20,7 @@ package com.sla.mvc.controller.intro {
 			intro.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
 			contextView.addChild(intro.asStarlingSprite);
 			
-			MonsterDebugger.log(contextView);
+			//MonsterDebugger.log(contextView);
 		}		
 	}
 

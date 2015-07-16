@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'14.07.2015'</value>
+      <value>'16.07.2015'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -35,6 +35,7 @@
       <path-element>D:\practice\last_argument\client\src</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
+    <include-libraries />
     <library-path append="true">
       <path-element>D:\practice\last_argument\client\lib\flashComponents.swc</path-element>
       <path-element>D:\practice\last_argument\client\lib\FlashComps.swc</path-element>
@@ -42,6 +43,8 @@
       <path-element>D:\practice\last_argument\client\lib\SwiftSuspenders-v1.6.0.swc</path-element>
       <path-element>D:\practice\last_argument\client\lib\Console2.6+asdoc.swc</path-element>
       <path-element>D:\practice\last_argument\client\lib\MonsterDebugger.swc</path-element>
+      <path-element>D:\practice\last_argument\client\lib\feathers.swc</path-element>
+      <path-element>D:\practice\last_argument\client\lib\MetalWorksDesktopTheme.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>

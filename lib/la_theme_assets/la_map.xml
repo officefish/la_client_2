@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:b98c52fb264bff58a1bf0f2c0044cacf:19a436fef6709e851316ae41672bc4df:6826217f93e3854201474d7b552b1890$ -->
+<TextureAtlas imagePath="la_map.atf">
+    <SubTexture name="btnDefault" x="2" y="2" width="200" height="33"/>
+    <SubTexture name="btnDown" x="2" y="37" width="200" height="33"/>
+</TextureAtlas>

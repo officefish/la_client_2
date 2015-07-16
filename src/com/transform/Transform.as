@@ -23,6 +23,19 @@ public class Transform {
         result.draw(bitmapData, matrix);
         return new Bitmap(result);
     }
+	
+	public static function toSize (asset:Bitmap, width:int, height:int) :Bitmap {
+        var bitmapData:BitmapData = asset.bitmapData;
+        var scaleX:Number = width / asset.width;
+        var scaleY:Number = height / asset.height;
+        var transparent:Boolean = bitmapData.transparent;
+        var result:BitmapData = new BitmapData(width, height, transparent);
+        var matrix:Matrix = new Matrix();
+        matrix.scale(scaleX, scaleY);
+        result.draw(bitmapData, matrix);
+        return new Bitmap(result);
+    }
+	
 	public static function crop (asset:Bitmap, square:Rectangle) :Bitmap {
 		var bitmapData:BitmapData = asset.bitmapData;
         var width:int = square.width;
