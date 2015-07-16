@@ -1,5 +1,6 @@
 package com.sla.mvc.controller.bootstrap 
 {
+	import com.sla.mvc.model.StateModel;
 	import org.robotlegs.core.IInjector;
 	/**
 	 * ...
@@ -9,7 +10,7 @@ package com.sla.mvc.controller.bootstrap
 	{
 		public function BootstrapModel(injector:IInjector)  
 		{
-			
+			injector.mapSingleton(StateModel, 'stateModel');
 		}
 		
 	}

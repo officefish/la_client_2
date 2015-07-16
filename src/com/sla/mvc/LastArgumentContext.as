@@ -30,8 +30,8 @@ package com.sla.mvc
 		 */
 		private function bootstrap () :void {
 			new BootstrapClasses(injector);
-			new BootstrapController(commandMap);
 			new BootstrapModel(injector);
+			new BootstrapController(commandMap);
 			new BootstrapService(injector);
 			new BootstrapView(this.mediatorMap);
 		}

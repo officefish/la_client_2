@@ -1,5 +1,6 @@
 package com.sla.mvc.controller.intro {
-	import com.sla.mvc.view.intro.IIntro;
+	import com.sla.mvc.model.StateModel;
+	import com.sla.mvc.view.intro.Intro;
 	import org.robotlegs.mvcs.StarlingCommand;
 	import com.demonsters.debugger.MonsterDebugger;
 	
@@ -10,7 +11,10 @@ package com.sla.mvc.controller.intro {
 	public class StartupIntroCommand extends StarlingCommand 
 	{
 		[Inject]
-		public var intro:IIntro;
+		public var intro:Intro;
+		
+		[Inject (name="stateModel")]
+		public var stateModel:StateModel;
 		
 		override public function execute():void 
 		{
@@ -18,7 +22,7 @@ package com.sla.mvc.controller.intro {
 			MonsterDebugger.log ("StartupIntroCommand::execute()");
 			
 			intro.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
-			contextView.addChild(intro.asStarlingSprite);
+			contextView.addChild(intro);
 			
 			//MonsterDebugger.log(contextView);
 		}		

@@ -1,6 +1,10 @@
 package com.sla.mvc.view.intro 
 {
 	import com.sla.event.IntroEvent;
+	import starling.display.DisplayObject;
+	
+	import com.sla.event.starling.StarlingIntroEvent;
+	import com.sla.mvc.view.StarlingRobotlegsSprite;
 	import com.sla.theme.LastArgumentTheme;
 	import com.transform.Transform;
 	import feathers.controls.ButtonGroup;
@@ -18,18 +22,18 @@ package com.sla.mvc.view.intro
 	import starling.textures.Texture;
 	//import feathers.themes.MinimalDesktopTheme;
 	//import feathers.themes.MetalWorksDesktopTheme;
-	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.display.Quad;
 	import feathers.themes.StyleNameFunctionTheme;
 	import feathers.controls.Button;
 	import com.demonsters.debugger.MonsterDebugger;
+	import starling.display.Sprite;
 	
 	/**
 	 * ...
 	 * @author inozemcev
 	 */
-	public class Intro extends Sprite implements IIntro
+	public class Intro extends Sprite
 	{
 		
 		private var stageWidth:int;
@@ -50,14 +54,6 @@ package com.sla.mvc.view.intro
 			addEventListener (Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		public function get asStarlingSprite () :Sprite {
-			return this as Sprite;
-		}
-		
-		public function get asEventDispatcher () :IEventDispatcher {
-			return this as IEventDispatcher;
-		}
-		
 		public function resize (stageWidth:int, stageHeight:int) :void {
 			this.stageWidth = stageWidth;
 			this.stageHeight = stageHeight;
@@ -69,16 +65,23 @@ package com.sla.mvc.view.intro
 			}
 		}
 		
-		private function onBattle (event:Event) :void {
-			dispatchEvent (new IntroEvent (IntroEvent.SELECT_GAME));
+		private function onSelectGame (event:Event) :void {
+			dispatchEvent(new StarlingIntroEvent(StarlingIntroEvent.SELECT_GAME));
+			completeAnimation();
 		}
 		
-		private function onCollection (event:Event) :void {
-			dispatchEvent (new IntroEvent (IntroEvent.SELECT_COLLECTION));
+		private function onSelectCollection (event:Event) :void {
+			dispatchEvent(new StarlingIntroEvent(StarlingIntroEvent.SELECT_COLLECTION));
+			completeAnimation();
 		}
 		
-		private function onHeroes (event:Event) :void {
-			dispatchEvent (new IntroEvent (IntroEvent.SELECT_HEROES));
+		private function onSelectHeroes (event:Event) :void {
+			dispatchEvent(new StarlingIntroEvent(StarlingIntroEvent.SELECT_HEROES));
+			completeAnimation();
+		}
+		
+		private function completeAnimation () :void {
+			dispatchEvent(new StarlingIntroEvent(StarlingIntroEvent.COMPLETE));
 		}
 		
 		private function init () :void {
@@ -115,9 +118,9 @@ package com.sla.mvc.view.intro
 						
 			group.dataProvider = new ListCollection(
 			[
-				{ label: "MATCHES", triggered: onBattle },
-				{ label: "COLLECTION", triggered: onCollection },
-				{ label: "HEROES", triggered: onHeroes },
+				{ label: "MATCHES", triggered: onSelectGame },
+				{ label: "COLLECTION", triggered: onSelectCollection },
+				{ label: "HEROES", triggered: onSelectHeroes },
 			]);
 			
 			group.validate();

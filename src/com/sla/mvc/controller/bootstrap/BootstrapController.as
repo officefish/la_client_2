@@ -1,10 +1,15 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	import com.sla.event.LAContextEvent;
+	
+	import com.sla.mvc.controller.intro.GameSelectCommand;
 	import com.sla.mvc.controller.intro.StartupIntroCommand;
+	import com.sla.mvc.controller.state.ChangeStateCommand;
+	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.core.ICommandMap;
 	import com.sla.mvc.controller.init.*;
+	import com.sla.event.IntroEvent;
 	/**
 	 * ...
 	 * @author inozemcev
@@ -31,6 +36,9 @@ package com.sla.mvc.controller.bootstrap
 			 */  
 			
 			commandMap.mapEvent(LAContextEvent.VIEW_INIT, StartupIntroCommand);
+			commandMap.mapEvent(IntroEvent.SELECT_GAME, GameSelectCommand);
+			
+			commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
 		}
 		
 	}

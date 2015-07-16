@@ -1,12 +1,11 @@
-package com.sla.event 
-{
-	import flash.events.Event;
+package com.sla.event.starling {
+	import starling.events.Event;
 	
 	/**
 	 * ...
 	 * @author inozemcev
 	 */
-	public class IntroEvent extends Event 
+	public class StarlingIntroEvent extends Event  
 	{
 		
 		public static const SELECT_COLLECTION:String = 'selectCollection';
@@ -18,14 +17,13 @@ package com.sla.event
 		public static const COMPLETE:String = 'introComplete';
 		public static const SELECT_HEROES:String = 'selectHeroes';
 		
-		public function IntroEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) 
+		public function StarlingIntroEvent(type:String, bubbles:Boolean=false) 
 		{
-			super(type, bubbles, cancelable);
+			super(type, bubbles);
 		}
 		
-		override public function clone():Event 
-		{
-			return super.clone();
+		public function clone():Event {
+			return new StarlingIntroEvent(type, bubbles)
 		}
 		
 	}

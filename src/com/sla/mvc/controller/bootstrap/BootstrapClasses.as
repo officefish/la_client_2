@@ -11,7 +11,7 @@ package com.sla.mvc.controller.bootstrap
 		
 		public function BootstrapClasses(injector:IInjector)  
 		{
-			injector.mapClass(IIntro, Intro);
+			injector.mapClass(Intro, Intro);
 		}
 		
 	}
