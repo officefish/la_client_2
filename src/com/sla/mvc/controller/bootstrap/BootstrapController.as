@@ -1,6 +1,8 @@
 package com.sla.mvc.controller.bootstrap 
 {
+	import com.sla.event.DeckEvent;
 	import com.sla.event.LAContextEvent;
+	import com.sla.mvc.controller.deck.request.RequestDeckListCommand;
 	
 	import com.sla.mvc.controller.intro.GameSelectCommand;
 	import com.sla.mvc.controller.intro.StartupIntroCommand;
@@ -39,6 +41,9 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(IntroEvent.SELECT_GAME, GameSelectCommand);
 			
 			commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
+			
+			// -- Decklist before match --
+			commandMap.mapEvent(DeckEvent.REQUEST_DECKLIST, RequestDeckListCommand);
 		}
 		
 	}

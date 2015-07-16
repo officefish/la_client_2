@@ -1,5 +1,6 @@
 package com.sla.mvc.controller.state 
 {
+	import com.sla.event.DeckEvent;
 	import com.sla.state.GameState;
 	import com.sla.mvc.model.StateModel;
 	import org.robotlegs.mvcs.StarlingCommand;
@@ -21,7 +22,7 @@ package com.sla.mvc.controller.state
 			switch (stateModel.state) {
 				case GameState.DECK_LIST: 
 				{
-					MonsterDebugger.log ('change state to decklist');
+					dispatch(new DeckEvent(DeckEvent.REQUEST_DECKLIST));
 					break;
 				}
 			}

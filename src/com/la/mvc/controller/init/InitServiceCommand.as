@@ -7,9 +7,11 @@ import com.la.event.GameContextEvent;
 import org.robotlegs.mvcs.Command;
 
 public class InitServiceCommand extends Command {
-
+	
+	
     override public function execute():void {
-        dispatch(new GameContextEvent(GameContextEvent.SERVICE_INIT_COMPLETE));
+		
+		dispatch(new GameContextEvent(GameContextEvent.SERVICE_INIT_COMPLETE));
     }
 }
 }
