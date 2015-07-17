@@ -17,6 +17,7 @@ package com.sla.event
 		public static const SELECT_ARENA:String = 'selectArena';
 		public static const COMPLETE:String = 'introComplete';
 		public static const SELECT_HEROES:String = 'selectHeroes';
+		public static const STARTUP:String = 'starupIntro';
 		
 		public function IntroEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

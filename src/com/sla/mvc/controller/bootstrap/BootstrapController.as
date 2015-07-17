@@ -1,8 +1,12 @@
 package com.sla.mvc.controller.bootstrap 
 {
+	import com.sla.event.ApiServiceEvent;
 	import com.sla.event.DeckEvent;
 	import com.sla.event.LAContextEvent;
+	import com.sla.mvc.controller.deck.CloseDeckListCommand;
+	import com.sla.mvc.controller.deck.IntroDecklistInitCommand;
 	import com.sla.mvc.controller.deck.request.RequestDeckListCommand;
+	import com.sla.mvc.controller.deck.StartupDeckListCommand;
 	
 	import com.sla.mvc.controller.intro.GameSelectCommand;
 	import com.sla.mvc.controller.intro.StartupIntroCommand;
@@ -32,18 +36,28 @@ package com.sla.mvc.controller.bootstrap
 			// init view
 			commandMap.mapEvent(LAContextEvent.SERVICE_INIT, InitViewCommand, LAContextEvent);
 			
+			commandMap.mapEvent(LAContextEvent.VIEW_INIT, StartupIntroCommand);
+			
+			//-- ChangeState --
+			commandMap.mapEvent(LAContextEvent.VALIDATE, ChangeStateCommand);
+			
 			// -- Intro --
 			/*
 			 *  Finally we launch our intro menu 
 			 */  
 			
-			commandMap.mapEvent(LAContextEvent.VIEW_INIT, StartupIntroCommand);
+			
+			commandMap.mapEvent(IntroEvent.STARTUP, StartupIntroCommand);
 			commandMap.mapEvent(IntroEvent.SELECT_GAME, GameSelectCommand);
 			
 			commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
 			
 			// -- Decklist before match --
+			commandMap.mapEvent(DeckEvent.STARTUP, StartupDeckListCommand);
 			commandMap.mapEvent(DeckEvent.REQUEST_DECKLIST, RequestDeckListCommand);
+			commandMap.mapEvent(ApiServiceEvent.INTRO_DECKLIST_INIT, IntroDecklistInitCommand, ApiServiceEvent);
+			commandMap.mapEvent(DeckEvent.CLOSE, CloseDeckListCommand);
+			
 		}
 		
 	}

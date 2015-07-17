@@ -1,7 +1,8 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	import org.robotlegs.core.IInjector;
-	import com.sla.mvc.view.intro.*;
+	import com.sla.mvc.view.deck.DeckList;
+	import com.sla.mvc.view.intro.Intro;
 	/**
 	 * ...
 	 * @author inozemcev
@@ -11,7 +12,8 @@ package com.sla.mvc.controller.bootstrap
 		
 		public function BootstrapClasses(injector:IInjector)  
 		{
-			injector.mapClass(Intro, Intro);
+			injector.mapSingleton(Intro);
+			injector.mapSingleton(DeckList);
 		}
 		
 	}

@@ -10,6 +10,8 @@ package com.sla.event
 	{
 		
 		public static const REQUEST_DECKLIST:String = "request_decklist";
+		public static const CLOSE:String = 'close_decklist';
+		public static const STARTUP:String = 'startup_decklist';
 		
 		public function DeckEvent(type:String, data:Object = null, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

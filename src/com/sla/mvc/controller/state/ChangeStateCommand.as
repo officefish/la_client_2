@@ -1,6 +1,8 @@
 package com.sla.mvc.controller.state 
 {
 	import com.sla.event.DeckEvent;
+	import com.sla.event.IntroEvent;
+	import com.sla.event.LAContextEvent;
 	import com.sla.state.GameState;
 	import com.sla.mvc.model.StateModel;
 	import org.robotlegs.mvcs.StarlingCommand;
@@ -20,9 +22,14 @@ package com.sla.mvc.controller.state
 			MonsterDebugger.log ("ChangeStateCommand::execute()");
 			while (contextView.numChildren) contextView.removeChildAt (0);
 			switch (stateModel.state) {
+				case GameState.INTRO: {
+					dispatch(new IntroEvent(IntroEvent.STARTUP));
+					break;
+				}
+				
 				case GameState.DECK_LIST: 
 				{
-					dispatch(new DeckEvent(DeckEvent.REQUEST_DECKLIST));
+					dispatch(new DeckEvent(DeckEvent.STARTUP));
 					break;
 				}
 			}

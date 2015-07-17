@@ -3,7 +3,7 @@ package com.sla.mvc.service
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.DataLoader;
-	import com.greensock.loading.LoaderStatus;
+	import com.sla.event.ApiServiceEvent;
 	import com.sla.mvc.model.data.CollectionCardData;
 	import com.sla.mvc.model.data.DeckData;
 	import com.sla.mvc.model.data.HeroData;
@@ -59,7 +59,8 @@ package com.sla.mvc.service
 		public function requestDeckList () :void {
 			
 			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
-			var methodUrl:String = url + "/get_deck_list/?user_id=" + _userId; 
+			
+			var methodUrl:String = url + "get_deck_list/?user_id=" + _userId; 
 			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDeckList, onError:errorHandler});
 			loader.load();
 		}
@@ -67,13 +68,16 @@ package com.sla.mvc.service
 		// response
 		private function onCompleteDeckList (event:LoaderEvent) :void { 
 			MonsterDebugger.log("apiService::onCompleteDeckList()")
-			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}));
-			var response:Object = JSON.parse(event.target.content);
-			MonsterDebugger.log(response);
-			var serviceData:Object = parseDeckList(response);
 			
-			serviceData['actual_deck'] = int(response.actual_deck);
-			//dispatch (new ApiServiceEvent (ApiServiceEvent.INTRO_DECK_LIST_INIT, serviceData));
+			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}));
+			
+			var response:Object = JSON.parse(event.target.content);
+			//MonsterDebugger.log(response);
+			var serviceData:Object = parseDeckList(response);
+			serviceData['actualDeck'] = int(response.actual_deck);
+			//MonsterDebugger.log(serviceData);
+
+			dispatch (new ApiServiceEvent (ApiServiceEvent.INTRO_DECKLIST_INIT, serviceData));
 		}
 		
 		private function progressHandler(event:LoaderEvent):void { 
@@ -88,7 +92,6 @@ package com.sla.mvc.service
 		private function parseDeckList (response:Object) :Object {
 	        var responseDecks:Array = response.decks;
 			var serviceData:Object = {}
-			/*
 			var deckData:Object;
 			var responseDeck:Object;
 			var decks:Vector.<DeckData> = new Vector.<DeckData>();
@@ -99,7 +102,6 @@ package com.sla.mvc.service
 				decks.push (deckData)
 			}
 			serviceData['decks'] = decks;
-			*/
 			return serviceData;
 		}
 		
@@ -108,13 +110,13 @@ package com.sla.mvc.service
 			deckData.title =  responseDeckData.title;
 			deckData.id = int (responseDeckData.id);
 			deckData.complicated = responseDeckData.complicated;
-			deckData.count = responseDeckData.count;
+			deckData.count = responseDeckData.cardsCount;
 			deckData.uid = responseDeckData.uid;
 			if (responseDeckData.items) {
 				deckData.items = getDeckItems (responseDeckData.items)
 			}
 			if (responseDeckData.userHero) {
-				deckData.hero = getHeroDataByResponseData (responseDeckData.userHero)
+				deckData.hero = getHeroData (responseDeckData.userHero)
 			}
 			return deckData;
 		}
@@ -143,7 +145,7 @@ package com.sla.mvc.service
 			return items;
 		}
 		
-		private function getHeroDataByResponseData (responseHeroData:Object) :HeroData {
+		private function getHeroData (responseHeroData:Object) :HeroData {
 			var heroData:HeroData = new HeroData(); 
 			heroData.title =  responseHeroData.title;
 			heroData.vocation =  responseHeroData.vocation;

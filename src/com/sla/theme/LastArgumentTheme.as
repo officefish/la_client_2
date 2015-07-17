@@ -77,6 +77,7 @@ package com.sla.theme
 		{
 			// button
 			this.getStyleProviderForClass( Button ).defaultStyleFunction = this.setButtonStyles;
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('closeView', this.seCloseViewButtonStyles );	
 		}
 		
 		private function createTextureAtlas():void
@@ -107,6 +108,14 @@ package com.sla.theme
 			button.downLabelProperties.textFormat = 
 			button.hoverLabelProperties.textFormat = new TextFormat("FckBeans", 
 			24, 0x222222); 
+		}
+		
+		private function seCloseViewButtonStyles (button:Button) :void {
+			button.defaultSkin = new Scale9Image( 
+			new Scale9Textures(this.atlas.getTexture( "closeBtnDefault" ), new Rectangle(0,0,10,10))) as DisplayObject;
+			button.downSkin = new Scale9Image( 
+			new Scale9Textures(this.atlas.getTexture( "closeBtnDown" ), new Rectangle(0,0,10,10))) as DisplayObject;
+			button.hoverSkin = button.downSkin;
 		}
 		
 		private function initializeGlobals():void
