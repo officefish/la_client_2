@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:0bd480aa3acbb6cd67b569a4bd25b3bb:90e654f1c09d6997cbb5d9d2b0fcc630:6826217f93e3854201474d7b552b1890$ -->
+<!-- $TexturePacker:SmartUpdate:aa38dbe965a3ddb775c32a0b7a79db45:fa2fb95e9bbad1e78af69d5bbcc946be:6826217f93e3854201474d7b552b1890$ -->
 <TextureAtlas imagePath="la_map.atf">
     <SubTexture name="btnDefault" x="2" y="2" width="200" height="33"/>
+    <SubTexture name="btnDefaultSmall" x="2" y="72" width="128" height="38" frameX="-5" frameY="-5" frameWidth="140" frameHeight="50"/>
     <SubTexture name="btnDown" x="2" y="37" width="200" height="33"/>
+    <SubTexture name="btnDownSmall" x="2" y="112" width="128" height="38" frameX="-5" frameY="-5" frameWidth="140" frameHeight="50"/>
     <SubTexture name="closeBtnDefault" x="204" y="2" width="10" height="10"/>
     <SubTexture name="closeBtnDown" x="216" y="2" width="10" height="10"/>
 </TextureAtlas>

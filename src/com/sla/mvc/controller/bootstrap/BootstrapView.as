@@ -5,7 +5,7 @@ package com.sla.mvc.controller.bootstrap
 	
 	import com.sla.mvc.view.intro.Intro;
 	import com.sla.mvc.view.mediator.IntroMediator;
-	import com.sla.mvc.view.deck.DeckList;
+	import com.sla.mvc.view.decklist.DeckList;
 	import com.sla.mvc.view.mediator.DeckListMediator;
 	/**
 	 * ...

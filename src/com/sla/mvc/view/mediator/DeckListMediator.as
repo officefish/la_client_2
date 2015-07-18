@@ -1,6 +1,8 @@
 package com.sla.mvc.view.mediator 
 {
-	import com.sla.event.DeckEvent;
+	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.DeckListEvent;
+	import com.sla.event.starling.DeckListItemEvent;
 	import com.sla.event.starling.StarlingDeckListEvent;
 	import org.robotlegs.mvcs.StarlingMediator;
 	
@@ -13,10 +15,20 @@ package com.sla.mvc.view.mediator
 		override public function onRegister():void 
 		{
 			addViewListener(StarlingDeckListEvent.CLOSE, onClose);
+			addViewListener(StarlingDeckListEvent.EDIT_DECK, onEditDeck);
+			addViewListener(StarlingDeckListEvent.READY, onReady);
 		}
 		
 		private function onClose (event:StarlingDeckListEvent) :void {
-			dispatch(new DeckEvent(DeckEvent.CLOSE));
+			dispatch(new DeckListEvent(DeckListEvent.CLOSE));
+		}
+		
+		private function onEditDeck (event:StarlingDeckListEvent) :void {
+			dispatch(new DeckListEvent(DeckListEvent.EDIT_DECK_FROM_DECKLIST, event.data));
+		}
+		
+		private function onReady (event:StarlingDeckListEvent) :void {
+			dispatch(new DeckListEvent(DeckListEvent.READY));
 		}
 	}
 

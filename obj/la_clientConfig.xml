@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'17.07.2015'</value>
+      <value>'19.07.2015'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -43,8 +43,8 @@
       <path-element>D:\practice\last_argument\client\lib\SwiftSuspenders-v1.6.0.swc</path-element>
       <path-element>D:\practice\last_argument\client\lib\Console2.6+asdoc.swc</path-element>
       <path-element>D:\practice\last_argument\client\lib\MonsterDebugger.swc</path-element>
-      <path-element>D:\practice\last_argument\client\lib\feathers.swc</path-element>
       <path-element>D:\practice\last_argument\client\lib\MetalWorksDesktopTheme.swc</path-element>
+      <path-element>D:\practice\last_argument\client\lib\feathers.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>

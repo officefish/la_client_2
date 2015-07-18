@@ -1,6 +1,6 @@
 package com.sla.mvc.controller.state 
 {
-	import com.sla.event.DeckEvent;
+	import com.sla.event.DeckListEvent;
 	import com.sla.event.IntroEvent;
 	import com.sla.event.LAContextEvent;
 	import com.sla.state.GameState;
@@ -29,7 +29,7 @@ package com.sla.mvc.controller.state
 				
 				case GameState.DECK_LIST: 
 				{
-					dispatch(new DeckEvent(DeckEvent.STARTUP));
+					dispatch(new DeckListEvent(DeckListEvent.STARTUP));
 					break;
 				}
 			}

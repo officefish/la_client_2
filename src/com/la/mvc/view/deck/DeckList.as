@@ -24,7 +24,8 @@ public class DeckList extends Sprite {
 	private var decks:Object;
 	
 	private var closeButton:SmallButton; 
-
+	
+	
     public function DeckList() {
 
     }
@@ -64,6 +65,8 @@ public class DeckList extends Sprite {
 		closeButton.y = deckContainer.y;
 		closeButton.addEventListener (MouseEvent.CLICK, onCloseClick);
 		addChild (closeButton);
+		
+		
     }
 
     public function initDecks (list:Array) :void {

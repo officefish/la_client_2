@@ -59,8 +59,8 @@
     <element path="lib\SwiftSuspenders-v1.6.0.swc" />
     <element path="lib\Console2.6+asdoc.swc" />
     <element path="lib\MonsterDebugger.swc" />
-    <element path="lib\feathers.swc" />
     <element path="lib\MetalWorksDesktopTheme.swc" />
+    <element path="lib\feathers.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

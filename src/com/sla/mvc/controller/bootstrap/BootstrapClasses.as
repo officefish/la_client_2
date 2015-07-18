@@ -1,7 +1,7 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	import org.robotlegs.core.IInjector;
-	import com.sla.mvc.view.deck.DeckList;
+	import com.sla.mvc.view.decklist.DeckList;
 	import com.sla.mvc.view.intro.Intro;
 	/**
 	 * ...
