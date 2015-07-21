@@ -176,10 +176,10 @@ public class LobbyService extends Actor {
                 }
                 case USER_LEAVE:
                 {
-                     id = response.data.id;
-                     data['id'] = id;
-                     dispatch(new LobbyServiceEvent(LobbyServiceEvent.USER_LEAVE, data));
-                     break;
+                    id = response.data.id;
+                    data['id'] = id;
+                    dispatch(new LobbyServiceEvent(LobbyServiceEvent.USER_LEAVE, data));
+                    break;
                 }
                 case START_MATCH:
                 {

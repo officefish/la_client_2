@@ -13,7 +13,6 @@ public class StartupLobbyServiceCommand extends Command {
     [Inject]
     public var service:LobbyService;
 
-
     [Inject (name='rootModel')]
     public var model:RootModel;
 

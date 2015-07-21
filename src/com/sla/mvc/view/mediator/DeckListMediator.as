@@ -28,7 +28,7 @@ package com.sla.mvc.view.mediator
 		}
 		
 		private function onReady (event:StarlingDeckListEvent) :void {
-			dispatch(new DeckListEvent(DeckListEvent.READY));
+			dispatch(new DeckListEvent(DeckListEvent.READY, event.data));
 		}
 	}
 

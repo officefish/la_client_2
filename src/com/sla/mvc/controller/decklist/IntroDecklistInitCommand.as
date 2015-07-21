@@ -23,6 +23,9 @@ package com.sla.mvc.controller.decklist {
 		override public function execute():void 
 		{
 			model.list = event.data['decks'];
+			if (event.data['actualDeck']) {
+				model.actualDeck = event.data['actualDeck'];
+			}
 			
 			list.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
 			contextView.addChild(list);
@@ -30,6 +33,9 @@ package com.sla.mvc.controller.decklist {
 			MonsterDebugger.log(model.list);
 			
 			list.initDecks(model.list);
+			if (model.actualDeck) {
+				list.activateDeck(model.actualDeck);
+			}
 			
 			super.execute();
 		}	

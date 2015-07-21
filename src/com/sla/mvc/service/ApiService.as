@@ -38,6 +38,10 @@ package com.sla.mvc.service
 			_host = value;	
 		}
 		
+		public function get host () :String {
+			return _host;
+		}
+		
 		public function set port (value:int) :void {
 			_port = value;
 		}
@@ -65,6 +69,14 @@ package com.sla.mvc.service
 			loader.load();
 		}
 		
+		public function requestDeckReadyToLobby (deckId:int, heroId:int) :void {
+			var methodUrl:String = url + 'select_deck/?user_id=' + _userId + '&deck_id=' + deckId + '&hero_id=' + heroId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteIntroSelectDeck, onError:errorHandler});
+			loader.load();
+		}
+		
+		
+		
 		// response
 		private function onCompleteDeckList (event:LoaderEvent) :void { 
 			MonsterDebugger.log("apiService::onCompleteDeckList()")
@@ -85,6 +97,16 @@ package com.sla.mvc.service
 		}
 		private function errorHandler(event:LoaderEvent):void {
 			trace("error occured with " + event.target + ": " + event.text);
+		}
+		
+		private function onCompleteIntroSelectDeck (event:LoaderEvent) :void {
+			var response:Object = JSON.parse(event.target.content);
+			var serviceData:Object = { };
+			serviceData['hero_id'] = int(response.hero_id);
+			serviceData['deck_id'] = int(response.deck_id);
+			serviceData['hero_uid'] = int(response.hero_uid);
+			serviceData['level'] = int(response.level);
+			dispatch (new ApiServiceEvent (ApiServiceEvent.DECK_READY_TO_LOBBY, serviceData));
 		}
 		
 		

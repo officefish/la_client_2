@@ -11,7 +11,7 @@ package com.sla.mvc.controller.intro
 	 */
 	public class GameSelectCommand extends StarlingCommand 
 	{
-		[Inject (name="stateModel")]
+		[Inject]
 		public var stateModel:StateModel;
 		
 		override public function execute():void 

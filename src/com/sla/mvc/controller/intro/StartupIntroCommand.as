@@ -13,7 +13,7 @@ package com.sla.mvc.controller.intro {
 		[Inject]
 		public var intro:Intro;
 		
-		[Inject (name="stateModel")]
+		[Inject]
 		public var stateModel:StateModel;
 		
 		override public function execute():void 

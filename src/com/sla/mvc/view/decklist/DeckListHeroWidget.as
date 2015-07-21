@@ -5,6 +5,7 @@ package com.sla.mvc.view.decklist
 	import com.transform.Transform;
 	import feathers.controls.Label;
 	import feathers.controls.LayoutGroup;
+	import feathers.display.Scale9Image;
 	import feathers.layout.HorizontalLayout;
 	import feathers.controls.TextArea;
 	import flash.display.Bitmap;
@@ -65,7 +66,7 @@ package com.sla.mvc.view.decklist
 			levelAsset = new Image(textute);
 			levelAsset.x = 42;
 			levelAsset.y = 165;
-			
+						
 			nameField = new TextField(180, 30, "", "SupriaSans", 14);
 			nameField.bold = true;
 			nameField.color = 0;

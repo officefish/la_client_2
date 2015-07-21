@@ -6,6 +6,10 @@ package com.sla.theme
 	import feathers.controls.Button;
 	import feathers.controls.ButtonGroup;
 	import feathers.controls.Header;
+	import feathers.controls.Icon;
+	import feathers.controls.Label;
+	import feathers.controls.List;
+	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.controls.text.StageTextTextEditor;
 	import feathers.controls.text.TextBlockTextEditor;
 	import feathers.controls.text.TextBlockTextRenderer;
@@ -14,15 +18,18 @@ package com.sla.theme
 	import feathers.core.ITextEditor;
 	import feathers.core.ITextRenderer;
 	import feathers.display.Scale9Image;
+	import feathers.layout.VerticalLayout;
 	import feathers.textures.Scale9Textures;
 	import feathers.themes.StyleNameFunctionTheme;
 	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.geom.Rectangle;
+	import flash.text.AntiAliasType;
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
 	import flash.text.Font;
 	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	import mx.core.FontAsset;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
@@ -215,6 +222,8 @@ package com.sla.theme
 
 		
 		private var alertBackgroundTexture:Scale9Textures;
+		private var lobbyBackgroundTexture:Scale9Textures;
+		private var levelIconTexture:Scale9Textures;
 		
 		/**
 		 * Constructor.
@@ -285,10 +294,6 @@ package com.sla.theme
 		}
 		
 		private function initializeTextures() :void {
-			
-		}
-		
-		private function initializeFormats () :void {
 			var shape:flash.display.Sprite = new flash.display.Sprite();
 			var color:uint = 0x222222;
 			shape.graphics.beginFill(color);
@@ -297,24 +302,148 @@ package com.sla.theme
 			var bmd:BitmapData = new BitmapData(shape.width, shape.height, false, 0);
 			bmd.draw(shape); 
 			alertBackgroundTexture = new Scale9Textures(Texture.fromBitmapData(bmd), new Rectangle(0,0,40,40));
+			
+			
+			color = 0xFFCC00;
+			shape.graphics.clear();
+			shape.graphics.beginFill(color);
+			shape.graphics.drawRect(0,0,40,40);
+			shape.graphics.endFill();
+			var bmd2:BitmapData = new BitmapData(shape.width, shape.height, false, 0);
+			bmd2.draw(shape); 
+			lobbyBackgroundTexture = new Scale9Textures(Texture.fromBitmapData(bmd2), new Rectangle(0,0,40,40));
+	
+			levelIconTexture = new Scale9Textures(this.atlas.getTexture( "level" ), new Rectangle(0,0, 94, 27));
+			
 		}
+		
+		private function initializeFormats () :void {
+			}
 		
 		private function initializeStyleProviders():void
 		{
+			//
+			this.getStyleProviderForClass( Icon ).setFunctionForStyleName('levelIcon', this.setLevelIconStyles); 
+			this.getStyleProviderForClass( Icon ).setFunctionForStyleName('lobbyLevelIcon', this.setLobbyLevelIconStyles); 
+
+			
 			// button
-			this.getStyleProviderForClass( Button ).defaultStyleFunction = this.setButtonStyles;
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('mainButton', this.setMainButtonStyles);
 			this.getStyleProviderForClass( Button ).setFunctionForStyleName('closeView', this.seCloseViewButtonStyles );	
 			this.getStyleProviderForClass( Button ).setFunctionForStyleName('smallButton', this.setSmallButtonStyles );	
 		
-			
 			// alert
 			this.getStyleProviderForClass(Alert).defaultStyleFunction = this.setAlertStyles;
 			this.getStyleProviderForClass(ButtonGroup).setFunctionForStyleName(Alert.DEFAULT_CHILD_STYLE_NAME_BUTTON_GROUP, this.setAlertButtonGroupStyles);
-			//this.getStyleProviderForClass(Button).setFunctionForStyleName(THEME_STYLE_NAME_ALERT_BUTTON_GROUP_BUTTON, this.setAlertButtonGroupButtonStyles);
 			this.getStyleProviderForClass(Header).setFunctionForStyleName(Alert.DEFAULT_CHILD_STYLE_NAME_HEADER, this.setAlertHeaderStyles);
-			//this.getStyleProviderForClass(TextBlockTextRenderer).setFunctionForStyleName(Alert.DEFAULT_CHILD_STYLE_NAME_MESSAGE, this.setAlertMessageTextRendererStyles);
 
+			// lobby
+			this.getStyleProviderForClass( Header).setFunctionForStyleName('lobbyHeader', this.setLobbyHeaderStyles);
+			this.getStyleProviderForClass(List).setFunctionForStyleName("lobbyPlayersList", this.setLobbyPlayersListStyles);	
+			this.getStyleProviderForClass(List).setFunctionForStyleName("lobbyInvitesList", this.setLobbyInvitesListStyles);
+			this.getStyleProviderForClass(List).setFunctionForStyleName("lobbyRequestsList", this.setLobbyRequestsListStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("lobbyNicknameLabel", this.setLobbyNicknameLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("lobbyLevelLabel", this.setLobbyLevelLabelStyles);
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('lobbyButton', this.setLobbyButtonStyles);
+
+			
 		} 
+			
+		private function setLobbyButtonStyles( button:Button ):void
+		{
+			button.defaultLabelProperties.embedFonts = true; 
+			button.defaultLabelProperties.textFormat = new TextFormat("SupriaSans", 
+			12, 0x113f18, true); 
+		}
+			
+		private function setLevelIconStyles (icon:Icon) :void {
+			icon.source = new Scale9Image (levelIconTexture, 1);
+		}
+		
+		private function setLobbyLevelIconStyles (icon:Icon) :void {
+			icon.source = new Scale9Image (levelIconTexture, 0.4);
+		}
+			
+		private function setLobbyNicknameLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 11, 0); 
+				textRenderer.textFormat.bold = true;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		private function setLobbyLevelLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 14, 0); 
+				textRenderer.textFormat.bold = true;
+				textRenderer.textFormat.align == TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		protected function setLobbyPlayersListStyles (list:List) :void {
+			
+			const lobbyPlayersLayout:VerticalLayout = new VerticalLayout();
+			lobbyPlayersLayout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_CENTER;
+			lobbyPlayersLayout.gap = 2;
+			lobbyPlayersLayout.hasVariableItemDimensions = true;
+
+			list.layout = lobbyPlayersLayout;
+			list.itemRendererFactory = lobbyPlayersListRendererFactory;
+			list.autoHideBackground = true;
+		}
+		
+		protected function lobbyPlayersListRendererFactory () :IListItemRenderer {
+			var renderer:IListItemRenderer = new LobbyPlayersListRenderer();
+			renderer.width = 310;
+			renderer.height = 36;
+			return renderer;
+		}
+		
+		protected function setLobbyInvitesListStyles (list:List) :void {
+			
+			const lobbyInvitesLayout:VerticalLayout = new VerticalLayout();
+			lobbyInvitesLayout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_CENTER;
+			lobbyInvitesLayout.gap = 2;
+			lobbyInvitesLayout.hasVariableItemDimensions = true;
+
+			list.layout = lobbyInvitesLayout;
+			list.itemRendererFactory = lobbyInvitesListRendererFactory;
+			list.autoHideBackground = true;
+		}
+		
+		protected function lobbyInvitesListRendererFactory () :IListItemRenderer {
+			var renderer:IListItemRenderer = new LobbyInvitesListRenderer('accept');
+			renderer.width = 370;
+			renderer.height = 36;
+			return renderer;
+		}
+		
+		protected function setLobbyRequestsListStyles (list:List) :void {
+			
+			const lobbyRequestsLayout:VerticalLayout = new VerticalLayout();
+			lobbyRequestsLayout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_CENTER;
+			lobbyRequestsLayout.gap = 2;
+			lobbyRequestsLayout.hasVariableItemDimensions = true;
+
+			list.layout = lobbyRequestsLayout;
+			list.itemRendererFactory = lobbyRequestsListRendererFactory;
+			list.autoHideBackground = true;
+		}
+		
+		protected function lobbyRequestsListRendererFactory () :IListItemRenderer {
+			var renderer:IListItemRenderer = new LobbyInvitesListRenderer('cancel');
+			renderer.width = 370;
+			renderer.height = 36;
+			return renderer;
+		}
 		
 		protected function setAlertStyles(alert:Alert):void
 		{
@@ -344,6 +473,18 @@ package com.sla.theme
 			header.titleProperties.textFormat = new TextFormat("SupriaSans", 
 			12, 0xd1d548); 
 		}
+		
+		private function setLobbyHeaderStyles (header:Header) :void {
+			header.paddingTop = 8;
+			header.paddingLeft = 10;
+			header.paddingBottom = 7;
+			header.titleAlign = Header.TITLE_ALIGN_PREFER_LEFT;
+			header.backgroundSkin = new Scale9Image(lobbyBackgroundTexture, this.scale);
+			header.titleProperties.embedFonts = true; 
+			header.titleProperties.textFormat = new TextFormat("SupriaSans", 
+			12, 0); 
+			//header.titleProperties.textFormat.bold = true;
+		}
 				
 		protected function setAlertButtonGroupStyles(group:ButtonGroup):void
 		{
@@ -363,7 +504,7 @@ package com.sla.theme
 			this.atlas = new TextureAtlas( atlasTexture, atlasXML );
 		}
 		
-		private function setButtonStyles( button:Button ):void
+		private function setMainButtonStyles( button:Button ):void
 		{
 			button.defaultSkin = new Scale9Image( 
 			new Scale9Textures(this.atlas.getTexture( "btnDefault" ), new Rectangle(0,0,200,33))) as DisplayObject;

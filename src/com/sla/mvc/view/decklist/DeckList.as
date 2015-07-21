@@ -58,6 +58,8 @@ package com.sla.mvc.view.decklist {
 		
 		private var matchButton:Button;
 		
+		private var decks:Object;
+		
 		public function DeckList() 
 		{
 			this.addEventListener (Event.ADDED_TO_STAGE, onAddedToStage);			
@@ -172,7 +174,9 @@ package com.sla.mvc.view.decklist {
 		}
 		
 		private function onReady (event:Event) :void {
-			dispatchEvent(new StarlingDeckListEvent(StarlingDeckListEvent.READY));
+			var id:int = actualItem.getDeckData().id;
+			var heroId:int = actualItem.getDeckData().hero.id;
+			dispatchEvent(new StarlingDeckListEvent(StarlingDeckListEvent.READY, true, {'deckId':id, 'heroId':heroId}));
 		}
 		
 		private function onSelect (event:DeckListItemEvent) :void {
@@ -191,6 +195,23 @@ package com.sla.mvc.view.decklist {
 				introGroup.addChild(matchButton);
 			}
 			
+		}
+		
+		public function activateDeck (id:int) :void {
+			var item:DeckListItem = decks[id] as DeckListItem;
+			if (!item) return;
+			
+			actualItem = item;
+			actualItem.selected = true;
+			
+			if (!introGroup.contains(widget)) {
+				introGroup.addChild(widget);
+			}
+			widget.setHero (actualItem.getDeckData().hero);
+			
+			if (!introGroup.contains(matchButton)) {
+				introGroup.addChild(matchButton);
+			}
 		}
 		
 		private function slaAlertFactory():Alert
@@ -228,13 +249,15 @@ package com.sla.mvc.view.decklist {
 			dispatchEvent(new StarlingDeckListEvent(StarlingDeckListEvent.CLOSE));
 		}
 		
-		public function initDecks (decks:Vector.<DeckData>) :void {
+		public function initDecks (deckDatas:Vector.<DeckData>) :void {
 			deckItemGroup.removeChildren();
-			var length:int = decks.length;
+			this.decks = {};
+			var length:int = deckDatas.length;
 			var item:DeckListItem;
 			for (var i:int = 0; i < length; i ++) {
-				item = new DeckListItem((decks[i]) as DeckData);
+				item = new DeckListItem((deckDatas[i]) as DeckData);
 				deckItemGroup.addChild(item);
+				this.decks[deckDatas[i].id] = item;
 			}
 		}
 		

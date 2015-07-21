@@ -3,6 +3,7 @@ package com.sla.mvc.controller.state
 	import com.sla.event.DeckListEvent;
 	import com.sla.event.IntroEvent;
 	import com.sla.event.LAContextEvent;
+	import com.sla.event.LobbyEvent;
 	import com.sla.state.GameState;
 	import com.sla.mvc.model.StateModel;
 	import org.robotlegs.mvcs.StarlingCommand;
@@ -14,7 +15,7 @@ package com.sla.mvc.controller.state
 	 */
 	public class ChangeStateCommand extends StarlingCommand 
 	{
-		[Inject (name="stateModel")]
+		[Inject]
 		public var stateModel:StateModel;
 		
 		override public function execute():void 
@@ -26,10 +27,14 @@ package com.sla.mvc.controller.state
 					dispatch(new IntroEvent(IntroEvent.STARTUP));
 					break;
 				}
-				
 				case GameState.DECK_LIST: 
 				{
 					dispatch(new DeckListEvent(DeckListEvent.STARTUP));
+					break;
+				}
+				case GameState.LOBBY: 
+				{
+					dispatch(new LobbyEvent(LobbyEvent.STARTUP));
 					break;
 				}
 			}

@@ -1,6 +1,7 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	import com.sla.mvc.service.ApiService;
+	import com.sla.mvc.service.LobbyService;
 	import org.robotlegs.core.IInjector;
 	/**
 	 * ...
@@ -12,6 +13,7 @@ package com.sla.mvc.controller.bootstrap
 		public function BootstrapService(injector:IInjector)  
 		{
 			injector.mapSingleton(ApiService); 
+			injector.mapSingleton(LobbyService);
 		}
 		
 	}

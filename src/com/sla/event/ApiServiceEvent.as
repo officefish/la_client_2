@@ -10,6 +10,7 @@ package com.sla.event
 		
 		public static const DECKLIST_INIT:String = 'decklistInit';
 		public static const INTRO_DECKLIST_INIT:String = 'introDecklistInit';
+		public static const DECK_READY_TO_LOBBY:String = 'deckReadyToLobby';
 		
 		public function ApiServiceEvent(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

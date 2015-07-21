@@ -13,6 +13,8 @@ package com.sla.event
 		public static const CLOSE:String = 'close_decklist';
 		public static const STARTUP:String = 'startup_decklist';
 		public static const READY:String = 'ready';
+		public static const EDIT_DECK_FROM_DECKLIST:String = 'editDeckFromDecklist';
+		public static const COMPLETE:String = 'deckListComplete';
 		
 		public function DeckListEvent(type:String, data:Object = null, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

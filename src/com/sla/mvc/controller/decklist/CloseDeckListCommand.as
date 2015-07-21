@@ -10,7 +10,7 @@ package com.sla.mvc.controller.decklist {
 	 */
 	public class CloseDeckListCommand extends StarlingCommand 
 	{
-		[Inject (name="stateModel")]
+		[Inject]
 		public var stateModel:StateModel; 
 		
 		override public function execute():void 

@@ -139,6 +139,7 @@ package com.sla.mvc.view.decklist {
 				labelLineQuad.color = 0xFFCC00;
 				this.removeEventListener(TouchEvent.TOUCH, onTouch);
 				label.color = 0xFFCC00;
+				disableQuand.visible = false;
 			} else {
 				this.filter = null;
 				labelLineQuad.color = 0xFFFFFF;
