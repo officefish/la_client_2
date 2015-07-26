@@ -1,5 +1,6 @@
 package com.sla.mvc.service 
 {
+	import com.demonsters.debugger.MonsterDebugger;
 	import com.la.socket.IWebSocketWrapper;
 	import com.la.socket.SocketFactory;
 	import com.sla.event.LobbyServiceEvent;
@@ -32,6 +33,19 @@ package com.sla.mvc.service
         private static const CONFIRM_CANCEL:String = 'confirm_cancel';
         private static const REJECT_INVITE:String = 'reject_invite';
         private static const CONFIRM_REJECT:String = 'confirm_reject';
+		
+		public static const START_MATCH:String = 'start_match'
+
+		
+		public function sendMessage (type:String, data:Object) :void {
+            var msg:Object = {}
+            msg['target'] = userId;
+            msg['type'] = type;
+            msg['status'] = 'success';
+            msg['data'] = data;
+            var json:String = JSON.stringify(msg);
+            wrapper.send(json);
+        }
 
 		
 		public function connect () :void {
@@ -116,6 +130,51 @@ package com.sla.mvc.service
                      data['id'] = id;
                      dispatch(new LobbyServiceEvent(LobbyServiceEvent.USER_LEAVE, data));
                      break;
+                }
+				case INVITE:
+                {
+                    id = response.data.initiator;
+                    data['id'] = id;
+                    data['mode'] = response.data.mode;
+                    data['hero_uid'] = response.data.hero_uid;
+                    data['level'] = response.data.level;
+                    dispatch(new LobbyServiceEvent(LobbyServiceEvent.INVITE, data));
+                    break;
+                }
+                case CONFIRM_INVITE:
+                {
+                    id = response.data.unit;
+                    data['id'] = id;
+                    data['mode'] = response.data.mode;
+                    data['hero_uid'] = response.data.hero_uid;
+                    data['level'] = response.data.level;
+                    dispatch(new LobbyServiceEvent(LobbyServiceEvent.CONFIRM_SEND_INVITE, data));
+                    break;
+                }
+				case CANCEL_INVITE:
+                {
+                    id = response.data.initiator;
+                    data['id'] = id;
+                    dispatch(new LobbyServiceEvent(LobbyServiceEvent.CANCEL_INVITE, data));
+					MonsterDebugger.log('cancel_invite');
+                    break;
+                }
+                case CONFIRM_CANCEL:
+                {
+                    id = response.data.unit;
+                    data['id'] = id;
+                    dispatch(new LobbyServiceEvent(LobbyServiceEvent.CONFIRM_SEND_CANCEL, data));
+					MonsterDebugger.log('confirm_cancel');
+                    break;
+                }
+				
+				case START_MATCH:
+                {
+                    var matchId:int = response.data.match_id;
+                    data['match_id'] = matchId;
+                    data['mode'] = response.data.mode;
+                    dispatch(new LobbyServiceEvent(LobbyServiceEvent.ACCEPT_INVITATION, data));
+					break;
                 }
 			}
 		 }

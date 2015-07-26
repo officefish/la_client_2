@@ -11,11 +11,20 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.mvc.controller.decklist.request.RequestDeckReadyCommand;
 	import com.sla.mvc.controller.decklist.request.RequestDeckListCommand;
 	import com.sla.mvc.controller.decklist.StartupDeckListCommand;
+	import com.sla.mvc.controller.lobby.CancelCommand;
+	import com.sla.mvc.controller.lobby.CloseLobbyCommand;
+	import com.sla.mvc.controller.lobby.dispather.DispatcherCancelCommand;
+	import com.sla.mvc.controller.lobby.dispather.DispatcherConfirmCancelCommand;
+	import com.sla.mvc.controller.lobby.dispather.DispatcherConfirmInviteCommand;
+	import com.sla.mvc.controller.lobby.dispather.DispatcherInviteCommand;
+	import com.sla.mvc.controller.lobby.ForceCloseLobbyCommand;
 	import com.sla.mvc.controller.lobby.InitPlayersCommand;
 	import com.sla.mvc.controller.lobby.JoinToLobbyCommand;
 	import com.sla.mvc.controller.lobby.LeaveLobbyCommand;
 	import com.sla.mvc.controller.lobby.StartupLobbyCommand;
 	import com.sla.mvc.controller.lobby.StartupLobbyServiceCommand;
+	import com.sla.mvc.controller.lobby.InviteCommand;
+	import com.sla.mvc.controller.lobby.AcceptCommand;
 	
 	import com.sla.mvc.controller.intro.GameSelectCommand;
 	import com.sla.mvc.controller.intro.StartupIntroCommand;
@@ -74,6 +83,16 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(LobbyServiceEvent.PLAYERS_INIT, InitPlayersCommand, LobbyServiceEvent);
 			commandMap.mapEvent(LobbyServiceEvent.USER_JOIN, JoinToLobbyCommand, LobbyServiceEvent);
 			commandMap.mapEvent(LobbyServiceEvent.USER_LEAVE, LeaveLobbyCommand, LobbyServiceEvent);
+			commandMap.mapEvent(LobbyEvent.INVITE, InviteCommand, LobbyEvent);
+			commandMap.mapEvent(LobbyServiceEvent.INVITE, DispatcherInviteCommand, LobbyServiceEvent);
+			commandMap.mapEvent(LobbyServiceEvent.CONFIRM_SEND_INVITE, DispatcherConfirmInviteCommand , LobbyServiceEvent);
+			commandMap.mapEvent(LobbyEvent.CANCEL, CancelCommand, LobbyEvent);
+			commandMap.mapEvent(LobbyServiceEvent.CANCEL_INVITE, DispatcherCancelCommand, LobbyServiceEvent);
+			commandMap.mapEvent(LobbyServiceEvent.CONFIRM_SEND_CANCEL, DispatcherConfirmCancelCommand, LobbyServiceEvent);
+			commandMap.mapEvent(LobbyEvent.ACCEPT, AcceptCommand, LobbyEvent);
+			commandMap.mapEvent(LobbyServiceEvent.ACCEPT_INVITATION, CloseLobbyCommand, LobbyServiceEvent);
+			commandMap.mapEvent(LobbyEvent.CLOSE, ChangeStateCommand);
+			commandMap.mapEvent(LobbyEvent.FORCE_CLOSE, ForceCloseLobbyCommand);
 		}
 		
 	}

@@ -29,6 +29,7 @@ package com.sla.theme
 		private var levelLabel:Label;
 		private var thumbnail:Scale9Image;
 		private var levelIcon:Icon;
+		private var functionLabel:Label;
 		
 		private static const THUMBNAIL_X:uint = 8;
 		private static const THUMBNAIL_Y:uint = 3;
@@ -44,21 +45,9 @@ package com.sla.theme
 		private static const DEFAULT_BG_COLOR:uint = 0xD3D3D3;
 		private static const HOVER_BG_COLOR:uint = 0xFFFFFF;
 		
-		private var inviteButton:Button;
-		
 		public function LobbyPlayersListRenderer() 
 		{
 					
-		}
-		
-		private var _player:Boolean;
-		private function set player (value:Boolean) :void {
-			_player = value;
-			this.invalidate(INVALIDATION_FLAG_LAYOUT);
-		}
-		
-		private function get player () :Boolean {
-			return _player;
 		}
 		
 		private var _uid:int;
@@ -80,6 +69,26 @@ package com.sla.theme
 		private function get id () :int {
 			return _id;
 		}
+		
+		private var _player:Boolean;
+		private function set player (value:Boolean) :void {
+			_player = value;
+			if (_player == false) {
+				background.color = DEFAULT_BG_COLOR;
+				addChild(functionLabel);
+				this.addEventListener(TouchEvent.TOUCH, onTouch); 
+			} else {
+				if (contains(functionLabel)) {
+					removeChild(functionLabel);
+				}
+				background.color = 0xAAAAAA;
+				if (this.hasEventListener(TouchEvent.TOUCH)) {
+					this.removeEventListener(TouchEvent.TOUCH, onTouch);
+				}
+			}
+			this.invalidate(INVALIDATION_FLAG_LAYOUT);
+		}
+		
 			
 		override protected function initialize():void
 		{
@@ -104,10 +113,11 @@ package com.sla.theme
 			levelIcon.styleNameList.add('lobbyLevelIcon');
 			addChild(levelIcon);
 			
-			inviteButton = new Button();
-			inviteButton.label = 'invite';
-			inviteButton.styleNameList.add('lobbyButton');
-			inviteButton.layoutData = LobbyPlayersListRenderer.inviteButtonLayout;
+			functionLabel = new Label();
+			functionLabel.text = 'invite'; 
+			functionLabel.styleNameList.add('lobbyFunctionLabel');
+			functionLabel.layoutData = LobbyPlayersListRenderer.functionLayout;
+			addChild(functionLabel);
 		}
 		
 		private function onTouch (event:TouchEvent) :void {
@@ -141,9 +151,8 @@ package com.sla.theme
 				this.thumbnail.y = THUMBNAIL_Y;
 				addChild(this.thumbnail);
 				
-				if (this._data.player) {
-					this.player = this._data.player;
-				}
+				this.player = this._data.player;
+				
 			}
             else
             {
@@ -151,24 +160,6 @@ package com.sla.theme
 				this.levelLabel.text = null;
 				this.player = false;
             }
-			
-			if (this.hasEventListener(TouchEvent.TOUCH)) {
-				this.removeEventListener(TouchEvent.TOUCH, onTouch);
-			}
-			
-			if (this.player == false) {
-				background.color = DEFAULT_BG_COLOR;
-				addChild(inviteButton);
-				this.addEventListener(TouchEvent.TOUCH, onTouch); 
-			} else {
-				if (contains(inviteButton)) {
-					removeChild(inviteButton);
-				}
-				background.color = 0xAAAAAA;
-				if (this.hasEventListener(TouchEvent.TOUCH)) {
-					this.removeEventListener(TouchEvent.TOUCH, onTouch);
-				}
-			}
 		}
 		
 		private static var _nicknameLayoutData:AnchorLayoutData;
@@ -194,14 +185,14 @@ package com.sla.theme
 			return _levelLayoutData;
 		}
 		
-		private static var _inviteButtonLayoutData:AnchorLayoutData;
-		private static function get inviteButtonLayout () :AnchorLayoutData {
-			if (_inviteButtonLayoutData == null) {
-				_inviteButtonLayoutData = new AnchorLayoutData();
-				_inviteButtonLayoutData.top = INVITE_TOP;
-				_inviteButtonLayoutData.right = INVITE_RIGHT;
+		private static var _functionLabelLayoutData:AnchorLayoutData;
+		private static function get functionLayout () :AnchorLayoutData {
+			if (_functionLabelLayoutData == null) {
+				_functionLabelLayoutData = new AnchorLayoutData();
+				_functionLabelLayoutData.top = INVITE_TOP;
+				_functionLabelLayoutData.right = INVITE_RIGHT;
 			}
-			return _inviteButtonLayoutData;
+			return _functionLabelLayoutData; 
 		}
 		
 		

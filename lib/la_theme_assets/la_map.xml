@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:81c73b29a5f312df5ab76150a0f8e523:cccaf8f8e1aa404fd01c9775d399478a:6826217f93e3854201474d7b552b1890$ -->
+<!-- $TexturePacker:SmartUpdate:a694fb8afc6922026e237968abdaa571:5233400e19d07cfe129c6e419023b15f:6826217f93e3854201474d7b552b1890$ -->
 <TextureAtlas imagePath="la_map.atf">
-    <SubTexture name="btnDefault" x="2" y="2" width="200" height="33"/>
-    <SubTexture name="btnDefaultSmall" x="2" y="72" width="128" height="38" frameX="-5" frameY="-5" frameWidth="140" frameHeight="50"/>
-    <SubTexture name="btnDown" x="2" y="37" width="200" height="33"/>
-    <SubTexture name="btnDownSmall" x="2" y="112" width="128" height="38" frameX="-5" frameY="-5" frameWidth="140" frameHeight="50"/>
-    <SubTexture name="closeBtnDefault" x="204" y="2" width="10" height="10"/>
-    <SubTexture name="closeBtnDown" x="216" y="2" width="10" height="10"/>
-    <SubTexture name="level" x="132" y="72" width="88" height="25" frameX="-3" frameY="-2" frameWidth="94" frameHeight="27"/>
+    <SubTexture name="btnDefault" x="2" y="280" width="200" height="33"/>
+    <SubTexture name="btnDefaultSmall" x="2" y="350" width="128" height="38" frameX="-5" frameY="-5" frameWidth="140" frameHeight="50"/>
+    <SubTexture name="btnDown" x="2" y="315" width="200" height="33"/>
+    <SubTexture name="btnDownSmall" x="2" y="390" width="128" height="38" frameX="-5" frameY="-5" frameWidth="140" frameHeight="50"/>
+    <SubTexture name="closeBtnDefault" x="224" y="2" width="10" height="10"/>
+    <SubTexture name="closeBtnDown" x="236" y="2" width="10" height="10"/>
+    <SubTexture name="level" x="132" y="350" width="88" height="25" frameX="-3" frameY="-2" frameWidth="94" frameHeight="27"/>
+    <SubTexture name="modeBG" x="2" y="2" width="220" height="276" frameX="0" frameY="-4" frameWidth="220" frameHeight="280"/>
 </TextureAtlas>

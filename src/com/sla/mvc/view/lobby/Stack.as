@@ -28,6 +28,7 @@ package com.sla.mvc.view.lobby
 			header.y = 2;
 			header.styleNameList.add('lobbyHeader');
 			header.title = title;
+			header.validate();
 			addChild(header);
 			
 			initList();
@@ -37,6 +38,36 @@ package com.sla.mvc.view.lobby
 		protected function initList () :void {
 			
 		}
+		
+		public function addUser(user:Object) :void {
+			list.selectedIndex = -1;
+			list.dataProvider.unshift(user);
+		}
+		
+		public function removeUser(userId:int) :void {
+			list.selectedIndex = -1;
+			var length:int = list.dataProvider.length;
+			var index:int = - 1;
+			var i:int = 0;
+			var item:Object;
+			for (i; i < length; i++) {
+				item = list.dataProvider.getItemAt(i);
+				if (item.id == userId) {
+					index = i;
+					break;
+				}
+			}
+			if (i > -1) {
+				list.dataProvider.removeItemAt(index);
+			}
+		}
+		
+		public function clear () :void {
+			list.selectedIndex = -1;
+			list.dataProvider.removeAll();
+		}
+		
+		
 		
 	}
 

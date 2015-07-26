@@ -60,6 +60,8 @@ package com.sla.mvc.view.decklist {
 		
 		private var decks:Object;
 		
+		private var closeQuad:Quad;
+		
 		public function DeckList() 
 		{
 			this.addEventListener (Event.ADDED_TO_STAGE, onAddedToStage);			
@@ -139,11 +141,10 @@ package com.sla.mvc.view.decklist {
 			var closeButton:Button = new Button();
 			closeButton.label = 'close';
 			closeButton.styleNameList.add('closeView');
-			var cbLayoutData:AnchorLayoutData = new AnchorLayoutData();
-			cbLayoutData.right = 20;
-			cbLayoutData.top = 2;
-			closeButton.layoutData = cbLayoutData;
-			introGroup.addChild(closeButton);
+			//var cbLayoutData:AnchorLayoutData = new AnchorLayoutData();
+			//cbLayoutData.right = 20;
+			//cbLayoutData.top = 2;
+			//closeButton.layoutData = cbLayoutData;
 			closeButton.addEventListener( Event.TRIGGERED, onClose);
 			
 			matchButton = new Button();
@@ -161,6 +162,17 @@ package com.sla.mvc.view.decklist {
 			
 			container.x = (stageWidth - container.width >> 1) + 100;
 			container.y = (stageHeight - container.height >> 1) - 30;
+			
+			var closeQuad:Quad = new Quad(60, 25, 0);
+			closeQuad.alpha = 0.5;
+			addChild(closeQuad);
+			
+			closeQuad.x = (container.x + container.width) - 70;
+			closeQuad.y = container.y - closeQuad.height - 2;
+			
+			closeButton.x = closeQuad.x;
+			closeButton.y = closeQuad.y + 4;
+			addChild(closeButton);
 			
 			initFlag = true;
 			

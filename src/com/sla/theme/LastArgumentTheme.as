@@ -8,11 +8,15 @@ package com.sla.theme
 	import feathers.controls.Header;
 	import feathers.controls.Icon;
 	import feathers.controls.Label;
+	import feathers.controls.LayoutGroup;
 	import feathers.controls.List;
+	import feathers.controls.Panel;
 	import feathers.controls.renderers.IListItemRenderer;
+	import feathers.controls.text.ITextEditorViewPort;
 	import feathers.controls.text.StageTextTextEditor;
 	import feathers.controls.text.TextBlockTextEditor;
 	import feathers.controls.text.TextBlockTextRenderer;
+	import feathers.controls.text.TextFieldTextEditorViewPort;
 	import feathers.controls.text.TextFieldTextRenderer;
 	import feathers.core.FeathersControl;
 	import feathers.core.ITextEditor;
@@ -36,6 +40,8 @@ package com.sla.theme
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	import feathers.system.DeviceCapabilities;
+	import starling.display.Quad;
+	import feathers.controls.TextArea;
 	
 	/**
 	 * ...
@@ -221,9 +227,8 @@ package com.sla.theme
 		protected var scrollBarGutterSize:int;
 
 		
-		private var alertBackgroundTexture:Scale9Textures;
-		private var lobbyBackgroundTexture:Scale9Textures;
 		private var levelIconTexture:Scale9Textures;
+		private var selectModeBackgroundTexture:Scale9Textures;
 		
 		/**
 		 * Constructor.
@@ -294,27 +299,11 @@ package com.sla.theme
 		}
 		
 		private function initializeTextures() :void {
-			var shape:flash.display.Sprite = new flash.display.Sprite();
-			var color:uint = 0x222222;
-			shape.graphics.beginFill(color);
-			shape.graphics.drawRect(0,0,40,40);
-			shape.graphics.endFill();
-			var bmd:BitmapData = new BitmapData(shape.width, shape.height, false, 0);
-			bmd.draw(shape); 
-			alertBackgroundTexture = new Scale9Textures(Texture.fromBitmapData(bmd), new Rectangle(0,0,40,40));
-			
-			
-			color = 0xFFCC00;
-			shape.graphics.clear();
-			shape.graphics.beginFill(color);
-			shape.graphics.drawRect(0,0,40,40);
-			shape.graphics.endFill();
-			var bmd2:BitmapData = new BitmapData(shape.width, shape.height, false, 0);
-			bmd2.draw(shape); 
-			lobbyBackgroundTexture = new Scale9Textures(Texture.fromBitmapData(bmd2), new Rectangle(0,0,40,40));
+		
 	
 			levelIconTexture = new Scale9Textures(this.atlas.getTexture( "level" ), new Rectangle(0,0, 94, 27));
 			
+			selectModeBackgroundTexture = new Scale9Textures(this.atlas.getTexture( "modeBG" ), new Rectangle(0,0,220,280))
 		}
 		
 		private function initializeFormats () :void {
@@ -325,7 +314,6 @@ package com.sla.theme
 			//
 			this.getStyleProviderForClass( Icon ).setFunctionForStyleName('levelIcon', this.setLevelIconStyles); 
 			this.getStyleProviderForClass( Icon ).setFunctionForStyleName('lobbyLevelIcon', this.setLobbyLevelIconStyles); 
-
 			
 			// button
 			this.getStyleProviderForClass( Button ).setFunctionForStyleName('mainButton', this.setMainButtonStyles);
@@ -344,16 +332,48 @@ package com.sla.theme
 			this.getStyleProviderForClass(List).setFunctionForStyleName("lobbyRequestsList", this.setLobbyRequestsListStyles);
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("lobbyNicknameLabel", this.setLobbyNicknameLabelStyles);
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("lobbyLevelLabel", this.setLobbyLevelLabelStyles);
-			this.getStyleProviderForClass( Button ).setFunctionForStyleName('lobbyButton', this.setLobbyButtonStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("lobbyModeLabel", this.setLobbyModeLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("lobbyModePopupLabel", this.setLobbyModePopupLabelStyles);
+			this.getStyleProviderForClass( Label ).setFunctionForStyleName('lobbyFunctionLabel', this.setLobbyFunctionLabelStyles);
+			this.getStyleProviderForClass(Panel).setFunctionForStyleName('modePopupPanel', this.setPopupModePanelStyles);
 
+			this.getStyleProviderForClass(LayoutGroup).setFunctionForStyleName('modeBlock', this.setModeBlockStyles);
+			
+			this.getStyleProviderForClass( TextArea ).defaultStyleFunction = setTextAreaStyles;
 			
 		} 
+		
+		private function setTextAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("SupriaSans", 12, 0);  ;
+				editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
 			
 		private function setLobbyButtonStyles( button:Button ):void
 		{
 			button.defaultLabelProperties.embedFonts = true; 
 			button.defaultLabelProperties.textFormat = new TextFormat("SupriaSans", 
 			12, 0x113f18, true); 
+		}
+		
+		private function setModeBlockStyles (group:LayoutGroup) :void {
+			group.backgroundSkin = new Quad(1, 1, 0xFFFFFF);
+			group.width = 220;
+			group.height = 280;
+			
+			//group.backgroundSkin = new Scale9Image(selectModeBackgroundTexture, 1);
+			var layout:VerticalLayout = new VerticalLayout();
+			layout.firstGap = 10;
+			layout.gap = 0;
+			layout.paddingTop = 20;
+			layout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_CENTER;
+			group.layout = layout;
 		}
 			
 		private function setLevelIconStyles (icon:Icon) :void {
@@ -363,24 +383,57 @@ package com.sla.theme
 		private function setLobbyLevelIconStyles (icon:Icon) :void {
 			icon.source = new Scale9Image (levelIconTexture, 0.4);
 		}
-			
-		private function setLobbyNicknameLabelStyles (label:Label) :void {
+		
+		private function setLobbyFunctionLabelStyles (label:Label) :void {
 			label.textRendererFactory = function():ITextRenderer
 			{
 				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
-				textRenderer.textFormat = new TextFormat("SupriaSans", 11, 0); 
-				textRenderer.textFormat.bold = true;
+				textRenderer.textFormat = new TextFormat("SupriaSans", 12, 0x113f18, true); 
 				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
 				textRenderer.embedFonts = true;
 				return textRenderer;
 			}
 		}
+		private function setLobbyNicknameLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 11, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+			
+		private function setLobbyModeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 11, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setLobbyModePopupLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("CasualHardcore", 18, 0x222222); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
 		private function setLobbyLevelLabelStyles (label:Label) :void {
 			label.textRendererFactory = function():ITextRenderer
 			{
 				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
-				textRenderer.textFormat = new TextFormat("SupriaSans", 14, 0); 
-				textRenderer.textFormat.bold = true;
+				textRenderer.textFormat = new TextFormat("SupriaSans", 14, 0, true); 
 				textRenderer.textFormat.align == TextFormatAlign.CENTER;
 				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
 				textRenderer.embedFonts = true;
@@ -445,13 +498,18 @@ package com.sla.theme
 			return renderer;
 		}
 		
+		protected function setPopupModePanelStyles (panel:Panel) :void {
+			panel.backgroundSkin = new Quad(1, 1, 0x222222);;
+			panel.padding = 40;
+			panel.paddingTop = 50;
+			panel.paddingBottom = 40;
+		}
+		
 		protected function setAlertStyles(alert:Alert):void
 		{
 			//this.setScrollerStyles(alert);
 			
-
-			var backgroundSkin:Scale9Image = new Scale9Image(alertBackgroundTexture, this.scale);
-			alert.backgroundSkin = backgroundSkin;
+			alert.backgroundSkin = new Quad(1,1,0x222222);
 
 			alert.padding = 60;
 			alert.paddingBottom = 30;
@@ -479,7 +537,7 @@ package com.sla.theme
 			header.paddingLeft = 10;
 			header.paddingBottom = 7;
 			header.titleAlign = Header.TITLE_ALIGN_PREFER_LEFT;
-			header.backgroundSkin = new Scale9Image(lobbyBackgroundTexture, this.scale);
+			header.backgroundSkin = new Quad(1,1, 0xFFCC00);
 			header.titleProperties.embedFonts = true; 
 			header.titleProperties.textFormat = new TextFormat("SupriaSans", 
 			12, 0); 

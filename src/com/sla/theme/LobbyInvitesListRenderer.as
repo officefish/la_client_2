@@ -25,7 +25,8 @@ package com.sla.theme
 		private var levelLabel:Label;
 		private var thumbnail:Scale9Image;
 		private var levelIcon:Icon;
-		private var inviteButton:Button;
+		private var functionLabel:Label;
+		private var modeLabel:Label;
 		
 		private static const THUMBNAIL_X:uint = 8;
 		private static const THUMBNAIL_Y:uint = 3;
@@ -38,14 +39,17 @@ package com.sla.theme
 		private static const INVITE_RIGHT:uint = 25;
 		private static const INVITE_TOP:uint = 10;
 		
+		private static const MODE_RIGHT:uint = 80;
+		private static const MODE_TOP:uint = 11;
+		
 		private static const DEFAULT_BG_COLOR:uint = 0xD3D3D3;
 		private static const HOVER_BG_COLOR:uint = 0xFFFFFF;
 		
-		private var functionLabel:String;
+		private var functionLabelText:String;
 		
 		public function LobbyInvitesListRenderer(label:String) 
 		{
-			this.functionLabel = label;
+			this.functionLabelText = label;
 			super();
 		}
 		
@@ -85,6 +89,11 @@ package com.sla.theme
 			levelLabel.styleNameList.add("lobbyLevelLabel");
 			levelLabel.layoutData = LobbyInvitesListRenderer.levelLayout;
 			this.addChild(levelLabel);
+			
+			modeLabel = new Label();
+			modeLabel.styleNameList.add('lobbyModeLabel');
+			modeLabel.layoutData = LobbyInvitesListRenderer.modeLayout;
+			addChild(modeLabel);
 						
 			levelIcon = new Icon();
 			levelIcon.x = 47;
@@ -92,11 +101,12 @@ package com.sla.theme
 			levelIcon.styleNameList.add('lobbyLevelIcon');
 			addChild(levelIcon);
 			
-			inviteButton = new Button();
-			inviteButton.label = functionLabel;
-			inviteButton.styleNameList.add('lobbyButton');
-			inviteButton.layoutData = LobbyInvitesListRenderer.inviteButtonLayout;
-			addChild(inviteButton);
+			functionLabel = new Label();
+			functionLabel.text = functionLabelText; 
+			functionLabel.styleNameList.add('lobbyFunctionLabel');
+			functionLabel.layoutData = LobbyInvitesListRenderer.functionLayout;
+			addChild(functionLabel);
+				
 		}
 		
 		override protected function commitData():void
@@ -106,12 +116,14 @@ package com.sla.theme
                 this.uid = this._data.uid;
 				this.nicknameLabel.text = 'player' + this._data.id;
 				this.levelLabel.text = this._data.level;
+				this.modeLabel.text = this.getModeDescription(this._data.mode);
 				
 				var texture:Texture = Assets.getHeroAssetById(this.uid); 
 				this.thumbnail = new Scale9Image(new Scale9Textures(texture, new Rectangle(0,0,50,50)), 0.25);
 				this.thumbnail.x = THUMBNAIL_X;
 				this.thumbnail.y = THUMBNAIL_Y;
 				addChild(this.thumbnail);
+				
 			}
             else
             {
@@ -121,6 +133,25 @@ package com.sla.theme
 			
 			this.addEventListener(TouchEvent.TOUCH, onTouch); 
 			
+		}
+		
+		private function getModeDescription (value:int) :String {
+			var str:String;
+			switch(value) {
+				case 0: {
+					str = '(sprint)';
+					break;
+				}
+				case 1: {
+					str = '(regular)';
+					break;
+				}
+				case 2: {
+					str = '(control)';
+					break;
+				}
+			}
+			return str;
 		}
 		
 		private function onTouch (event:TouchEvent) :void {
@@ -163,14 +194,24 @@ package com.sla.theme
 			return _levelLayoutData;
 		}
 		
-		private static var _inviteButtonLayoutData:AnchorLayoutData;
-		private static function get inviteButtonLayout () :AnchorLayoutData {
-			if (_inviteButtonLayoutData == null) {
-				_inviteButtonLayoutData = new AnchorLayoutData();
-				_inviteButtonLayoutData.top = INVITE_TOP;
-				_inviteButtonLayoutData.right = INVITE_RIGHT;
+		private static var _functionLabelLayoutData:AnchorLayoutData;
+		private static function get functionLayout () :AnchorLayoutData {
+			if (_functionLabelLayoutData == null) {
+				_functionLabelLayoutData = new AnchorLayoutData();
+				_functionLabelLayoutData.top = INVITE_TOP;
+				_functionLabelLayoutData.right = INVITE_RIGHT;
 			}
-			return _inviteButtonLayoutData; 
+			return _functionLabelLayoutData; 
+		}
+		
+		private static var _modeLabelLayoutData:AnchorLayoutData;
+		private static function get modeLayout () :AnchorLayoutData {
+			if (_modeLabelLayoutData == null) {
+				_modeLabelLayoutData = new AnchorLayoutData();
+				_modeLabelLayoutData.top = MODE_TOP;
+				_modeLabelLayoutData.right = MODE_RIGHT;
+			}
+			return _modeLabelLayoutData; 
 		}
 		
 	}

@@ -1,6 +1,8 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	
+	import com.sla.mvc.view.lobby.Lobby;
+	import com.sla.mvc.view.mediator.LobbyMediator;
 	import org.robotlegs.core.IStarlingMediatorMap;
 	
 	import com.sla.mvc.view.intro.Intro;
@@ -18,6 +20,7 @@ package com.sla.mvc.controller.bootstrap
 		{
 			mediatorMap.mapView(Intro, IntroMediator);
 			mediatorMap.mapView(DeckList, DeckListMediator); 
+			mediatorMap.mapView(Lobby, LobbyMediator);
 		}
 		
 	}

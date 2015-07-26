@@ -186,11 +186,9 @@ public class LobbyService extends Actor {
                     var matchId:int = response.data.match_id;
                     data['match_id'] = matchId;
                     data['mode'] = response.data.mode;
-                    trace('mode:' + data['mode']);
                     dispatch(new LobbyServiceEvent(LobbyServiceEvent.ACCEPT_INVITATION, data));
-                    //dispatchEvent(new LobbyServerEvent(LobbyServerEvent.START_MATCH, matchId));
                     break;
-                 }
+                }
 
             }
         }

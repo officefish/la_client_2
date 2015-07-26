@@ -1,7 +1,10 @@
 package com.sla.mvc.view.lobby 
 {
+	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.starling.StarlingLobbyEvent;
 	import feathers.controls.List;
 	import feathers.data.ListCollection;
+	import starling.events.Event;
 	/**
 	 * ...
 	 * @author inozemcev
@@ -10,9 +13,11 @@ package com.sla.mvc.view.lobby
 	{
 		
 		private var rendererStyleName:String;
+		private var eventType:String;
 		
-		public function InvitesStack(title:String, width:int, height:int, rendererStyleName:String) 
+		public function InvitesStack(title:String, width:int, height:int, rendererStyleName:String, eventType:String) 
 		{
+			this.eventType = eventType;
 			this.rendererStyleName = rendererStyleName;
 			super(title, width, height);
 		}
@@ -28,23 +33,19 @@ package com.sla.mvc.view.lobby
 			list.y = 37;
 			addChild(list); 
 			
-			var data:Array = [
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 },
-			{id:1, uid:1, level:1, mode:1 }
-			]
-			
-			var collection:ListCollection = new ListCollection(data);
+			var collection:ListCollection = new ListCollection();
 			list.dataProvider = collection; 
+			
+			list.addEventListener( Event.CHANGE, list_changeHandler );  
+		}
+		
+		private function list_changeHandler( event:Event ):void
+		{
+			var list:List = List( event.currentTarget );
+			if (list.selectedIndex > -1) {
+				var id:int = list.selectedItem.id;
+				dispatchEvent(new StarlingLobbyEvent(eventType, false, { id:id, mode:0 } ));
+			}
 		}
 		
 	}
