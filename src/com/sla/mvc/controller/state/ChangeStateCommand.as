@@ -4,10 +4,12 @@ package com.sla.mvc.controller.state
 	import com.sla.event.IntroEvent;
 	import com.sla.event.LAContextEvent;
 	import com.sla.event.LobbyEvent;
+	import com.sla.event.MatchEvent;
 	import com.sla.state.GameState;
 	import com.sla.mvc.model.StateModel;
 	import org.robotlegs.mvcs.StarlingCommand;
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.CollectionEvent;
 	
 	/**
 	 * ...
@@ -35,6 +37,15 @@ package com.sla.mvc.controller.state
 				case GameState.LOBBY: 
 				{
 					dispatch(new LobbyEvent(LobbyEvent.STARTUP));
+					break;
+				}
+				case GameState.MATCH:
+				{
+					dispatch(new MatchEvent(MatchEvent.STARTUP));
+					break;
+				}
+				case GameState.COLLECTION: {
+					dispatch(new CollectionEvent(CollectionEvent.STARTUP));
 					break;
 				}
 			}

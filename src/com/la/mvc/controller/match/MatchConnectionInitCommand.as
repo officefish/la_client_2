@@ -59,7 +59,6 @@ public class MatchConnectionInitCommand extends Command {
             var cardData:CardData = CardData.converToData (data[i]);
             vector.push(cardData)
         }
-
         return vector;
     }
 }

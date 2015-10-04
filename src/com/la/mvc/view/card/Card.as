@@ -221,9 +221,7 @@ import ru.flasher.utils.StringUtil
 					}
 				}
 				mirrorDescriptionLabel.text = str;
-
 			}
-			
 		}
 		
 		private function isEven(value:int):Boolean

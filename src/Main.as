@@ -5,6 +5,7 @@ import com.la.mvc.GameContext;
 import com.sla.LastArgumentGame;
 import flash.display.Stage;
 import flash.display.StageAlign;
+import flash.display.StageQuality;
 import flash.display.StageScaleMode;
 import flash.events.Event;
 import com.demonsters.debugger.MonsterDebugger;
@@ -52,6 +53,8 @@ import org.robotlegs.mvcs.StarlingContext;
 			
 			// new client with starling now alive!!!
 			_starling = new Starling(LastArgumentGame, stage);
+			_starling.antiAliasing = 2;
+			stage.quality = StageQuality.HIGH;
 			_starling.start();
 			
 			

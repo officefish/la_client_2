@@ -4,6 +4,7 @@ package com.sla.mvc.service
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.DataLoader;
 	import com.sla.event.ApiServiceEvent;
+	import com.sla.mvc.model.data.BookData;
 	import com.sla.mvc.model.data.CollectionCardData;
 	import com.sla.mvc.model.data.DeckData;
 	import com.sla.mvc.model.data.HeroData;
@@ -75,9 +76,50 @@ package com.sla.mvc.service
 			loader.load();
 		}
 		
+		public function requestCollection (userId:int) :void {
+			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
+			var methodUrl:String = url + 'get_collection/?user_id=' + userId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:completeRequestCollection, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function requestEditDeck (userId:int, deckId:int) :void {
+			var methodUrl:String = url + 'edit_deck/?user_id=' + userId + '&deck_id=' + deckId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteEditDeck, onError:errorHandler});
+			loader.load();
+		}
+		
+		private function onCompleteEditDeck (event:LoaderEvent) :void {
+			MonsterDebugger.log ('onCompleteEditDeck');
+			
+			var serviceData:Object = parseCollection(event.target.content);
+			var response:Object = JSON.parse(event.target.content);
+			var responseHeroData:Object = response.hero;
+			var responseDeckData:Object = response.deck;
+			var heroData:HeroData = getHeroData (responseHeroData);
+			var deckData:DeckData = getDeckData (responseDeckData);
+			serviceData['hero'] = heroData;
+			serviceData['deck'] = deckData;
+			dispatch(new ApiServiceEvent(ApiServiceEvent.EDIT_DECK_INIT, serviceData));
+			
+		}
+		
+		
+		
 		
 		
 		// response
+		private function completeRequestCollection (event:LoaderEvent) :void {
+			//MonsterDebugger.log ('completeRequestCollection');
+			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}))
+			var serviceData:Object = parseCollection(event.target.content);
+			var decks:Array = getDecks (event.target.content);
+			serviceData['decks'] = decks;
+			dispatch(new ApiServiceEvent(ApiServiceEvent.COLLECTION_INIT, serviceData));
+
+		}
+		
+		
 		private function onCompleteDeckList (event:LoaderEvent) :void { 
 			MonsterDebugger.log("apiService::onCompleteDeckList()")
 			
@@ -111,6 +153,27 @@ package com.sla.mvc.service
 		
 		
 		// parser
+		private function parseCollection(responseStr:String) :Object {
+	        var response:Object = JSON.parse(responseStr);
+			var data:Object = {}
+			var responseBooks:Array = response.books as Array;
+			var books:Array = []
+			
+			var bookData:BookData 
+			var responseBookData:Object;
+			for (var i:int = 0; i < responseBooks.length; i ++) {
+				bookData = new BookData ();
+				responseBookData = responseBooks[i];
+				bookData.setTitle (responseBookData.title)
+				bookData.setDescription(responseBookData.description)
+				initCollectionItems (responseBookData.cards, bookData);
+				books.push (bookData);
+			}
+			data['books'] = books;
+			
+			return data;
+		}
+		
 		private function parseDeckList (response:Object) :Object {
 	        var responseDecks:Array = response.decks;
 			var serviceData:Object = {}
@@ -150,18 +213,18 @@ package com.sla.mvc.service
 			for (var i:int = 0; i < cards.length; i ++) {
 				cardData = cards[i];
 				item = new CollectionCardData (cardData.attack, cardData.health, cardData.price);
-				item.setType (int(cardData.type))
+				item.type = int(cardData.type)
 				if (cardData.race) {
-					item.setRace (cardData.race)
+					item.race = cardData.race;
 				}
 				if (cardData.subrace) {
-					item.setSubrace (cardData.subrace)
+					item.subrace = cardData.subrace;
 				}
-				item.setTitle (cardData.title);
-				item.setDescription(cardData.description);
+				item.title = cardData.title;
+				item.description = cardData.description;
 				item.setGolden (cardData.golden);
 				item.setCount (cardData.count);
-				item.setId (cardData.id)
+				item.id = cardData.id;
 				items.push (item)
 			}
 			return items;
@@ -495,24 +558,7 @@ package com.sla.mvc.service
 		
 		
 		
-		private function getDecks (responseStr:String) : Array {
-			var response:Object = com.adobe.serialization.json.JSON.decode(responseStr);
-			var responseDecks:Array = response.decks
-			var responseDeckData:Object; 
-			var deckData:DeckData;
-			var decks:Array = []
-			for (var i:int = 0; i < responseDecks.length; i ++) {
-				responseDeckData = responseDecks[i];
-				deckData = new DeckData ();
-				deckData.title =  responseDeckData.title;
-				deckData.id = int (responseDeckData.id);
-				deckData.complicated = responseDeckData.complicated;
-				deckData.count = responseDeckData.count;
-				deckData.uid = responseDeckData.uid;
-				decks.push (deckData);
-			}
-			return decks;
-		}
+		
 		
 		private function getHeroData (responseStr:String) :HeroData {
 	        var response:Object = com.adobe.serialization.json.JSON.decode(responseStr);
@@ -541,21 +587,40 @@ package com.sla.mvc.service
 			return data;
 		}
 		
+		*/
+		private function getDecks (responseStr:String) : Array {
+			var response:Object = JSON.parse(responseStr);
+			var responseDecks:Array = response.decks
+			var responseDeckData:Object; 
+			var deckData:DeckData;
+			var decks:Array = []
+			for (var i:int = 0; i < responseDecks.length; i ++) {
+				responseDeckData = responseDecks[i];
+				deckData = new DeckData ();
+				deckData.title =  responseDeckData.title;
+				deckData.id = int (responseDeckData.id);
+				deckData.complicated = responseDeckData.complicated;
+				deckData.count = responseDeckData.count;
+				deckData.uid = responseDeckData.uid;
+				decks.push (deckData);
+			}
+			return decks;
+		}
 		private function initCollectionItems (cards:Array, data:BookData) :void {
 			var cardData:Object;
 			var item:CollectionCardData;
 			for (var i:int = 0; i < cards.length; i ++) {
 				cardData = cards[i];
 				item = new CollectionCardData (cardData.attack, cardData.health, cardData.price);
-				item.setType (int(cardData.type))
+				item.type = (int(cardData.type))
 				if (cardData.race) {
-					item.setRace (cardData.race)
+					item.race = (cardData.race)
 				}
 				if (cardData.subrace) {
-					item.setSubrace (cardData.subrace)
+					item.subrace = (cardData.subrace)
 				}
-				item.setTitle (cardData.title);
-				item.setDescription(cardData.description);
+				item.title = (cardData.title);
+				item.description = (cardData.description);
 				item.setGolden (cardData.golden);
 				item.setCount (cardData.count);
 				item.setId (cardData.id)
@@ -596,11 +661,11 @@ package com.sla.mvc.service
 					item.setGolden (true);
 				}
 				
-				trace (cardData.title + ':' + cardData.simple_count + ',' + cardData.golden_count);
+				//MonsterDebugger.log (cardData.title + ':' + cardData.simple_count + ',' + cardData.golden_count);
 				data.addItem (item);
 			}
 			
 		}
-		*/
+		
 	}
 }

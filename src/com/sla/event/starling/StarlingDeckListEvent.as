@@ -12,6 +12,7 @@ package com.sla.event.starling
 		public static const CLOSE:String = 'close';
 		public static const EDIT_DECK:String = 'edit_deck';
 		public static const READY:String = 'ready';
+		public static const REMOVE_SLOT:String = 'removeSlot';
 		
 		public function StarlingDeckListEvent(type:String, bubbles:Boolean=false, data:Object=null) 
 		{

@@ -62,10 +62,7 @@ public class EndPreflopCommand extends Command {
 					matchModel.initDeck(event.getData().deck);
 					field.initDeck(matchModel.getDeck());
 				}
-				
-				
-
-                break;
+				break;
             }
             case GameState.PREFLOP:
             {

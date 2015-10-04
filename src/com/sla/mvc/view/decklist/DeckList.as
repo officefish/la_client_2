@@ -139,6 +139,7 @@ package com.sla.mvc.view.decklist {
 			container.addChild(introGroup);
 			
 			var closeButton:Button = new Button();
+			closeButton.useHandCursor = true;
 			closeButton.label = 'close';
 			closeButton.styleNameList.add('closeView');
 			//var cbLayoutData:AnchorLayoutData = new AnchorLayoutData();
@@ -148,11 +149,12 @@ package com.sla.mvc.view.decklist {
 			closeButton.addEventListener( Event.TRIGGERED, onClose);
 			
 			matchButton = new Button();
+			matchButton.useHandCursor = true;
 			matchButton.addEventListener ( Event.TRIGGERED, onReady);
 			matchButton.label = 'READY';
-			matchButton.styleNameList.add('smallButton');
-			matchButton.x = 50;
-			matchButton.y = 355;
+			matchButton.styleNameList.add('mainButton');
+			matchButton.x = 5;
+			matchButton.y = 330;
 			
 			var layout:HorizontalLayout = new HorizontalLayout();
 			layout.gap = 1; 
@@ -177,7 +179,7 @@ package com.sla.mvc.view.decklist {
 			initFlag = true;
 			
 			widget = new DeckListHeroWidget();
-			widget.y = 60;
+			widget.y = 40;
 			widget.x = 19;
 			
 			this.addEventListener (DeckListItemEvent.EDIT_DECK, onEditDeck);

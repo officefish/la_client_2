@@ -46,6 +46,7 @@ package com.sla.mvc.view.decklist {
 			this.id = deckData.id;
 			this.uid = deckData.uid;
 			this.deckData = deckData;
+			this.useHandCursor = true;
 			
 			var texture:Texture = Assets.getHeroAssetById(uid); 
 			var asset:Image = new Image(texture);

@@ -3,6 +3,7 @@ package com.sla.theme
 	import com.greensock.layout.ScaleMode;
 	import com.la.mvc.view.collection.NewDeckButton;
 	import feathers.controls.Alert;
+	import feathers.controls.AutoComplete;
 	import feathers.controls.Button;
 	import feathers.controls.ButtonGroup;
 	import feathers.controls.Header;
@@ -18,6 +19,7 @@ package com.sla.theme
 	import feathers.controls.text.TextBlockTextRenderer;
 	import feathers.controls.text.TextFieldTextEditorViewPort;
 	import feathers.controls.text.TextFieldTextRenderer;
+	import feathers.controls.TextInput;
 	import feathers.core.FeathersControl;
 	import feathers.core.ITextEditor;
 	import feathers.core.ITextRenderer;
@@ -25,12 +27,14 @@ package com.sla.theme
 	import feathers.layout.VerticalLayout;
 	import feathers.textures.Scale9Textures;
 	import feathers.themes.StyleNameFunctionTheme;
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.geom.Rectangle;
 	import flash.text.AntiAliasType;
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
+	import flash.text.engine.FontWeight;
 	import flash.text.Font;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
@@ -105,6 +109,12 @@ package com.sla.theme
 		advancedAntiAliasing="true",
 		embedAsCFF="false")]
 		public static var SupriaSansBold:Class;
+		
+		[Embed(source="../../../../lib/assets/removeDeckBtn.png")]
+		public static var RemoveDeckButtonAsset:Class;
+		
+		[Embed(source="../../../../lib/assets/removeDeckBtnHover.png")]
+		public static var RemoveDeckButtonHoverAsset:Class;
 		
 		/**
 		 * The name of the embedded font used by controls in this theme. Comes
@@ -229,6 +239,8 @@ package com.sla.theme
 		
 		private var levelIconTexture:Scale9Textures;
 		private var selectModeBackgroundTexture:Scale9Textures;
+		protected var removeDeckBtnTexture:Scale9Textures;
+		protected var removeDeckBtnHoverTexture:Scale9Textures;
 		
 		/**
 		 * Constructor.
@@ -304,6 +316,13 @@ package com.sla.theme
 			levelIconTexture = new Scale9Textures(this.atlas.getTexture( "level" ), new Rectangle(0,0, 94, 27));
 			
 			selectModeBackgroundTexture = new Scale9Textures(this.atlas.getTexture( "modeBG" ), new Rectangle(0,0,220,280))
+		
+			var bitmap:Bitmap = new RemoveDeckButtonAsset();
+			var rdbt:Texture = Texture.fromBitmap(bitmap)
+			removeDeckBtnTexture = new	Scale9Textures(rdbt, new Rectangle(0, 0, 15, 15));
+			bitmap = new RemoveDeckButtonHoverAsset();
+			var rdbth:Texture = Texture.fromBitmap(bitmap)
+			removeDeckBtnHoverTexture = new	Scale9Textures(rdbth, new Rectangle(0,0, 15, 15));
 		}
 		
 		private function initializeFormats () :void {
@@ -341,7 +360,446 @@ package com.sla.theme
 			
 			this.getStyleProviderForClass( TextArea ).defaultStyleFunction = setTextAreaStyles;
 			
-		} 
+			// card
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("mirrorCardValueLabel", this.setMirrorCardValueLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("mirrorCardTitleLabel", this.setMirrorCardTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("mirrorCardDescriptionArea", this.setMirrorCardDescriptionAreaStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("mirrorCardTypeLabel", this.setMirrorCardTypeLabelStyles);
+
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("cardValueLabel", this.setCardValueLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("cardTitleLabel", this.setCardTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("cardDescriptionArea", this.setCardDescriptionAreaStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("cardTypeLabel", this.setCardTypeLabelStyles);
+			
+			// collectionCard
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionCardValueLabel", this.setCollectionCardValueLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionCardTitleLabel", this.setCollectionCardTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("collectionCardDescriptionArea", this.setCollectionCardDescriptionAreaStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionCardTypeLabel", this.setCollectionCardTypeLabelStyles);
+			
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionMirrorCardValueLabel", this.setCollectionMirrorCardValueLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionMirrorCardTitleLabel", this.setCollectionMirrorCardTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("collectionMirrorCardDescriptionArea", this.setCollectionMirrorCardDescriptionAreaStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionMirrorCardTypeLabel", this.setCollectionMirrorCardTypeLabelStyles);
+
+			
+			// field
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('endStepButton', this.setEndStepButtonStyles);
+			
+			// collection
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("deckTitleLabel", this.setDeckTitleLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("deckComplicatedLabel", this.setDeckComplicatedLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("decklistTitleLabel", this.setDecklistTitleLabelStyles);
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('collectionButton', this.setCollectionButtonStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("countBarLabel", this.setCountBarLabelStyles);
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('countBarButton', this.setCountBarButtonStyles);
+
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("bookTitleLabel", this.setBookTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("bookDescriptionArea", this.setBookDescriptionAreaStyles);
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('removeDeckButton', this.setRemoveDeckButtonStyles);
+			this.getStyleProviderForClass(List).setFunctionForStyleName("deckListItems", this.setDeckListItemsStyles);	
+			
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("deckListSlotTitleLabel", this.setDecklistSlotTitleLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("deckListSlotPriceLabel", this.setDecklistSlotPriceLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("deckListSlotCountLabel", this.setDecklistSlotCountLabelStyles);
+			this.getStyleProviderForClass(TextInput).setFunctionForStyleName("decklistHeroTitleInput", this.setDecklistHeroTitleInputStyles); 
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionCardCountLabel", this.setCollectionCardCountStyles);
+
+		}
+		
+		private function setDecklistHeroTitleInputStyles(input:TextInput) :void {
+			input.textEditorFactory = function():ITextEditor
+			{
+				var textEditor:StageTextTextEditor = new StageTextTextEditor();
+				textEditor.autoCorrect = true; 
+				textEditor.color = 0xFFFFFF;
+				textEditor.fontFamily = "Helvetica";
+				textEditor.fontSize = 16;
+				textEditor.textAlign = TextFormatAlign.CENTER;
+				textEditor.fontWeight = FontWeight.BOLD; 
+				return textEditor;
+			}
+		}
+		private function setDecklistSlotCountLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 12, 0x222222, true); 
+				textRenderer.textFormat.align = TextFormatAlign.LEFT;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		private function setCollectionCardCountStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 14, 0xFFFFFF, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		private function setDecklistSlotTitleLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 12, 0x0, false); 
+				textRenderer.textFormat.align = TextFormatAlign.LEFT;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		private function setDecklistSlotPriceLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 16, 0x0, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		
+		
+		
+		private function setRemoveDeckButtonStyles (button:Button) :void {
+			
+			button.defaultSkin = new Scale9Image( removeDeckBtnTexture) as DisplayObject;
+			
+			button.downSkin = new Scale9Image(removeDeckBtnHoverTexture) as DisplayObject;
+			
+			button.hoverSkin = button.downSkin;
+		}
+		
+		private function setBookTitleLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 15, 0xEEEEEE, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		private function setBookDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 13, 0xDDDDDD);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				editor.textFormat.leading = 1.7;
+				return editor; 
+			}
+			
+		}
+		
+		
+		private function setCountBarLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 12, 0x222222, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCollectionButtonStyles (button:Button) :void {
+			button.defaultSkin = new Quad(180,52,0x56A5EC);
+			button.downSkin = new Quad(180,52,0x82CAFA); 
+			button.hoverSkin = button.downSkin;
+						
+			
+			button.defaultLabelProperties.embedFonts = true; 
+			button.defaultLabelProperties.textFormat = new  TextFormat("SupriaSans", 16, 0xFFFFFF, true); 
+			button.hoverLabelProperties.embedFonts = true;
+			button.downLabelProperties.textFormat = 
+			button.hoverLabelProperties.textFormat = new  TextFormat("SupriaSans", 16, 0xFFFFFF, true); 
+			
+		}
+		
+		private function setCountBarButtonStyles (button:Button) :void {
+			
+			button.defaultSkin = new Quad(70,35,0x151B54);
+			button.downSkin = new Quad(70,35,0x2B65EC); 
+			button.hoverSkin = button.downSkin;
+						
+			
+			button.defaultLabelProperties.embedFonts = true; 
+			button.defaultLabelProperties.textFormat = new  TextFormat("SupriaSans", 14, 0xFFFFFF, true); 
+			button.hoverLabelProperties.embedFonts = true;
+			button.downLabelProperties.textFormat = 
+			button.hoverLabelProperties.textFormat = new  TextFormat("SupriaSans", 14, 0xFFFFFF, true); 
+			
+		}
+		
+		private function setDeckTitleLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 16, 0xEEEEEE, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setDecklistTitleLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 14, 0xEEEEEE, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		
+		private function setDeckComplicatedLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 12, 0xFF0000, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setEndStepButtonStyles( button:Button ):void
+		{
+			button.defaultSkin = new Quad(100, 40, 0x444444);
+			button.downSkin = new Quad(100, 40, 0x888888);
+			button.hoverSkin = button.downSkin;
+			
+			button.defaultLabelProperties.textFormat = new TextFormat("Helvetica", 
+			16, 0xffffff); 
+			
+			/*
+			button.padding = 20;
+			button.gap = 15;
+			button.paddingTop = 25;
+			
+			button.defaultLabelProperties.embedFonts = true; 
+			
+			button.downLabelProperties.embedFonts = true;
+			button.hoverLabelProperties.embedFonts = true;
+			button.downLabelProperties.textFormat = 
+			button.hoverLabelProperties.textFormat = new TextFormat("CasualHardcore", 
+			24, 0x222222); 
+			*/
+		}
+		
+		private function setCollectionCardValueLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 21, 0x222222, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+			private function setCollectionMirrorCardValueLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 38, 0x222222, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCardValueLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 18, 0x222222, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		
+		
+		
+		private function setCardTitleLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 8, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCollectionCardTitleLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 10, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCollectionMirrorCardTitleLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 21, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		
+		private function setCardDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 7, 0);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				editor.textFormat.leading = 1.7;
+				//editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
+		
+		private function setCollectionCardDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 10, 0);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				editor.textFormat.leading = 1.7;
+				//editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
+		
+		private function setCollectionMirrorCardDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 13, 0, true);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				editor.textFormat.leading = 2.0;
+				//editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
+		
+		private function setCardTypeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 7, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCollectionCardTypeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 9, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCollectionMirrorCardTypeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 12, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		
+		private function setMirrorCardValueLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 26, 0x222222, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setMirrorCardTitleLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 11, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setMirrorCardDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 10, 0);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				//editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
+		
+		private function setMirrorCardTypeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 10, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
 		
 		private function setTextAreaStyles (textArea:TextArea) :void {
 			textArea.textEditorFactory = function():ITextEditorViewPort
@@ -457,6 +915,25 @@ package com.sla.theme
 			var renderer:IListItemRenderer = new LobbyPlayersListRenderer();
 			renderer.width = 310;
 			renderer.height = 36;
+			return renderer;
+		}
+		
+		protected function setDeckListItemsStyles (list:List) :void {
+			
+			const deckItemsListLayout:VerticalLayout = new VerticalLayout();
+			deckItemsListLayout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_CENTER;
+			deckItemsListLayout.gap = 1;
+			deckItemsListLayout.hasVariableItemDimensions = true;
+
+			list.layout = deckItemsListLayout;
+			list.itemRendererFactory = deckItemsListRendererFactory;
+			list.autoHideBackground = true;
+		}
+		
+		protected function deckItemsListRendererFactory () :IListItemRenderer {
+			var renderer:IListItemRenderer = new DeckLlistItemsRenderer ();
+			renderer.width = 170;
+			renderer.height = 30;
 			return renderer;
 		}
 		

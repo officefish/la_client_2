@@ -16,6 +16,7 @@ package com.la.mvc.controller.match.select
 				
 		override public function execute():void 
 		{
+			
 			service.sendMessage ('cancel_select', {});	
 		}
 		

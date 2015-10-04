@@ -1,6 +1,8 @@
 package com.sla.mvc.controller.bootstrap 
 {
+	import com.sla.mvc.model.CollectionModel;
 	import com.sla.mvc.model.DeckListModel;
+	import com.sla.mvc.model.DeckModel;
 	import com.sla.mvc.model.HeroModel;
 	import com.sla.mvc.model.MatchModel;
 	import com.sla.mvc.model.RootModel;
@@ -19,6 +21,8 @@ package com.sla.mvc.controller.bootstrap
 			injector.mapSingleton(HeroModel);
 			injector.mapSingleton(RootModel);
 			injector.mapSingleton(MatchModel);
+			injector.mapSingleton(DeckModel);
+			injector.mapSingleton(CollectionModel);
 		}
 		
 	}

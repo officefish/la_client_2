@@ -2,6 +2,7 @@ package com.sla.mvc.controller.bootstrap
 {
 	import com.sla.mvc.service.ApiService;
 	import com.sla.mvc.service.LobbyService;
+	import com.sla.mvc.service.MatchService;
 	import org.robotlegs.core.IInjector;
 	/**
 	 * ...
@@ -14,6 +15,7 @@ package com.sla.mvc.controller.bootstrap
 		{
 			injector.mapSingleton(ApiService); 
 			injector.mapSingleton(LobbyService);
+			injector.mapSingleton(MatchService);
 		}
 		
 	}

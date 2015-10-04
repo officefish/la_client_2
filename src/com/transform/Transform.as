@@ -49,5 +49,19 @@ public class Transform {
         result.draw(bitmapData, matrix);
         return new Bitmap(result);
 	}
+	
+	public static function cropAndShift (asset:Bitmap, square:Rectangle, shiftX:int, shiftY:int) :Bitmap {
+		var bitmapData:BitmapData = asset.bitmapData;
+        var width:int = square.width;
+        var height:int = square.height;
+		var transparent:Boolean = bitmapData.transparent;
+        var result:BitmapData = new BitmapData(width, height, transparent);
+        var matrix:Matrix = new Matrix();
+		var dx:int = shiftX;
+		var dy:int = shiftY;
+		matrix.translate (-dx, -dy);
+        result.draw(bitmapData, matrix);
+        return new Bitmap(result);
+	}
 }
 }

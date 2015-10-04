@@ -29,11 +29,11 @@ package com.la.mvc.model
 			super(attack, health, price, eptitudes);
 		}
 		
-		public function setId (value:int) :void {
+		public function set id (value:int) :void {
 			this._id = value;
 		}
 		
-		public function getId () :int {
+		public function get id () :int {
 			return _id;
 		}
 		

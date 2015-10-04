@@ -112,8 +112,6 @@ package com.la.mvc.controller.match.select
 				scene.placeCopy(heroCopyDO);
 				listeners.push (heroCopy);
 				serviceData[heroCopy] = {'index':-1, 'player':true}
-
-
 			}
 			
 			if (opponentHeroFlag) {

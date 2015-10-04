@@ -112,6 +112,7 @@ package com.sla.mvc.view.intro
 			// menu items
 			group = new ButtonGroup(); 
 			group.customButtonStyleName = "mainButton";
+			group.useHandCursor = true;
 			this.addChild(group);
 			
 			group.direction = ButtonGroup.DIRECTION_VERTICAL;

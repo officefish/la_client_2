@@ -39,9 +39,7 @@ package com.sla.theme
 		}
 		
 		return _hunterTexture;
-		
-		return 
-    }
+	}
 
     public static function getAdventurer () :Texture {
         if (!_adventurerBitmpap) {
@@ -83,7 +81,28 @@ package com.sla.theme
         }
         return asset;
     }
+	
+	public static function getHeroAssetBitmapById (id:int) :Bitmap {
+        var asset:Bitmap;
+        switch (id) {
+            case ADVENTURER: {
+                asset = new AdventurerAsset as Bitmap;
+                break;
+            }
+            case HUNTER: {
+                asset = new HunterAsset as Bitmap;
+                break;
+            }
+            case MONK: {
+                asset = new MonkAsset as Bitmap;
+                break;
+            }
+        }
+        return asset;
+    }
 		
 	}
+	
+	
 
 }

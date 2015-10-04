@@ -25,6 +25,7 @@ package com.sla.mvc.controller.lobby
 
 		override public function execute () :void {
 			MonsterDebugger.log('AcceptCommand:execute()')
+			//MonsterDebugger.log('mode:' + event.data.mode);
 			service.sendMessage('accept_invite', 
 			{ 
 				'player1': event.data.id, 

@@ -85,6 +85,10 @@ package com.la.mvc.view.collection
 			return pages.length - 1;
 		}
 		
+		public function getCardsList () :Object {
+			return _cardsList;
+		}
+		
 		
 		
 		

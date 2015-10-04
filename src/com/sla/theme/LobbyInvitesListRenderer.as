@@ -73,6 +73,18 @@ package com.sla.theme
 			return _id;
 		}
 		
+	
+		private var _mode:int;
+		private function set mode (value:int) :void {
+			_mode = value;
+			this.invalidate(INVALIDATION_FLAG_LAYOUT);
+		}
+		
+		private function get mode () :int {
+			return _mode;
+		}
+		
+		
 		override protected function initialize():void
 		{
 			this.layout = new AnchorLayout(); 
@@ -117,6 +129,7 @@ package com.sla.theme
 				this.nicknameLabel.text = 'player' + this._data.id;
 				this.levelLabel.text = this._data.level;
 				this.modeLabel.text = this.getModeDescription(this._data.mode);
+				this.mode = this._data.mode;
 				
 				var texture:Texture = Assets.getHeroAssetById(this.uid); 
 				this.thumbnail = new Scale9Image(new Scale9Textures(texture, new Rectangle(0,0,50,50)), 0.25);

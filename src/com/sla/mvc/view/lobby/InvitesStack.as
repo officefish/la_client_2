@@ -44,7 +44,8 @@ package com.sla.mvc.view.lobby
 			var list:List = List( event.currentTarget );
 			if (list.selectedIndex > -1) {
 				var id:int = list.selectedItem.id;
-				dispatchEvent(new StarlingLobbyEvent(eventType, false, { id:id, mode:0 } ));
+				var mode:int = list.selectedItem.mode;
+				dispatchEvent(new StarlingLobbyEvent(eventType, false, { id:id, mode:mode } ));
 			}
 		}
 		
