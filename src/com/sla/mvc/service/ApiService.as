@@ -4,6 +4,7 @@ package com.sla.mvc.service
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.DataLoader;
 	import com.sla.event.ApiServiceEvent;
+	import com.sla.mvc.model.data.AbilityData;
 	import com.sla.mvc.model.data.BookData;
 	import com.sla.mvc.model.data.CollectionCardData;
 	import com.sla.mvc.model.data.DeckData;
@@ -63,7 +64,7 @@ package com.sla.mvc.service
 		// request
 		public function requestDeckList () :void {
 			
-			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST))
 			
 			var methodUrl:String = url + "get_deck_list/?user_id=" + _userId; 
 			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDeckList, onError:errorHandler});
@@ -77,21 +78,245 @@ package com.sla.mvc.service
 		}
 		
 		public function requestCollection (userId:int) :void {
-			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST))
 			var methodUrl:String = url + 'get_collection/?user_id=' + userId;
 			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:completeRequestCollection, onError:errorHandler});
 			loader.load();
 		}
 		
 		public function requestEditDeck (userId:int, deckId:int) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST));
 			var methodUrl:String = url + 'edit_deck/?user_id=' + userId + '&deck_id=' + deckId;
 			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteEditDeck, onError:errorHandler});
 			loader.load();
 		}
 		
-		private function onCompleteEditDeck (event:LoaderEvent) :void {
-			MonsterDebugger.log ('onCompleteEditDeck');
+		public function requestSaveDeck (userId:int, deckId:int, deckTitle:String, items:Array) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST));
+			var data:Object = { }
+			data['deckId'] = deckId;
+			data['deckTitle'] = deckTitle;
+			data['items'] = items;
+	        var params:String = JSON.stringify (data);
+			var methodUrl:String = url + 'save_deck/?user_id=' + userId + '&data=' + params;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteSaveDeck, onError:errorHandler});
+			loader.load();
 			
+		}
+		
+		public function requestRemoveDeck (userId:int, deckId:int) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST));
+			var methodUrl:String = url + 'remove_deck/?user_id=' + userId + '&deck_id=' + deckId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteRemoveDeck, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function requestHeroes (userId:int) :void {
+			var methodUrl:String = url + 'get_heroes/?user_id=' + userId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:completeRequestHeroes, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function requestNewDeck (userId:int, heroId:int) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST));
+			var methodUrl:String = url + 'create_deck/?user_id=' + userId +'&hero_id=' + heroId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:completeCreateDeck, onError:errorHandler});
+			loader.load();
+		}
+		public function requestFullCollection (userId:int) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST));
+			var methodUrl:String = url + 'get_full_collection/?user_id=' + userId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteFullCollection, onError:errorHandler});
+			loader.load()
+		}
+		
+		public function requestCraftCard (userId:int, cardId:int, goldenFlag:Boolean) :void {
+			var golden:int = 0
+			if (goldenFlag) {
+				golden = 1;
+			}
+			var methodUrl:String = url + 'craft_card/?user_id=' + userId + '&card_id=' + cardId + '&golden=' + golden;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftCard, onError:errorHandler});
+			loader.load()
+		}
+		
+		public function requestDestroyCard(userId:int, cardId:int, goldenFlag:Boolean) :void {
+			var golden:int = 0
+			if (goldenFlag) {
+				golden = 1;
+			}
+			var methodUrl:String = url + 'destroy_card/?user_id=' + userId + '&card_id=' + cardId + '&golden=' + golden;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDestroyCard, onError:errorHandler});
+			loader.load()
+		}
+		
+		public function editAbilities (userId:int, heroId:int) :void {
+			var methodUrl:String = url + 'achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteAchievesList, onError:errorHandler});
+			loader.load()
+		}
+		
+		public function requestSaveAbilities (userId:int, heroId:int, setup:Array) :void {
+			var data:Object = {}
+			data['setup'] = setup
+			var params:String = JSON.stringify (data);
+			var methodUrl:String = url + 'setup_achieves/?user_id=' + userId + '&hero_id=' + heroId + '&data=' + params;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteSetupAchieves, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function requestCraftAbilities (userId:int, heroId:int) :void {
+			var methodUrl:String = url + 'craft_achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftAchievesList, onError:errorHandler});
+			loader.load();
+		}
+		public function craftAbility (userId:int, heroId:int, achieveId:int) :void {
+			var methodUrl:String = url + 'craft_achieve/?user_id=' + userId + '&hero_id=' + heroId + '&achieve_id=' + achieveId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftAbility, onError:errorHandler});
+			loader.load();
+		}
+		
+		public function dustAbility(userId:int, heroId:int, achieveId:int) :void {
+			var methodUrl:String = url + 'destroy_achieve/?user_id=' + userId + '&hero_id=' + heroId + '&achieve_id=' + achieveId;
+			var loader:DataLoader = new DataLoader(methodUrl, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDestroyAchieve, onError:errorHandler});
+			loader.load();
+		}
+			
+				
+		// response
+		public function onCompleteDestroyAchieve (event:LoaderEvent) :void {
+			var response:Object = JSON.parse(event.target.content);
+			if (response.status == 'success') {
+				var serviceData:Object = {}
+				serviceData['achieveId'] = response.achieve_id;
+				serviceData['dust'] = response.dust
+				serviceData['count'] = response.count
+				dispatch (new ApiServiceEvent (ApiServiceEvent.COMPLETE_DUST_ABILITY, serviceData));
+
+			} else if (response.status == 'error') {
+				trace ('Error:' + response.message); 
+			}
+			
+		}
+		
+		public function onCompleteCraftAbility (event:LoaderEvent) :void {
+			MonsterDebugger.log('onCompleteCraftAbility')
+			var response:Object = JSON.parse(event.target.content);
+			if (response.status == 'success') {
+				var serviceData:Object = {}
+				serviceData['abilityId'] = response.achieve_id;
+				serviceData['dust'] = response.dust;
+				serviceData['count'] = response.count;
+				dispatch (new ApiServiceEvent (ApiServiceEvent.COMPLETE_CRAFT_ABILITY, serviceData));
+
+			} else if (response.status == 'error') {
+				MonsterDebugger.log ('Error:' + response.message); 
+			}
+			
+		}
+		
+		
+		
+		private function onCompleteCraftAchievesList(event:LoaderEvent) :void {
+			var response:Object = JSON.parse(event.target.content);
+			var serviceData:Object = { }
+			serviceData['abilities'] = getAbilitiesData (response.achieves);
+			serviceData['dust'] = response.dust
+			if (response.status == 'success') {
+				//MonsterDebugger.log('onCompleteCraftAbilitiesList');
+				dispatch (new ApiServiceEvent (ApiServiceEvent.ABILITIES_CRAFT_LIST_INIT, serviceData));
+			}
+		}
+		
+		private function onCompleteSetupAchieves(event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent (ApiServiceEvent.SETUP_ABILITIES, null));
+		}
+		
+		public function onCompleteAchievesList (event:LoaderEvent) :void {
+			
+			var response:Object = JSON.parse(event.target.content);
+			var serviceData:Object = { }
+			serviceData['achieves'] = getAbilitiesData (response.achieves);
+			serviceData['heroId'] = response.hero_id;
+			serviceData['heroVocation'] = response.hero_vocation;
+			serviceData['setup'] = response.setup;
+			if (response.status == 'success') {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.ABILITIES_LIST_INIT, serviceData));
+			}
+			
+		}
+		
+		private function onCompleteDestroyCard (event:LoaderEvent) :void {
+			var response:Object = JSON.parse(event.target.content);
+			var serviceData:Object = { }
+			serviceData['count'] = response.count;
+			serviceData['dust'] = response.dust;
+			if (response.success) {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.CARD_DESTROYED, serviceData));
+			}
+		}
+		
+		private function onCompleteCraftCard (event:LoaderEvent) :void {
+			var response:Object = JSON.parse(event.target.content);
+			var serviceData:Object = { }
+			serviceData['count'] = response.count;
+			serviceData['dust'] = response.dust;
+			if (response.success) {
+				dispatch (new ApiServiceEvent (ApiServiceEvent.CARD_CREATED, serviceData));
+			}
+		}
+		
+		private function onCompleteFullCollection (event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE))
+			var response:Object =  JSON.parse(event.target.content);
+			var serviceData:Object = parseCollection(event.target.content);
+			serviceData['dust'] = response.dust;
+			dispatch (new ApiServiceEvent (ApiServiceEvent.FULL_COLLECTION_INIT, serviceData));
+		}
+		private function completeCreateDeck (event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE))
+			var serviceData:Object = parseCollection(event.target.content);
+			var response:Object = JSON.parse(event.target.content);
+			MonsterDebugger.log(response);
+			var responseHeroData:Object = response.hero;
+			var responseDeckData:Object = response.deck;
+			var heroData:HeroData = getHeroData (responseHeroData);
+			var deckData:DeckData = getDeckData (responseDeckData);
+			serviceData['hero'] = heroData;
+			serviceData['deck'] = deckData;
+			dispatch(new ApiServiceEvent(ApiServiceEvent.NEW_DECK_INIT, serviceData));
+			
+		}
+		
+		private function completeRequestHeroes (event:LoaderEvent) :void {
+			var serviceData:Object = parseHeroes(event.target.content);
+            dispatch(new ApiServiceEvent(ApiServiceEvent.HEROES_INIT, serviceData));
+
+		}
+		
+		private function onCompleteRemoveDeck (event:LoaderEvent) :void {
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE))
+			var serviceData:Object = parseCollection(event.target.content);
+			var decks:Array = getDecks (event.target.content);
+			serviceData['decks'] = decks;
+			dispatch(new ApiServiceEvent(ApiServiceEvent.COLLECTION_INIT, serviceData));
+		}
+		
+		
+		private function onCompleteSaveDeck (event:LoaderEvent) :void {
+
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE))
+			var serviceData:Object = parseCollection(event.target.content);
+			var decks:Array = getDecks (event.target.content);
+			serviceData['decks'] = decks;
+			dispatch(new ApiServiceEvent(ApiServiceEvent.COLLECTION_INIT, serviceData));
+		}
+		
+		
+		
+		private function onCompleteEditDeck (event:LoaderEvent) :void {
+
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE));
 			var serviceData:Object = parseCollection(event.target.content);
 			var response:Object = JSON.parse(event.target.content);
 			var responseHeroData:Object = response.hero;
@@ -104,14 +329,9 @@ package com.sla.mvc.service
 			
 		}
 		
-		
-		
-		
-		
-		// response
 		private function completeRequestCollection (event:LoaderEvent) :void {
-			//MonsterDebugger.log ('completeRequestCollection');
-			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}))
+			MonsterDebugger.log ('completeRequestCollection');
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE))
 			var serviceData:Object = parseCollection(event.target.content);
 			var decks:Array = getDecks (event.target.content);
 			serviceData['decks'] = decks;
@@ -121,9 +341,8 @@ package com.sla.mvc.service
 		
 		
 		private function onCompleteDeckList (event:LoaderEvent) :void { 
-			MonsterDebugger.log("apiService::onCompleteDeckList()")
 			
-			//dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}));
+			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE));
 			
 			var response:Object = JSON.parse(event.target.content);
 			//MonsterDebugger.log(response);
@@ -138,6 +357,7 @@ package com.sla.mvc.service
 			trace("progress: " + event.target.progress);
 		}
 		private function errorHandler(event:LoaderEvent):void {
+			MonsterDebugger.log ("error occured with " + event.target + ": " + event.text);
 			trace("error occured with " + event.target + ": " + event.text);
 		}
 		
@@ -153,6 +373,28 @@ package com.sla.mvc.service
 		
 		
 		// parser
+		private function parseHeroes(responseStr:String) :Object {
+	        var response:Object = JSON.parse(responseStr);
+			var data:Object = {}
+			var responseHeroes:Array = response.heroes as Array;
+			var heroes:Array = []
+			var heroData:HeroData;
+			var responseHeroData:Object;
+			for (var i:int = 0; i < responseHeroes.length; i ++) {
+				heroData = new HeroData ();
+				responseHeroData = responseHeroes[i];
+				heroData.title =  responseHeroData.title;
+				heroData.vocation =  responseHeroData.vocation;
+				heroData.description = responseHeroData.description;
+				heroData.uid = int(responseHeroData.uid);
+				heroData.id = int (responseHeroData.id);
+				heroData.level = int (responseHeroData.level);
+				heroes.push (heroData);
+			}
+			data['heroes'] = heroes;
+			return data;
+		}
+		
 		private function parseCollection(responseStr:String) :Object {
 	        var response:Object = JSON.parse(responseStr);
 			var data:Object = {}
@@ -190,6 +432,29 @@ package com.sla.mvc.service
 			return serviceData;
 		}
 		
+		private function getAbilitiesData (achieves:Array) :Vector.<AbilityData> {
+			var list:Vector.<AbilityData> = new Vector.<AbilityData>();
+			var achieveResponseData:Object;
+			var achieveData:AbilityData;
+			for (var i:int = 0; i < achieves.length; i ++) {
+				achieveResponseData = achieves[i];
+				achieveData = new AbilityData();
+				achieveData.id = achieveResponseData.id;
+				achieveData.title = achieveResponseData.title;
+				achieveData.description = achieveResponseData.description;
+				achieveData.autonomic = achieveResponseData.autonomic;
+				achieveData.type = achieveResponseData.type;
+				achieveData.price = achieveResponseData.price;
+				achieveData.access = achieveResponseData.access;
+				achieveData.max_access = achieveResponseData.max_access;
+				achieveData.count = achieveResponseData.count;
+				achieveData.buyCost = achieveResponseData.buyCost;
+				achieveData.saleCost = achieveResponseData.saleCost;
+				list.push(achieveData);
+			}
+			return list;
+		}
+		
 		private function getDeckData (responseDeckData:Object) :DeckData {
 			var deckData:DeckData = new DeckData();
 			deckData.title =  responseDeckData.title;
@@ -199,6 +464,8 @@ package com.sla.mvc.service
 			deckData.uid = responseDeckData.uid;
 			if (responseDeckData.items) {
 				deckData.items = getDeckItems (responseDeckData.items)
+			} else {
+				deckData.items = new Vector.<CollectionCardData>(); 
 			}
 			if (responseDeckData.userHero) {
 				deckData.hero = getHeroData (responseDeckData.userHero)
@@ -243,175 +510,15 @@ package com.sla.mvc.service
 		
 		
 		/*
-		public function destroyAchieve(userId:int, heroId:int, achieveId:int) :void {
-			var url:String = 'http://127.0.0.1:8000/api/destroy_achieve/?user_id=' + userId + '&hero_id=' + heroId + '&achieve_id=' + achieveId;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDestroyAchieve, onError:errorHandler});
-			loader.load();
-		}
-		
-		public function onCompleteDestroyAchieve (event:LoaderEvent) :void {
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			if (response.status == 'success') {
-				var serviceData:Object = {}
-				serviceData['achieveId'] = response.achieve_id;
-				serviceData['dust'] = response.dust
-				serviceData['count'] = response.count
-				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVE_DESTROY_COMPLETE, serviceData));
-
-			} else if (response.status == 'error') {
-				trace ('Error:' + response.message); 
-			}
-			
-		}
-		
-		public function craftAchieve (userId:int, heroId:int, achieveId:int) :void {
-			var url:String = 'http://127.0.0.1:8000/api/craft_achieve/?user_id=' + userId + '&hero_id=' + heroId + '&achieve_id=' + achieveId;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftAchieve, onError:errorHandler});
-			loader.load();
-		}
-		
-		public function onCompleteCraftAchieve (event:LoaderEvent) :void {
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			if (response.status == 'success') {
-				var serviceData:Object = {}
-				serviceData['achieveId'] = response.achieve_id;
-				serviceData['dust'] = response.dust
-				serviceData['count'] = response.count
-				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVE_CRAFT_COMPLETE, serviceData));
-
-			} else if (response.status == 'error') {
-				trace ('Error:' + response.message); 
-			}
-			
-		}
-		
-		public function craftAchievesList (userId:int, heroId:int) :void {
-			var url:String = 'http://127.0.0.1:8000/api/craft_achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftAchievesList, onError:errorHandler});
-			loader.load();
-		}
-		
-		private function onCompleteCraftAchievesList(event:LoaderEvent) :void {
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			var serviceData:Object = { }
-			serviceData['achieves'] = getAchievesData (response.achieves);
-			serviceData['dust'] = response.dust
-			if (response.status == 'success') {
-				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVES_CRAFT_LIST_INIT, serviceData));
-			}
-		}
 		
 		
-		public function saveAchieves (userId:int, heroId:int, setup:Array) :void {
-			var data:Object = {}
-			data['setup'] = setup
-			var params:String = com.adobe.serialization.json.JSON.encode (data);
-			var url:String = 'http://127.0.0.1:8000/api/setup_achieves/?user_id=' + userId + '&hero_id=' + heroId + '&data=' + params;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteSetupAchieves, onError:errorHandler});
-			loader.load();
-		}
 		
-		private function onCompleteSetupAchieves(event:LoaderEvent) :void {
-			dispatch (new ApiServiceEvent (ApiServiceEvent.SETUP_SERVICE_COMPLETE, null));
-		}
 		
-		public function editAchieves (userId:int, heroId:int) :void {
-			var url:String = 'http://127.0.0.1:8000/api/achieves_list/?user_id=' + userId + '&hero_id=' + heroId;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteAchievesList, onError:errorHandler});
-			loader.load()
-		}
 		
-		public function onCompleteAchievesList (event:LoaderEvent) :void {
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			var serviceData:Object = { }
-			serviceData['achieves'] = getAchievesData (response.achieves);
-			serviceData['heroId'] = response.hero_id;
-			serviceData['heroVocation'] = response.hero_vocation;
-			serviceData['setup'] = response.setup;
-			if (response.status == 'success') {
-				dispatch (new ApiServiceEvent (ApiServiceEvent.ACHIEVES_LIST_INIT, serviceData));
-			}
-		}
 		
-		private function getAchievesData (achieves:Array) :Vector.<AchieveData> {
-			var list:Vector.<AchieveData> = new Vector.<AchieveData>();
-			var achieveResponseData:Object;
-			var achieveData:AchieveData;
-			for (var i:int = 0; i < achieves.length; i ++) {
-				achieveResponseData = achieves[i];
-				achieveData = new AchieveData();
-				achieveData.id = achieveResponseData.id;
-				achieveData.title = achieveResponseData.title;
-				achieveData.description = achieveResponseData.description;
-				achieveData.autonomic = achieveResponseData.autonomic;
-				achieveData.type = achieveResponseData.type;
-				achieveData.price = achieveResponseData.price;
-				achieveData.access = achieveResponseData.access;
-				achieveData.max_access = achieveResponseData.max_access;
-				achieveData.count = achieveResponseData.count;
-				achieveData.buyCost = achieveResponseData.buyCost;
-				achieveData.saleCost = achieveResponseData.saleCost;
-				list.push(achieveData);
-			}
-			return list;
-		}
 		
-		public function destroyCard(userId:int, cardId:int, goldenFlag:Boolean) :void {
-			var golden:int = 0
-			if (goldenFlag) {
-				golden = 1;
-			}
-			var url:String = 'http://127.0.0.1:8000/api/destroy_card/?user_id=' + userId + '&card_id=' + cardId + '&golden=' + golden;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteDestroyCard, onError:errorHandler});
-			loader.load()
-		}
 		
-		private function onCompleteDestroyCard (event:LoaderEvent) :void {
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			var serviceData:Object = { }
-			serviceData['count'] = response.count;
-			serviceData['dust'] = response.dust;
-			if (response.success) {
-				dispatch (new ApiServiceEvent (ApiServiceEvent.CARD_DESTROYED, serviceData));
-			}
-		}
 		
-		public function craftCard (userId:int, cardId:int, goldenFlag:Boolean) :void {
-			var golden:int = 0
-			if (goldenFlag) {
-				golden = 1;
-			}
-			var url:String = 'http://127.0.0.1:8000/api/craft_card/?user_id=' + userId + '&card_id=' + cardId + '&golden=' + golden;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteCraftCard, onError:errorHandler});
-			loader.load()
-		}
-		
-		private function onCompleteCraftCard (event:LoaderEvent) :void {
-			trace ('onCompleteCraftCard');
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			var serviceData:Object = { }
-			//trace ('golden:' + response.golden);
-			serviceData['count'] = response.count;
-			serviceData['dust'] = response.dust;
-			if (response.success) {
-				dispatch (new ApiServiceEvent (ApiServiceEvent.CARD_CREATED, serviceData));
-			}
-			
-			
-		}
-		
-		public function fullCollection (userId:int) :void {
-			var url:String = 'http://127.0.0.1:8000/api/get_full_collection/?user_id=' + userId;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:onCompleteFullCollection, onError:errorHandler});
-			loader.load()
-		}
-		
-		private function onCompleteFullCollection (event:LoaderEvent) :void {
-			var response:Object = com.adobe.serialization.json.JSON.decode(event.target.content);
-			var serviceData:Object = parseCollection(event.target.content);
-			serviceData['dust'] = response.dust;
-			dispatch (new ApiServiceEvent (ApiServiceEvent.FULL_COLLECTION_INIT, serviceData));
-		}
 		
 		public function requestIntroSelectDeck (userId:int, deckId:int, heroId:int) :void {
 			var url:String = 'http://127.0.0.1:8000/api/select_deck/?user_id=' + userId + '&deck_id=' + deckId + '&hero_id=' + heroId;
@@ -468,54 +575,11 @@ package com.sla.mvc.service
 			
 		}
 		
-		private function onCompleteRemoveDeck (event:LoaderEvent) :void {
-			var serviceData:Object = parseCollection(event.target.content);
-			var decks:Array = getDecks (event.target.content);
-			serviceData['decks'] = decks;
-			dispatch(new ApiServiceEvent(ApiServiceEvent.COLLECTION_INIT, serviceData));
-		}
 		
-		private function onCompleteSaveDeck (event:LoaderEvent) :void {
-			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST_COMPLETE, {}))
-			var serviceData:Object = parseCollection(event.target.content);
-			var decks:Array = getDecks (event.target.content);
-			serviceData['decks'] = decks;
-			dispatch(new ApiServiceEvent(ApiServiceEvent.COLLECTION_INIT, serviceData));
-		}
 		
-		public function requestHeroes (userId:int) :void {
-			var url:String = 'http://127.0.0.1:8000/api/get_heroes/?user_id=' + userId;
-			var loader:DataLoader = new DataLoader(url, {'noCache':true, onProgress:progressHandler, onComplete:completeRequestHeroes, onError:errorHandler});
-			loader.load();
-		}
+	
 		
-		private function completeRequestHeroes (event:LoaderEvent) :void {
-			var serviceData:Object = parseHeroes(event.target.content);
-            dispatch(new ApiServiceEvent(ApiServiceEvent.HEROES_INIT, serviceData));
-
-		}
 		
-		private function parseHeroes(responseStr:String) :Object {
-	        var response:Object = com.adobe.serialization.json.JSON.decode(responseStr);
-			var data:Object = {}
-			var responseHeroes:Array = response.heroes as Array;
-			var heroes:Array = []
-			var heroData:HeroData;
-			var responseHeroData:Object;
-			for (var i:int = 0; i < responseHeroes.length; i ++) {
-				heroData = new HeroData ();
-				responseHeroData = responseHeroes[i];
-				heroData.title =  responseHeroData.title;
-				heroData.vocation =  responseHeroData.vocation;
-				heroData.description = responseHeroData.description;
-				heroData.uid = int(responseHeroData.uid);
-				heroData.id = int (responseHeroData.id);
-				heroData.level = int (responseHeroData.level);
-				heroes.push (heroData);
-			}
-			data['heroes'] = heroes;
-			return data;
-		}
 		
 		public function requestCollection (userId:int) :void {
 			dispatch (new ApiServiceEvent(ApiServiceEvent.REQUEST, {}))

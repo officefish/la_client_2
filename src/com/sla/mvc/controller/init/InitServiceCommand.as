@@ -20,7 +20,7 @@ package com.sla.mvc.controller.init
 		
 		override public function execute():void 
 		{
-			apiService.host = '127.0.0.1';
+			apiService.host = '5.101.123.195';
 			apiService.port = 8000;
 			apiService.userId = 1;
 			

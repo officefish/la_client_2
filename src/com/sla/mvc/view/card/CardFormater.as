@@ -81,12 +81,27 @@ package com.sla.mvc.view.card
 			return label;
 		}
 		
+		public static function drawCraftCollectionValueLabel (value:String) :Label {
+			var label:Label = new Label();
+			label.styleNameList.add('craftCollectionCardValueLabel');
+			label.text = value;
+			return label;
+		}
+		
 		public static function drawCollectionMirrorValueLabel (value:String) :Label {
 			var label:Label = new Label();
 			label.styleNameList.add('collectionMirrorCardValueLabel');
 			label.text = value;
 			return label;
 		}
+		
+		public static function drawCraftCollectionMirrorValueLabel (value:String) :Label {
+			var label:Label = new Label();
+			label.styleNameList.add('craftCollectionMirrorCardValueLabel');
+			label.text = value;
+			return label;
+		}
+		
 		
 		public static function drawTitleLabel (value:String) :Label {
 			var label:Label = new Label();
@@ -109,6 +124,13 @@ package com.sla.mvc.view.card
 			return label;
 		}
 		
+		public static function drawCraftCollectionTitleLabel (value:String) :Label {
+			var label:Label = new Label();
+			label.styleNameList.add('craftCollectionCardTitleLabel');
+			label.text = value;
+			return label;
+		}
+		
 		public static function drawCollectionMirrorTitleLabel (value:String) :Label {
 			var label:Label = new Label();
 			label.styleNameList.add('collectionMirrorCardTitleLabel');
@@ -116,6 +138,12 @@ package com.sla.mvc.view.card
 			return label;
 		}
 		
+		public static function drawCraftCollectionMirrorTitleLabel (value:String) :Label {
+			var label:Label = new Label();
+			label.styleNameList.add('craftCollectionMirrorCardTitleLabel');
+			label.text = value;
+			return label;
+		}
 		
 		public static function drawDescriptionArea (value:String) :TextArea {
 			var area:TextArea = new TextArea();
@@ -136,6 +164,16 @@ package com.sla.mvc.view.card
 			area.text = value;
 			return area;
 		}
+				
+		public static function drawCraftCollectionDescriptionArea (value:String) :TextArea {
+			var area:TextArea = new TextArea();
+			area.isEditable = false;
+			area.isEnabled = false;
+			area.selectRange(0);
+			area.styleNameList.add('craftCollectionCardDescriptionArea');
+			area.text = value;
+			return area;
+		}
 		
 		public static function drawCollectionMirrorDescriptionArea (value:String) :TextArea {
 			var area:TextArea = new TextArea();
@@ -146,6 +184,17 @@ package com.sla.mvc.view.card
 			area.text = value;
 			return area;
 		}
+		
+		public static function drawCraftCollectionMirrorDescriptionArea (value:String) :TextArea {
+			var area:TextArea = new TextArea();
+			area.isEditable = false;
+			area.isEnabled = false;
+			area.selectRange(0);
+			area.styleNameList.add('craftCollectionMirrorCardDescriptionArea');
+			area.text = value;
+			return area;
+		}
+		
 		
 		public static function drawTypeLabel () :Label {
 			var label:Label = new Label();
@@ -159,9 +208,21 @@ package com.sla.mvc.view.card
 			return label;
 		}
 		
+		public static function drawCraftCollectionTypeLabel () :Label {
+			var label:Label = new Label();
+			label.styleNameList.add('craftCollectionCardTypeLabel');
+			return label;
+		}
+		
 		public static function drawCollectionMirrorTypeLabel () :Label {
 			var label:Label = new Label();
 			label.styleNameList.add('collectionMirrorCardTypeLabel');
+			return label;
+		}
+		
+		public static function drawCraftCollectionMirrorTypeLabel () :Label {
+			var label:Label = new Label();
+			label.styleNameList.add('craftCollectionMirrorCardTypeLabel');
 			return label;
 		}
 		

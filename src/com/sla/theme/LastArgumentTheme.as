@@ -377,10 +377,20 @@ package com.sla.theme
 			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("collectionCardDescriptionArea", this.setCollectionCardDescriptionAreaStyles);
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionCardTypeLabel", this.setCollectionCardTypeLabelStyles);
 			
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftCollectionCardValueLabel", this.setCraftCollectionCardValueLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftCollectionCardTitleLabel", this.setCraftCollectionCardTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("craftCollectionCardDescriptionArea", this.setCraftCollectionCardDescriptionAreaStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftCollectionCardTypeLabel", this.setCraftCollectionCardTypeLabelStyles);
+			
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionMirrorCardValueLabel", this.setCollectionMirrorCardValueLabelStyles);
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionMirrorCardTitleLabel", this.setCollectionMirrorCardTitleLabelStyles);
 			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("collectionMirrorCardDescriptionArea", this.setCollectionMirrorCardDescriptionAreaStyles);
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionMirrorCardTypeLabel", this.setCollectionMirrorCardTypeLabelStyles);
+
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftCollectionMirrorCardValueLabel", this.setCraftCollectionMirrorCardValueLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftCollectionMirrorCardTitleLabel", this.setCraftCollectionMirrorCardTitleLabelStyles);
+			this.getStyleProviderForClass(TextArea).setFunctionForStyleName("craftCollectionMirrorCardDescriptionArea", this.setCraftCollectionMirrorCardDescriptionAreaStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftCollectionMirrorCardTypeLabel", this.setCraftCollectionMirrorCardTypeLabelStyles);
 
 			
 			// field
@@ -404,7 +414,111 @@ package com.sla.theme
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("deckListSlotCountLabel", this.setDecklistSlotCountLabelStyles);
 			this.getStyleProviderForClass(TextInput).setFunctionForStyleName("decklistHeroTitleInput", this.setDecklistHeroTitleInputStyles); 
 			this.getStyleProviderForClass(Label).setFunctionForStyleName("collectionCardCountLabel", this.setCollectionCardCountStyles);
+			
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("preloaderLabel", this.setPreloaderLabelStyles);
 
+
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("dustTitleLabel", this.setDustTitleLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("dustCountLabel", this.setDustCountLabelStyles);
+
+			this.getStyleProviderForClass( Button ).setFunctionForStyleName('craftButton', this.setCraftButtonStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("craftPriceLabel", this.setCraftPriceLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("weaponLabel", this.setWeaponLabelStyles);
+
+		
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("abilityLabel", this.setAbilityLabelStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName("abilityPriceLabel", this.setAbilityPriceLabelStyles);
+
+			
+		}
+		
+		private function setAbilityPriceLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 15, 0x0, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		
+		private function setAbilityLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 9, 0x0, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		
+		private function setWeaponLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 14, 0x0, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		
+		private function setCraftPriceLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 16, 0xFFFFFF, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		
+		private function setCraftButtonStyles (button:Button) :void {
+			button.defaultSkin = new Quad(110,70,0x151B54);
+			button.downSkin = new Quad(110,70,0x2B65EC); 
+			button.hoverSkin = button.downSkin;
+						
+			
+			button.defaultLabelProperties.textFormat = new  TextFormat("Helvetica", 16, 0xFFFFFF, true); 
+			button.downLabelProperties.textFormat = 
+			button.hoverLabelProperties.textFormat = new  TextFormat("Helvetica", 16, 0xFFFFFF, true);
+			button.labelOffsetY = -14;
+			
+		}
+		
+		private function setDustTitleLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 13, 0x0, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		private function setDustCountLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 16, 0x151B54, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
+		}
+		
+		private function setPreloaderLabelStyles(label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 16, 0x0, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				return textRenderer;
+			}
 		}
 		
 		private function setDecklistHeroTitleInputStyles(input:TextInput) :void {
@@ -609,7 +723,19 @@ package com.sla.theme
 			}
 		}
 		
-			private function setCollectionMirrorCardValueLabelStyles (label:Label) :void {
+		private function setCraftCollectionCardValueLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 21, 0xFFFFFF, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCollectionMirrorCardValueLabelStyles (label:Label) :void {
 			label.textRendererFactory = function():ITextRenderer
 			{
 				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
@@ -620,6 +746,19 @@ package com.sla.theme
 				return textRenderer;
 			}
 		}
+		
+		private function setCraftCollectionMirrorCardValueLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("SupriaSans", 38, 0xFFFFFF, true); 
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
 		
 		private function setCardValueLabelStyles (label:Label) :void {
 			label.textRendererFactory = function():ITextRenderer
@@ -660,11 +799,35 @@ package com.sla.theme
 			}
 		}
 		
+		private function setCraftCollectionCardTitleLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 10, 0xFFFFFF, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
 		private function setCollectionMirrorCardTitleLabelStyles (label:Label) :void {
 			label.textRendererFactory = function():ITextRenderer
 			{
 				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
 				textRenderer.textFormat = new TextFormat("Helvetica", 21, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCraftCollectionMirrorCardTitleLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 21, 0xFFFFFF, true); 
 				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
 				textRenderer.textFormat.align = TextFormatAlign.CENTER;
 				//textRenderer.embedFonts = true;
@@ -701,11 +864,39 @@ package com.sla.theme
 			//12, 0); 
 		}
 		
+		private function setCraftCollectionCardDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 10, 0xFFFFFF);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				editor.textFormat.leading = 1.7;
+				//editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
+		
 		private function setCollectionMirrorCardDescriptionAreaStyles (textArea:TextArea) :void {
 			textArea.textEditorFactory = function():ITextEditorViewPort
 			{
 				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
 				editor.textFormat = new TextFormat("Helvetica", 13, 0, true);  
+				editor.textFormat.align = TextFormatAlign.CENTER;
+				editor.textFormat.leading = 2.0;
+				//editor.embedFonts = true;
+				return editor; 
+			}
+			//textArea.textEditorProperties.textFormat = new TextFormat("SupriaSans", 
+			//12, 0); 
+		}
+		
+		private function setCraftCollectionMirrorCardDescriptionAreaStyles (textArea:TextArea) :void {
+			textArea.textEditorFactory = function():ITextEditorViewPort
+			{
+				var editor:TextFieldTextEditorViewPort = new TextFieldTextEditorViewPort();
+				editor.textFormat = new TextFormat("Helvetica", 13, 0xFFFFFF, true);  
 				editor.textFormat.align = TextFormatAlign.CENTER;
 				editor.textFormat.leading = 2.0;
 				//editor.embedFonts = true;
@@ -739,11 +930,35 @@ package com.sla.theme
 			}
 		}
 		
+		private function setCraftCollectionCardTypeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 9, 0xFFFFFF, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
 		private function setCollectionMirrorCardTypeLabelStyles (label:Label) :void {
 			label.textRendererFactory = function():ITextRenderer
 			{
 				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
 				textRenderer.textFormat = new TextFormat("Helvetica", 12, 0, true); 
+				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
+				textRenderer.textFormat.align = TextFormatAlign.CENTER;
+				//textRenderer.embedFonts = true;
+				return textRenderer;
+			}
+		}
+		
+		private function setCraftCollectionMirrorCardTypeLabelStyles (label:Label) :void {
+			label.textRendererFactory = function():ITextRenderer
+			{
+				var textRenderer:TextFieldTextRenderer = new TextFieldTextRenderer();
+				textRenderer.textFormat = new TextFormat("Helvetica", 12, 0xFFFFFF, true); 
 				textRenderer.antiAliasType = AntiAliasType.ADVANCED;
 				textRenderer.textFormat.align = TextFormatAlign.CENTER;
 				//textRenderer.embedFonts = true;
@@ -1029,7 +1244,7 @@ package com.sla.theme
 			group.distributeButtonSizes = false;
 			group.gap = 30;
 			group.padding = 20;
-			group.customButtonStyleName = "smallButton";
+			group.customButtonStyleName = "mainButton";
 		}
 		
 		private function createTextureAtlas():void

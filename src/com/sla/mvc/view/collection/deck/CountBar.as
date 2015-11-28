@@ -1,9 +1,11 @@
 package com.sla.mvc.view.collection.deck 
 {
+	import com.sla.event.starling.StarlingCollectionEvent;
 	import feathers.controls.Button;
 	import feathers.controls.Label;
 	import starling.display.Quad;
 	import starling.display.Sprite;
+	import starling.events.Event;
 	
 	/**
 	 * ...
@@ -36,6 +38,7 @@ package com.sla.mvc.view.collection.deck
 			closeButton.useHandCursor = true;
 			closeButton.styleNameList.add('countBarButton');
 			closeButton.x = 105;
+			closeButton.addEventListener( Event.TRIGGERED, onClose); 
 			closeButton.y = 7;
 			
 			saveButton = new Button ();
@@ -44,6 +47,7 @@ package com.sla.mvc.view.collection.deck
 			saveButton.styleNameList.add('countBarButton');
 			saveButton.x = 105;
 			saveButton.y = 7;
+			saveButton.addEventListener( Event.TRIGGERED, onSave); 
 						
 			countLabel = new Label();
 			countLabel.styleNameList.add('countBarLabel');
@@ -62,6 +66,15 @@ package com.sla.mvc.view.collection.deck
 			addChild (typeLabel);
 			
 		}
+		
+		private function onSave (event:Event) :void {
+			dispatchEvent(new StarlingCollectionEvent(StarlingCollectionEvent.SAVE));
+		}
+		
+		private function onClose (event:Event) :void {
+			dispatchEvent(new StarlingCollectionEvent(StarlingCollectionEvent.CLOSE));
+		}
+		
 		
 		public function setMode (mode:int) :void {
 			if (contains(saveButton)) removeChild (saveButton);

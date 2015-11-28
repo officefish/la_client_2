@@ -2,6 +2,7 @@ package com.sla.mvc.controller.match.preflop
 {
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.sla.mvc.model.MatchModel;
+	import com.sla.mvc.view.field.Field;
 	import com.sla.mvc.view.field.minion.hero.IHero;
 	import com.sla.mvc.view.scene.Scene;
 	import org.robotlegs.mvcs.StarlingCommand;
@@ -24,6 +25,9 @@ package com.sla.mvc.controller.match.preflop
 		[Inject]
 		public var scene:Scene;
 		
+		[Inject]
+		public var field:Field; 
+		
 		override public function execute():void 
 		{
 			MonsterDebugger.log('WelcomeMatchAnimationCommand::execute()');
@@ -42,6 +46,9 @@ package com.sla.mvc.controller.match.preflop
 			
 			scene.playerHero = playerHero.asDO();
 			scene.opponentHero = opponentHero.asDO();
+			
+			field.initAbilities(matchModel.playerAbilities, matchModel.opponentAbilities);
+
 			
 			var positions:Object = scene.welcomeAnimation();
 		}		

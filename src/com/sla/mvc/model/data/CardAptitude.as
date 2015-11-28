@@ -14,6 +14,8 @@ package com.sla.mvc.model.data
 		private var _lyfecycle:int;
 		private var _condition:int = 0;
 		private var _manacost:int = 0;
+		private var _attachment:int;
+		private var _attachHero:Boolean;
 		
 		public function setType (value:int) :void {
 			this._type = value;
@@ -57,6 +59,21 @@ package com.sla.mvc.model.data
 		
 		public function get manacost () :int {
 			return _manacost;
+		}
+		public function set attachment (value:int) :void {
+			this._attachment = value;
+		}
+		
+		public function get attachment () :int {
+			return _attachment;
+		}
+		
+		public function set attachHero (value:Boolean) :void {
+			this._attachHero = value;
+		}
+		
+		public function get attachHero () :Boolean {
+			return _attachHero;
 		}
 		
 		public function setCondition (value:int) :void {

@@ -21,7 +21,6 @@ package com.sla.mvc.controller.collection.request
 		
 		override public function execute():void 
 		{
-			MonsterDebugger.log ('RequestCollectionCommand::execute()');
 			service.requestCollection(event.data.userId);
 		}
 		

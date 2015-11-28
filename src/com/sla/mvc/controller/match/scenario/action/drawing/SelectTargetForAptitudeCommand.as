@@ -83,15 +83,17 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 			var index:int;
 			var minion:IMinion;
 			var copy:IMinion;
+			
 			for (var i:int = 0; i < associate.length; i++) {
-				index = associate[i];
-				minion = field.getMinion (index);
+				index = associate[i]
+				minion = field.getMinion(index, true);
 				copy = copyMinion(minion);
 				serviceData[copy] = {'index':index, 'player':true}
 			}
+			
 			for (i = 0; i < opponent.length; i++) {
-				index = opponent[i];
-				minion = field.getMinion (index, false);
+				index = opponent[i]
+				minion = field.getMinion(index, false);
 				copy = copyMinion(minion);
 				serviceData[copy] = {'index':index, 'player':false}
 			}
@@ -137,8 +139,6 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 			}
 			if(touch.phase == TouchPhase.BEGAN)
 			{
-				//MonsterDebugger.log(event.target);
-				//(event.target as DisplayObject).filter = glowFilter;
 				choiceComplete();
 				var target:IMinion;
 				var targetInit:Boolean = false;

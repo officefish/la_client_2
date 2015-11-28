@@ -1,5 +1,6 @@
 package com.sla.mvc.view.field.minion 
 {
+	import com.sla.mvc.view.card.Card;
 	import flash.geom.Point;
 	import starling.display.Sprite;
 	
@@ -39,6 +40,7 @@ package com.sla.mvc.view.field.minion
 	
 		function activateShadow() :void;
 		function destroyShadow() :void;
+		function get inShadow():Boolean;
 	
 		function activateDoubleAttack()  :void;
 		function deactivateDoubleAttack() :void;
@@ -57,6 +59,7 @@ package com.sla.mvc.view.field.minion
 	
 		function activateSpellInvisible () :void;
 		function  deactivateSpellInvisible () :void;
+		function get isSpellInvisible () :Boolean
 		
 		function activateSpellUp () :void;
 		function deactivateSpellUp() :void;
@@ -83,6 +86,16 @@ package com.sla.mvc.view.field.minion
 		
 		function get activeBlock () :Boolean;
 		function set activeBlock (value:Boolean) :void;
+		
+		function getCard () :Card;
+		function set showMirror (value:Boolean) :void;
+		function get showMirror () :Boolean;
+		
+		function activateFly () :void;
+		function deactivateFly () :void;
+		function get canFly () :Boolean;
+		
+		function attachWidget (widget:int) :void;
 		
 		
 		

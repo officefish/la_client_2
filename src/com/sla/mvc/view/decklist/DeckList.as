@@ -121,12 +121,12 @@ package com.sla.mvc.view.decklist {
 			deckItemGroupLayout.paddingLeft = ITEM_GROUP_PADDING;
 			deckItemGroupLayout.paddingRight = ITEM_GROUP_PADDING;
 			deckItemGroupLayout.paddingBottom = ITEM_GROUP_PADDING;
-			
-			
+						
 			deckItemGroup.layout = deckItemGroupLayout;
 			decksContainer.addChild(deckItemGroup);
 			
 			container.addChild(decksContainer);
+			
 			
 			introGroup = new LayoutGroup ();
 			var introGroupLayout:AnchorLayout = new AnchorLayout();
@@ -142,10 +142,6 @@ package com.sla.mvc.view.decklist {
 			closeButton.useHandCursor = true;
 			closeButton.label = 'close';
 			closeButton.styleNameList.add('closeView');
-			//var cbLayoutData:AnchorLayoutData = new AnchorLayoutData();
-			//cbLayoutData.right = 20;
-			//cbLayoutData.top = 2;
-			//closeButton.layoutData = cbLayoutData;
 			closeButton.addEventListener( Event.TRIGGERED, onClose);
 			
 			matchButton = new Button();
@@ -247,7 +243,6 @@ package com.sla.mvc.view.decklist {
 			
 			
 			
-			//dispatchEvent(new StarlingDeckListEvent(StarlingDeckListEvent.EDIT_DECK, false, event.data));
 		}
 		
 		private function cancelButton_triggeredHandler (event:Event) :void {
@@ -256,7 +251,11 @@ package com.sla.mvc.view.decklist {
 		}
 		
 		private function editButton_triggeredHandler (event:Event) :void {
+			editItem.cancelEdit();
 			deactivateAlertFilters();
+			var id:int = editItem.getDeckData().id;
+			dispatchEvent(new StarlingDeckListEvent(StarlingDeckListEvent.EDIT_DECK, false, {deckId:id}));
+
 		}
 		
 		private function onClose (event:Event) :void {

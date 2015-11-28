@@ -10,6 +10,7 @@ package com.sla.mvc.view.scene
 	import com.greensock.motionPaths.Direction;
 	import com.greensock.plugins.CirclePath2DPlugin;
 	import com.greensock.plugins.TweenPlugin;
+	import com.greensock.TimelineMax;
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import com.sla.mvc.view.field.minion.hero.Hero;
@@ -68,6 +69,10 @@ package com.sla.mvc.view.scene
 		
 		private var warningLabel:TextField;
 		
+		private var previewLevel:Sprite;
+		
+		private var warningTimeline:TimelineMax;
+		
 		public function Scene() 
 		{
 			super();
@@ -81,6 +86,9 @@ package com.sla.mvc.view.scene
 			animationLevel = new Sprite();
 			addChild(animationLevel);
 			
+			previewLevel = new Sprite();
+			addChild(previewLevel);
+			
 			damageLevel = new Sprite();
 			addChild(damageLevel);
 			
@@ -90,10 +98,14 @@ package com.sla.mvc.view.scene
 		}
 		
 		public function warning (value:String) :void {
+			if (warningTimeline) {
+				warningTimeline.stop();
+			}
 			warningLabel.alpha = 1;
 			warningLabel.text = value;
 			animationLevel.addChild(warningLabel);
-			TweenLite.to (warningLabel, 2, { delay:1.5, alpha:0, ease:Power0.easeNone, onComplete:onWarningComplete } );
+			warningTimeline = new TimelineMax();
+			warningTimeline.to (warningLabel, 2, { delay:1.5, alpha:0, ease:Power0.easeNone, onComplete:onWarningComplete } );
 		}
 		
 		private function onWarningComplete () :void {
@@ -170,6 +182,19 @@ package com.sla.mvc.view.scene
 			damageLevel.addChild(damage);
 		}
 		
+		public function addPreview (preview:Sprite) :void {
+			previewLevel.addChild(preview);
+		}
+		
+		public function hidePreview () :void {
+			var child:Sprite
+			for (var i:int = 0; i < previewLevel.numChildren; i++) {
+				child = previewLevel.getChildAt(i) as Sprite;
+				child.alpha = 1;
+			}
+			previewLevel.removeChildren();
+		}
+		
 		public function addMinion (minion:Sprite) :void {
 			heroesLevel.addChild(minion);
 		}
@@ -188,6 +213,8 @@ package com.sla.mvc.view.scene
 			
 			darkenSprite.removeChildren();
 			var bg:Quad = new Quad(stageWidth, stageHeight, 0x222222);
+			bg.touchable = true;
+			bg.name = 'darken';
 			bg.alpha = 0.7;
 			darkenSprite.addChild(bg);
 			

@@ -98,6 +98,10 @@ package com.sla.mvc.view.hand
 		public function removeCard (card:Card) :void {
 			
 		}
+		
+		public function clear () :void {
+			
+		}
 
 	}
 

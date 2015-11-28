@@ -1,5 +1,6 @@
 package com.sla.mvc.controller.state 
 {
+	import com.sla.event.AbilityEvent;
 	import com.sla.event.DeckListEvent;
 	import com.sla.event.IntroEvent;
 	import com.sla.event.LAContextEvent;
@@ -46,6 +47,11 @@ package com.sla.mvc.controller.state
 				}
 				case GameState.COLLECTION: {
 					dispatch(new CollectionEvent(CollectionEvent.STARTUP));
+					break;
+				}
+				case GameState.HEROES:
+				{
+					dispatch(new AbilityEvent(AbilityEvent.STARTUP));
 					break;
 				}
 			}

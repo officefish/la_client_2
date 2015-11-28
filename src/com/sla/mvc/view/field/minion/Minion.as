@@ -4,8 +4,11 @@ package com.sla.mvc.view.field.minion
 	import com.sla.event.FieldEvent;
 	import com.sla.event.starling.StarlingFieldEvent;
 	import com.sla.mvc.model.data.CardData;
+	import com.sla.mvc.view.asset.Stock;
+	import com.sla.mvc.view.card.Card;
 	import feathers.controls.Label;
 	import flash.geom.Point;
+	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.filters.BlurFilter;
@@ -56,6 +59,10 @@ package com.sla.mvc.view.field.minion
 		private var spellUpQuad:Quad;
 		private var spellUpFlag:Boolean = false;
 		
+		private var shadowSprite:Sprite;
+		private var shadowQuad:Quad;
+		private var shadowFlag:Boolean = false;
+		
 		private var widgetSprite:Sprite;
 		private var widget:MinionWidget;
 		
@@ -63,11 +70,36 @@ package com.sla.mvc.view.field.minion
 		private var _activeManacost:int;
 		
 		private var _activeBlock:Boolean = false;
+		
+		private var flySprite:Sprite;
+		private var flyQuad:Quad;
+		private var flyFlag:Boolean = false;
+		
+		
+		private var doubleAttackSprite:Sprite;
+		private var doubleAttackQuad:Quad;
+		private var doubleAttackFlag:Boolean = false;
+		
+		private var spellInvisibleSprite:Sprite;
+		private var spellInvisibleQuad:Quad;
+		private var spellInvisibleFlag:Boolean = false;
+		
+		private var dumbnessSprite:Sprite;
+		private var dumbnessQuad:Quad;
+		private var dumbnessFlag:Boolean = false;
+		
+		private var card:Card;
+		
+		private var showMirrorFlag:Boolean = false;
 				
 		public function Minion(cardData:CardData = null, color:uint = 0x999999) 
 		{
 			this.cardData = cardData;
 			this.block = true;
+			
+			if (cardData) {
+				card = new Card(cardData);
+			}
 			
 			provocationSprite = new Sprite();
 			provocationSprite.touchable = false;
@@ -81,9 +113,19 @@ package com.sla.mvc.view.field.minion
 			var bg:Sprite = new Sprite();
 			var quad:Quad = new Quad(WIDTH, HEIGHT, color);
 			bg.addChild(quad);
+			
 			bg.x -= WIDTH / 2;
 			bg.y -= HEIGHT / 2;
 			addChild(bg);
+			
+			dumbnessSprite = new Sprite();
+			dumbnessSprite.touchable = false;
+			bg.addChild(dumbnessSprite);
+			
+			dumbnessQuad = new Quad(WIDTH, HEIGHT, 0xDDA0DD);
+			dumbnessQuad.alpha = 0.5;
+			dumbnessQuad.touchable = false;
+			
 			
 			spellUpSprite = new Sprite();
 			spellUpSprite.touchable = false;
@@ -92,6 +134,41 @@ package com.sla.mvc.view.field.minion
 			spellUpQuad = new Quad(WIDTH, HEIGHT, 0xB404AE);
 			spellUpQuad.alpha = 0.2;
 			spellUpQuad.touchable = false;
+			
+			spellInvisibleSprite = new Sprite();
+			spellInvisibleSprite.touchable = false;
+			bg.addChild(spellInvisibleSprite);
+			
+			spellInvisibleQuad = new Quad(WIDTH, HEIGHT, 0x58FAF4);
+			spellInvisibleQuad.alpha = 0.3;
+			
+			doubleAttackSprite = new Sprite();
+			doubleAttackSprite.touchable = false;
+			doubleAttackSprite.x -= (WIDTH / 2);
+			doubleAttackSprite.y -= (HEIGHT / 2);
+			addChild(doubleAttackSprite);
+			
+			doubleAttackQuad = new Quad(WIDTH, HEIGHT, 0xFF);
+			doubleAttackQuad.alpha = 0.5;
+			doubleAttackQuad.touchable = false;
+			
+			flySprite = new Sprite();
+			flySprite.touchable = false;
+			flySprite.x -= (WIDTH / 2);
+			flySprite.y -= (HEIGHT / 2);
+			addChild(flySprite);
+			
+			flyQuad = new Quad(WIDTH, 5, 0xFFFFFF);
+			flyQuad.y = HEIGHT * 0.6;
+			flyQuad.touchable = false;
+			
+			shadowSprite = new Sprite();
+			shadowSprite.touchable = false;
+			bg.addChild(shadowSprite);
+			
+			shadowQuad = new Quad(WIDTH, HEIGHT, 0x222222);
+			shadowQuad.alpha = 0.7;
+			shadowQuad.touchable = false;
 			
 			widgetSprite = new Sprite;
 			widgetSprite.touchable = false;
@@ -107,7 +184,7 @@ package com.sla.mvc.view.field.minion
 			shieldQuad = new Quad(WIDTH + 14, HEIGHT + 14, 0xFFFF00);
 			shieldQuad.alpha = 0.3;
 			shieldQuad.touchable = false;
-			
+						
 			freezeSprite = new Sprite();
 			freezeSprite.touchable = false;
 			freezeSprite.x -= WIDTH / 2;
@@ -121,6 +198,9 @@ package com.sla.mvc.view.field.minion
 					
 			if (cardData) {
 				this.name = cardData.title;
+				
+				var cardAsset:Image = new Image(Stock.getMinionTextrure(cardData.id))
+				bg.addChild(cardAsset);
 				
 				var attackQuad:Quad = new Quad(15, 15, 0xFFFFFF);
 				attackQuad.y = HEIGHT - 15;
@@ -160,6 +240,27 @@ package com.sla.mvc.view.field.minion
 			}
 		}
 		
+		public function attachWidget (type:int) :void {
+			if (widget) {
+				widget.removeEventListener(MinionWidget.ACTIVATE_COMPLETE, onWidgetAnimComplete);
+				widgetSprite.removeChildren();
+			}
+			widget = new MinionWidget(type);
+			widgetSprite.addChild(widget);
+			widget.addEventListener(MinionWidget.ACTIVATE_COMPLETE, onWidgetAnimComplete);
+		}
+		
+		public function set showMirror (value:Boolean) :void {
+			showMirrorFlag = value;
+		}
+		public function get showMirror () :Boolean {
+			return showMirrorFlag;
+		}
+		
+		public function getCard () :Card {
+			return card;
+		}
+ 		
 		public function get activeBlock () :Boolean {
 			return _activeBlock;
 		}
@@ -178,6 +279,8 @@ package com.sla.mvc.view.field.minion
 		public function activateWidget () :void {
 			if (widget) {
 				widget.activate();
+			} else {
+				dispatchEvent (new StarlingFieldEvent(StarlingFieldEvent.WIDGET_ACTIVATE));
 			}
 		}
 		
@@ -218,6 +321,21 @@ package com.sla.mvc.view.field.minion
 			}
 			if (freezeFlag) {
 				minion.activateFreeze();
+			}
+			if (doubleAttackFlag) {
+				minion.activateDoubleAttack();
+			}
+			if (inShadow) {
+				minion.activateShadow();
+			}
+			if (canFly) {
+				minion.activateFly();
+			}
+			if (isSpellInvisible) {
+				minion.activateSpellInvisible();
+			}
+			if (dumbnessFlag) {
+				minion.dumbness();
 			}
 			return minion;
 		}
@@ -373,21 +491,41 @@ package com.sla.mvc.view.field.minion
 		}
 	
 		public function activateShadow() :void {
-			
+			shadowSprite.addChild(shadowQuad);
+			shadowFlag = true;
 		}
 		public function destroyShadow() :void {
-			
+			shadowFlag = false;
+			if (shadowSprite.contains(shadowQuad)) {
+				shadowSprite.removeChild(shadowQuad);
+			}
+		}
+		public function get inShadow () :Boolean {
+			return shadowFlag;
 		}
 	
 		public function activateDoubleAttack()  :void {
-			
+			doubleAttackFlag = true;
+			doubleAttackSprite.addChild(doubleAttackQuad);
 		}
 		public function deactivateDoubleAttack() :void {
-			
+			doubleAttackFlag = false;
+			if (doubleAttackSprite.contains(doubleAttackQuad)) {
+				doubleAttackSprite.removeChild(doubleAttackQuad);
+			}
 		}
 	
 		public function dumbness () :void {
-			
+			dumbnessFlag = true;
+			dumbnessSprite.addChild(dumbnessQuad);
+			deactivateFreeze();
+			deactivateProvocation();
+			deactivateSpellInvisible();
+			deactivateSpellUp();
+			destroyShield();
+			destroyShadow();
+			deactivateDoubleAttack();
+			widgetSprite.removeChildren();
 		}
 	
 		public function set canAttack (value:Boolean) :void {
@@ -421,10 +559,16 @@ package com.sla.mvc.view.field.minion
 		}
 	
 		public function activateSpellInvisible () :void {
-			
+			spellInvisibleSprite.addChild(spellInvisibleQuad);
+			spellInvisibleFlag = true;
 		}
 		public function  deactivateSpellInvisible () :void {
-			
+			spellInvisibleSprite.removeChildren();
+			spellInvisibleFlag = false;
+		}
+		
+		public function get isSpellInvisible () :Boolean {
+			return spellInvisibleFlag;
 		}
 		
 		public function activateSpellUp () :void {
@@ -434,6 +578,18 @@ package com.sla.mvc.view.field.minion
 		public function deactivateSpellUp() :void {
 			spellUpSprite.removeChildren();
 			spellUpFlag = false;
+		}
+		
+		public function activateFly () :void {
+			flySprite.addChild(flyQuad);
+			flyFlag = true;
+		}
+		public function deactivateFly () :void {
+			flySprite.removeChildren();
+			flyFlag = false
+		}
+		public function get canFly () :Boolean {
+			return flyFlag;
 		}
 		
 		

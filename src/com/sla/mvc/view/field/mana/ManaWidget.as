@@ -17,7 +17,7 @@ package com.sla.mvc.view.field.mana {
 						
 		}
 		
-		 public function setMana (value:int, overload:int = 0) :void {
+		public function setMana (value:int, overload:int = 0) :void {
             removeChildren();
 			addChild(bg);
 			 
@@ -48,6 +48,10 @@ package com.sla.mvc.view.field.mana {
                
             }
         }
+		
+		public function clear () :void {
+			setMana(0);
+		}
 		
 	}
 

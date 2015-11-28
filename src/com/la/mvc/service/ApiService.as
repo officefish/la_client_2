@@ -408,7 +408,7 @@ package com.la.mvc.service
 				item.setDescription(cardData.description);
 				item.setGolden (cardData.golden);
 				item.setCount (cardData.count);
-				item.setId (cardData.id)
+				item.id (cardData.id)
 				items.push (item)
 			}
 			return items;

@@ -89,6 +89,9 @@ package com.sla.mvc.view.mediator
 			}
 			tweenlite = TweenLite.to(mirror, 2.0, { y:position.y, ease:Expo.easeOut } );
 			
+			
+			dispatch(new HandEvent(HandEvent.CURSOR_OVER, {index:hand.getCardIndex(card)}))
+			
 		}
 		
 		private function out () :void {
@@ -107,8 +110,7 @@ package com.sla.mvc.view.mediator
 			}
 			tweenlite = TweenLite.to(card, 0.8, { x:card.position.x, y:card.position.y, ease:Expo.easeOut } );
 			
-			//card.x = card.position.x;
-			//card.y = card.position.y;
+			dispatch(new HandEvent(HandEvent.CURSOR_OUT, {index:hand.getCardIndex(card)}))
 		}
 	}
 

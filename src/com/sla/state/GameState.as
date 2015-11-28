@@ -31,7 +31,7 @@ public class GameState extends UintEnumeration {
 	public static const END_MATCH:GameState				=  new GameState(22);
 	public static const HEROES:GameState				=  new GameState(23);
 	public static const HEROES_PREVIEW:GameState        =  new GameState(24);  
-
+	public static const CRAFT_ABILITY:GameState         =  new GameState(25);
 
 
     public function GameState(value:uint) {

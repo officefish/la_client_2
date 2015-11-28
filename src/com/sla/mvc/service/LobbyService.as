@@ -23,6 +23,7 @@ package com.sla.mvc.service
         private var level:int;
         private var hero_uid:int;
         private var deck_id:int; 
+		private var nickname:String;
 		
 		private static const USER_JOIN:String = 'user_join';
         private static const INIT_PLAYERS:String = 'init_players';
@@ -68,6 +69,7 @@ package com.sla.mvc.service
             this.hero_uid = data['hero_uid'];
             this.level = data['level'];
             this.deck_id = data['deck_id'];
+			this.nickname = data['nickname']
         }
 
 		
@@ -78,6 +80,7 @@ package com.sla.mvc.service
             msg['level'] = level;
             msg['hero_id'] = heroId;
             msg['deck_id'] = deck_id;
+			msg['nickname'] = nickname;
             msg['type'] = 'connect_to_lobby';
             msg['status'] = 'success';
             var json:String = JSON.stringify(msg);
@@ -85,11 +88,11 @@ package com.sla.mvc.service
         }
 
         private function onClose(event:WebSocketEvent):void {
-            trace("Disconnected");
+            MonsterDebugger.log("Disconnected");
         }
 
         private function onFail(event:WebSocketErrorEvent):void {
-            trace("Connection Failure: " + event.text);
+            MonsterDebugger.log("Connection Failure: " + event.text);
         }
 
         private function onMessage(event:WebSocketEvent):void {
@@ -98,7 +101,7 @@ package com.sla.mvc.service
                 parseResponse(response); 
             } 
             else if (event.message.type === WebSocketMessage.TYPE_BINARY) {
-                trace("Got binary message of length " + event.message.binaryData.length);
+                MonsterDebugger.log("Got binary message of length " + event.message.binaryData.length);
             }
         }
 		
@@ -119,8 +122,9 @@ package com.sla.mvc.service
                 {
                     id = response.data.id;
                     data['id'] = id;
-                    data['hero_uid'] = response.data.hero;
+                    data['uid'] = response.data.hero_uid;
                     data['level'] = response.data.level;
+					data['nickname'] = response.data.nickname;
                     dispatch(new LobbyServiceEvent(LobbyServiceEvent.USER_JOIN, data));
                     break;
                 }
@@ -136,8 +140,9 @@ package com.sla.mvc.service
                     id = response.data.initiator;
                     data['id'] = id;
                     data['mode'] = response.data.mode;
-                    data['hero_uid'] = response.data.hero_uid;
+                    data['uid'] = response.data.uid;
                     data['level'] = response.data.level;
+					data['nickname'] = response.data.nickname;
                     dispatch(new LobbyServiceEvent(LobbyServiceEvent.INVITE, data));
                     break;
                 }
@@ -146,8 +151,9 @@ package com.sla.mvc.service
                     id = response.data.unit;
                     data['id'] = id;
                     data['mode'] = response.data.mode;
-                    data['hero_uid'] = response.data.hero_uid;
+                    data['uid'] = response.data.uid;
                     data['level'] = response.data.level;
+					data['nickname'] = response.data.nickname;
                     dispatch(new LobbyServiceEvent(LobbyServiceEvent.CONFIRM_SEND_INVITE, data));
                     break;
                 }

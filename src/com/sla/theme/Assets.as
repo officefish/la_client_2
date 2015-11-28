@@ -9,16 +9,16 @@ package com.sla.theme
 	public class Assets 
 	{
 		
-	[Embed(source="../../../../lib/assets/nivanh-chanthara-babiru-kid-04c.png")]
-	private static var HunterAsset:Class;
-    [Embed(source="../../../../lib/assets/nivanh-chanthara-test-126.png")]
+	[Embed(source="../../../../lib/assets/justin-spice-her.png")]
+	private static var ShamanAsset:Class;
+    [Embed(source="../../../../lib/assets/nivanh-chanthara-babiru-kid-04c.png")]
 	private static var AdventurerAsset:Class;
-    [Embed(source="../../../../lib/assets/justin-spice-her.png")]
-	private static var MonkAsset:Class;
+	[Embed(source="../../../../lib/assets/nivanh-chanthara-test-126.png")]
+  	private static var RaingerAsset:Class;
 
 	private static const ADVENTURER:int = 0;
-	private static const HUNTER:int = 1;
-	private static const MONK:int = 2;
+	private static const SHAMAN:int = 1;
+	private static const RAINGER:int = 2;
 	
 	private static var _hunterBitmap:Bitmap;
 	private static var _adventurerBitmpap:Bitmap;
@@ -30,9 +30,9 @@ package com.sla.theme
 
   
 
-    public static function getHunter () :Texture {
+    public static function getShaman () :Texture {
         if (!_hunterBitmap) {
-			_hunterBitmap = new HunterAsset as Bitmap; 
+			_hunterBitmap = new ShamanAsset as Bitmap; 
 		}
 		if (!_hunterTexture) {
 			_hunterTexture = Texture.fromBitmap(_hunterBitmap);
@@ -52,9 +52,9 @@ package com.sla.theme
 		return _adventurerTexture;
 	}
 
-    public static function getMonk () :Texture {
+    public static function getRainger () :Texture {
         if (!_monkBitmap) {
-			_monkBitmap = new MonkAsset as Bitmap; 
+			_monkBitmap = new RaingerAsset as Bitmap; 
 		}
 		if (!_monkTexture) {
 			_monkTexture = Texture.fromBitmap(_monkBitmap);
@@ -70,12 +70,12 @@ package com.sla.theme
                 asset = getAdventurer();
                 break;
             }
-            case HUNTER: {
-                asset = getHunter();
+            case SHAMAN: {
+                asset = getShaman();
                 break;
             }
-            case MONK: {
-                asset = getMonk();
+            case RAINGER: {
+                asset = getRainger();
                 break;
             }
         }
@@ -89,12 +89,12 @@ package com.sla.theme
                 asset = new AdventurerAsset as Bitmap;
                 break;
             }
-            case HUNTER: {
-                asset = new HunterAsset as Bitmap;
+            case SHAMAN: {
+                asset = new ShamanAsset as Bitmap;
                 break;
             }
-            case MONK: {
-                asset = new MonkAsset as Bitmap;
+            case RAINGER: {
+                asset = new RaingerAsset as Bitmap;
                 break;
             }
         }

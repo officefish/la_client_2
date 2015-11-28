@@ -22,16 +22,41 @@ package com.sla.mvc.view.card
 	{
 		
 		[Embed(source="../../../../../../lib/assets/collectionCardMirrorTexture.png")]
-		private var MirrorAsset:Class;
+		private static var MirrorAsset:Class;
+		private static var _mirrorAssetTexture:Texture;
 		
 		[Embed(source="../../../../../../lib/assets/collectionCardTexture.png")]
-		private var CardAsset:Class;
+		private static var CardAsset:Class;
+		private static var _cardAssetTexture:Texture;
 		
 		[Embed(source="../../../../../../lib/assets/collectionCardSpellMirrorTexture.png")]
-		private var MirrorSpellAsset:Class;
+		private static var MirrorSpellAsset:Class;
+		private static var _mirrorSpellTexture:Texture;
 		
 		[Embed(source="../../../../../../lib/assets/collectionCardSpellTexture.png")]
-		private var CardSpellAsset:Class;
+		private static var CardSpellAsset:Class;
+		private static var _cardSpellTexture:Texture;
+		
+		//
+		
+		[Embed(source="../../../../../../lib/assets/collectionCraftCardMirrorTexture.png")]
+		private static var CraftMirrorAsset:Class;
+		private static var _craftMirrorAssetTexture:Texture;
+		
+		[Embed(source="../../../../../../lib/assets/collectionCraftCardTexture.png")]
+		private static var CraftCardAsset:Class;
+		private static var _craftCardAssetTexture:Texture;
+		
+		[Embed(source="../../../../../../lib/assets/collectionCraftCardSpellMirrorTexture.png")]
+		private static var CraftMirrorSpellAsset:Class;
+		private static var _craftMirrorSpellTexture:Texture;
+		
+		[Embed(source="../../../../../../lib/assets/collectionCraftCardSpellTexture.png")]
+		private static var CraftCardSpellAsset:Class;
+		private static var _craftCardSpellTexture:Texture;
+		
+		//
+		
 		
 		[Embed(source = "../../../../../../lib/assets/cardShirt.png")]
 		private var ShirtClass:Class;
@@ -52,6 +77,9 @@ package com.sla.mvc.view.card
 		private var cardData:CollectionCardData;
 		
 		private var cardContainer:Sprite;
+		private var craftCardContainer:Sprite;
+		private var mirrorContainer:Sprite;
+		private var craftMirrorContainer:Sprite;
 		
 		private var priceLabel:Label;
 		private var attackLabel:Label;
@@ -68,13 +96,30 @@ package com.sla.mvc.view.card
 		private var mirrorDescriptionArea:TextArea; 
 		private var mirrorTypeLabel:Label;
 		
-		private var mirrorContainer:Sprite;
+		private var craftPriceLabel:Label;
+		private var craftAttackLabel:Label;
+		private var craftHealthLabel:Label;
+		private var craftTitleLabel:Label;
+		private var craftDescriptionArea:TextArea; 
+		private var craftTypeLabel:Label;
+		
+		private var craftMirrorPriceLabel:Label;
+		private var craftMirrorAttackLabel:Label;
+		private var craftMirrorHealthLabel:Label;
+		private var craftMirrorTitleLabel:Label;
+		private var craftMirrorDescriptionArea:TextArea; 
+		private var craftMirrorTypeLabel:Label;
+		
+		
 		private var _mirror:Sprite;
+		private var _craftMirror:Sprite;
 		
 		private var count:int;
 		private var blockQuad:Quad;
 		
 		private var blockFlag:Boolean;
+		
+		private var state:int = 0;
 		
 		public function CollectionCard(cardData:CollectionCardData) 
 		{
@@ -87,8 +132,73 @@ package com.sla.mvc.view.card
 			formatCard();
             formatMirror();
 			
+			formatCraftCard();
+			formatCraftMirror();
+			
 			addEventListener(TouchEvent.TOUCH, onTouch);
 			this.useHandCursor = true;
+		}
+		
+		public function getCardData () :CollectionCardData {
+			return this.cardData;
+		}
+		
+		private static function get mirrorAssetTexture ():Texture {
+			if (!_mirrorAssetTexture) {
+				_mirrorAssetTexture = Texture.fromBitmap(new MirrorAsset());
+			}
+			return _mirrorAssetTexture;
+		}
+		
+		private static function get cardAssetTexture ():Texture {
+			if (!_cardAssetTexture) {
+				_cardAssetTexture = Texture.fromBitmap(new CardAsset());
+			}
+			return _cardAssetTexture;
+		}
+		
+		private static function get mirrorSpellTexture () :Texture {
+			if (!_mirrorSpellTexture) {
+				_mirrorSpellTexture = Texture.fromBitmap(new MirrorSpellAsset());
+			}
+			return _mirrorSpellTexture;
+		}
+		
+		private static function get cardSpellTexture () :Texture {
+			if (!_cardSpellTexture) {
+				_cardSpellTexture = Texture.fromBitmap(new CardSpellAsset());
+			}
+			return _cardSpellTexture;
+		}
+		
+		//
+		
+		private static function get craftMirrorAssetTexture ():Texture {
+			if (!_craftMirrorAssetTexture) {
+				_craftMirrorAssetTexture = Texture.fromBitmap(new CraftMirrorAsset());
+			}
+			return _craftMirrorAssetTexture;
+		}
+		
+		private static function get craftCardAssetTexture ():Texture {
+			if (!_craftCardAssetTexture) {
+				_craftCardAssetTexture = Texture.fromBitmap(new CraftCardAsset());
+			}
+			return _craftCardAssetTexture;
+		}
+		
+		private static function get craftMirrorSpellTexture () :Texture {
+			if (!_craftMirrorAssetTexture) {
+				_craftMirrorAssetTexture = Texture.fromBitmap(new CraftMirrorSpellAsset());
+			}
+			return _craftMirrorAssetTexture;
+		}
+		
+		private static function get craftCardSpellTexture () :Texture {
+			if (!_craftCardSpellTexture) {
+				_craftCardSpellTexture = Texture.fromBitmap(new CraftCardSpellAsset);
+			}
+			return _craftCardSpellTexture;
 		}
 		
 		private function formatCard () :void {
@@ -97,13 +207,12 @@ package com.sla.mvc.view.card
 			cardContainer.x -= CARD_WIDTH / 2;
 			cardContainer.y -= CARD_HEIGHT / 2;
 			//container.
-			var asset:Bitmap 
+			var texture:Texture
 			if (cardData.type == CardData.UNIT) {  
-				asset = new CardAsset();
+				texture = CollectionCard.cardAssetTexture;
 			} else {
-				asset = new CardSpellAsset();
+				texture = CollectionCard.cardSpellTexture;
 			}
-			var texture:Texture = Texture.fromBitmap(asset);
 			var body:Image = new Image(texture); 
 			cardContainer.addChild(body);
 			
@@ -179,6 +288,105 @@ package com.sla.mvc.view.card
 			
 		}
 		
+		public function showCount () :void {
+			count = cardData.getCount();
+			if (countLabel) {
+				countLabel.text = 'x' + count;
+				if (count > 1) {
+					cardContainer.addChild(countLabel);
+				} else {
+					if (cardContainer.contains(countLabel)) {
+						cardContainer.removeChild(countLabel);
+					}
+				}
+			}
+		}
+		
+		private function formatCraftCard () :void {
+			
+			craftCardContainer = new Sprite;
+			craftCardContainer.x -= CARD_WIDTH / 2;
+			craftCardContainer.y -= CARD_HEIGHT / 2;
+			//container.
+			var texture:Texture
+			if (cardData.type == CardData.UNIT) {  
+				texture = CollectionCard.craftCardAssetTexture;
+			} else {
+				texture = CollectionCard.craftCardSpellTexture;
+			}
+			var body:Image = new Image(texture); 
+			craftCardContainer.addChild(body);
+			
+			craftPriceLabel = CardFormater.drawCraftCollectionValueLabel(price.toString());
+			craftPriceLabel.width = 28;
+			craftPriceLabel.height = 28;
+			craftPriceLabel.x += 2;
+			craftPriceLabel.y += 2;
+			craftCardContainer.addChild(craftPriceLabel);
+			
+			if (cardData.type == CardData.UNIT) {
+				craftAttackLabel = CardFormater.drawCraftCollectionValueLabel(cardData.attack.toString());
+				craftAttackLabel.width = 28;
+				craftAttackLabel.height = 28;
+				craftAttackLabel.x += 2;
+				craftAttackLabel.y = CARD_HEIGHT - craftAttackLabel.height;
+				craftAttackLabel.y -= 3;
+				craftCardContainer.addChild(craftAttackLabel);
+				
+				craftHealthLabel = CardFormater.drawCraftCollectionValueLabel(cardData.health.toString());
+				craftHealthLabel.width = 28;
+				craftHealthLabel.height = 28;
+				craftHealthLabel.y = attackLabel.y;
+				craftHealthLabel.x = CARD_WIDTH - craftHealthLabel.width;
+				craftHealthLabel.x -= 2;
+				craftCardContainer.addChild(craftHealthLabel);
+			}
+			
+			craftTitleLabel = CardFormater.drawCraftCollectionTitleLabel(cardData.title.toString());
+			craftTitleLabel.width = CARD_WIDTH - 6;
+			craftTitleLabel.x = 0;
+			craftTitleLabel.y = Math.round (this.height * 0.45);
+			craftCardContainer.addChild (craftTitleLabel);
+			
+			craftDescriptionArea = CardFormater.drawCraftCollectionDescriptionArea(parseDescription(cardData.description));
+			craftDescriptionArea.width = CARD_WIDTH - 20;
+			craftDescriptionArea.x = 10;
+			craftDescriptionArea.height = 50;
+			craftDescriptionArea.y = Math.round (this.height * 0.55);
+            craftCardContainer.addChild (craftDescriptionArea);
+			
+			craftTypeLabel = CardFormater.drawCraftCollectionTypeLabel ();
+			craftTypeLabel.y = Math.round (this.height * 0.88);
+			craftTypeLabel.width = CARD_WIDTH;
+			craftCardContainer.addChild (craftTypeLabel);
+			
+			if (cardData.subrace) {
+				craftTypeLabel.text = cardData.subrace;
+			} else if (cardData.race) {
+				craftTypeLabel.text = cardData.race;
+			} else {
+				if (cardData.type == CardData.UNIT) {
+					craftTypeLabel.text = 'персонаж';
+				} else if (cardData.type == CardData.SECRET) {
+					craftTypeLabel.text = 'секрет';
+				}
+				else {
+					craftTypeLabel.text = 'способность';
+				}
+			}
+		}
+		
+		public function setState (state:int) :void {
+			this.state = state;
+			removeChildren();
+			
+			if (state) {
+				addChild (craftCardContainer);
+			} else {
+				addChild (cardContainer);
+			}
+		}
+		
 		public function getId () :int {
 			return cardData.getId();
 		}
@@ -195,18 +403,19 @@ package com.sla.mvc.view.card
 			_mirror = new Sprite();
 			
 			mirrorContainer = new Sprite ();
+			mirrorContainer.useHandCursor = true;
 			
 			mirrorContainer.x -= MIRROR_WIDTH / 2;
 			mirrorContainer.y -= MIRROR_HEIGHT / 2;
 			_mirror.addChild(mirrorContainer)
 			//container.
 			var asset:Bitmap 
+			var texture:Texture
 			if (cardData.type == CardData.UNIT) {  
-				asset = new MirrorAsset();
+				texture = CollectionCard.mirrorAssetTexture;
 			} else {
-				asset = new MirrorSpellAsset();
+				texture = CollectionCard.mirrorSpellTexture;
 			}
-			var texture:Texture = Texture.fromBitmap(asset);
 			var body:Image = new Image(texture); 
 			mirrorContainer.addChild(body);
 			
@@ -269,8 +478,91 @@ package com.sla.mvc.view.card
 			}
 		}
 		
+		private function formatCraftMirror () :void {
+			_craftMirror = new Sprite();
+			
+			craftMirrorContainer = new Sprite ();
+			craftMirrorContainer.useHandCursor = true;
+			
+			craftMirrorContainer.x -= MIRROR_WIDTH / 2;
+			craftMirrorContainer.y -= MIRROR_HEIGHT / 2;
+			_craftMirror.addChild(craftMirrorContainer);
+			//container.
+			var asset:Bitmap 
+			var texture:Texture
+			if (cardData.type == CardData.UNIT) {  
+				texture = CollectionCard.craftMirrorAssetTexture;
+			} else {
+				texture = CollectionCard.craftMirrorSpellTexture;
+			}
+			var body:Image = new Image(texture); 
+			craftMirrorContainer.addChild(body);
+			
+			craftMirrorPriceLabel = CardFormater.drawCraftCollectionMirrorValueLabel(price.toString());
+			craftMirrorPriceLabel.width = 50;
+			craftMirrorPriceLabel.height = 50;
+			craftMirrorPriceLabel.x += 4;
+			craftMirrorPriceLabel.y += 6;
+			craftMirrorContainer.addChild(craftMirrorPriceLabel);
+			
+			if (cardData.type == CardData.UNIT) {
+				craftMirrorAttackLabel = CardFormater.drawCraftCollectionMirrorValueLabel(cardData.attack.toString());
+				craftMirrorAttackLabel.width = 50;
+				craftMirrorAttackLabel.height = 50;
+				craftMirrorAttackLabel.x += 4;
+				craftMirrorAttackLabel.y = MIRROR_HEIGHT - mirrorAttackLabel.height;
+				craftMirrorAttackLabel.y -= 6;
+				craftMirrorContainer.addChild(craftMirrorAttackLabel);
+				
+				craftMirrorHealthLabel = CardFormater.drawCraftCollectionMirrorValueLabel(cardData.health.toString());
+				craftMirrorHealthLabel.width = 50;
+				craftMirrorHealthLabel.height = 50;
+				craftMirrorHealthLabel.y = mirrorAttackLabel.y;
+				craftMirrorHealthLabel.x = MIRROR_WIDTH - mirrorHealthLabel.width;
+				craftMirrorHealthLabel.x -= 5;
+				craftMirrorContainer.addChild(craftMirrorHealthLabel);
+			}
+			
+			craftMirrorTitleLabel = CardFormater.drawCraftCollectionMirrorTitleLabel(cardData.title.toString());
+			craftMirrorTitleLabel.width = MIRROR_WIDTH - 20;
+			craftMirrorTitleLabel.x = 10;
+			craftMirrorTitleLabel.y = Math.round (MIRROR_HEIGHT * 0.45);
+			craftMirrorContainer.addChild (craftMirrorTitleLabel);
+			
+			craftMirrorDescriptionArea = CardFormater.drawCraftCollectionMirrorDescriptionArea(parseDescription(cardData.description));
+			craftMirrorDescriptionArea.width = MIRROR_WIDTH - 50;
+			craftMirrorDescriptionArea.x = 25;
+			craftMirrorDescriptionArea.height = 90;
+			craftMirrorDescriptionArea.y = Math.round (MIRROR_HEIGHT * 0.57);
+            craftMirrorContainer.addChild (craftMirrorDescriptionArea);
+			
+			craftMirrorTypeLabel = CardFormater.drawCraftCollectionMirrorTypeLabel ();
+			craftMirrorTypeLabel.y = Math.round (MIRROR_HEIGHT * 0.90);
+			craftMirrorTypeLabel.width = MIRROR_WIDTH;
+			craftMirrorContainer.addChild (craftMirrorTypeLabel);
+			
+			if (cardData.subrace) {
+				craftMirrorTypeLabel.text = cardData.subrace;
+			} else if (cardData.race) {
+				craftMirrorTypeLabel.text = cardData.race;
+			} else {
+				if (cardData.type == CardData.UNIT) {
+					craftMirrorTypeLabel.text = 'персонаж';
+				} else if (cardData.type == CardData.SECRET) {
+					craftMirrorTypeLabel.text = 'секрет';
+				}
+				else {
+					craftMirrorTypeLabel.text = 'способность';
+				}
+			}
+		}
+		
 		public function get mirror () :Sprite {
-			return _mirror;
+			if (state) {
+				return _craftMirror;
+			} else {
+				return _mirror;
+			}
 		}
 		
 		private function onTouch (event:TouchEvent) :void {

@@ -1,6 +1,7 @@
 package com.sla.mvc.view.field.minion.hero 
 {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.mvc.view.card.Card;
 	import com.sla.mvc.view.field.minion.IMinion;
 	import com.sla.theme.Assets;
 	import flash.geom.Point;
@@ -28,7 +29,7 @@ package com.sla.mvc.view.field.minion.hero
 		
 		private var _health:int;
 		private var _defaultHealth:int;
-		private var _block:Boolean;
+		private var _block:Boolean = true;
 		private var _copy:IMinion;
 		
 		private var freezeSprite:Sprite;
@@ -36,6 +37,7 @@ package com.sla.mvc.view.field.minion.hero
 		private var freezeFlag:Boolean = false;
 		
 		private var bgSprite:Sprite;
+		
 		
 		public function Hero() 
 		{
@@ -58,6 +60,8 @@ package com.sla.mvc.view.field.minion.hero
 			freezeQuad.alpha = 0.7;
 		}
 		
+		
+		
 		public function set copy (value:IMinion) :void {
 			this._copy = value;
 		}
@@ -67,6 +71,11 @@ package com.sla.mvc.view.field.minion.hero
 		
 		public function set block (value:Boolean) :void {
 			_block = value;
+			if (value) {
+				this.useHandCursor = false;
+			} else {
+				this.useHandCursor = true;
+			}
 		}
 		public function get block () :Boolean {
 			return _block;
@@ -133,7 +142,9 @@ package com.sla.mvc.view.field.minion.hero
 			return hero;
 		}
 		public function clear():void {
-			
+			bgSprite.removeChildren();
+			freezeSprite.removeChildren();
+			freezeFlag = false;
 		}
 		public function get hasActiveAptitude () :Boolean {
 			return false;
@@ -142,6 +153,17 @@ package com.sla.mvc.view.field.minion.hero
 		public function get activeManacost () :int {
 			return 0;
 		}
+		
+		public function getCard () :Card {
+			return null;
+		}
+		public function set showMirror (value:Boolean) :void {
+			
+		}
+		public function get showMirror () :Boolean {
+			return false;
+		}
+		
 		
 		// minion functions
 		
@@ -281,6 +303,9 @@ package com.sla.mvc.view.field.minion.hero
 		public function  deactivateSpellInvisible () :void {
 			
 		}
+		public function get isSpellInvisible () :Boolean {
+			return false;
+		}
 		
 		public function activateSpellUp () :void {
 			
@@ -312,6 +337,22 @@ package com.sla.mvc.view.field.minion.hero
 		public function set activeBlock (value:Boolean) :void {
 			
 		}
+		public function get inShadow () :Boolean {
+			return false;
+		}
+		public function activateFly () :void {
+			
+		}
+		public function deactivateFly () :void {
+			
+		}
+		public function get canFly () :Boolean {
+			return false;
+		}
+		public function attachWidget (type:int) :void {
+			
+		}
+	
 		
 		
 		

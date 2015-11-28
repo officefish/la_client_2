@@ -1,5 +1,7 @@
 package com.sla.mvc.model 
 {
+	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.mvc.model.data.AbilityData;
 	import com.sla.mvc.view.card.Card;
 	import com.sla.mvc.view.field.minion.IMinion;
 	import org.robotlegs.mvcs.Actor;
@@ -27,6 +29,9 @@ package com.sla.mvc.model
 		private var _attackMinion:IMinion;
 		private var _spellMixin:int = 0;
 		private var _drawingCard:Card;
+		
+		private var _playerAbilities:Vector.<AbilityData>;
+		private var _opponentAbilities:Vector.<AbilityData>
 		
 		public function setSpellMixin (value:int) :void {
 			this._spellMixin = value;
@@ -62,6 +67,7 @@ package com.sla.mvc.model
 		public function clear () :void {
 			this.scenario = [];
 			_controlFlag = false;
+			preflopEndFlag = false;
 		}
 	
 		public function concatScenario (scenario:Array) :void {
@@ -153,6 +159,46 @@ package com.sla.mvc.model
 		}
 		public function get attackMinion () :IMinion {
 			return _attackMinion;
+		}
+		
+		public function initAbilities(vector:Vector.<AbilityData>, list:Array) :void {
+		
+			var _abilityData:AbilityData; 
+			var _responseData:Object;
+			for (var i:int = 0; i < list.length; i ++) {
+				_responseData = list[i];
+				_abilityData = new AbilityData();
+				_abilityData.title = _responseData.data.title;
+				_abilityData.description = _responseData.data.description;
+				_abilityData.price = _responseData.data.price;
+				_abilityData.autonomic = _responseData.data.autonomic;
+				_abilityData.type = _responseData.data.type;
+				_abilityData.position = _responseData.position;
+				MonsterDebugger.log ('attachment:' +  _responseData.data.attachment) 
+				MonsterDebugger.log ('attachHero:' +  _responseData.data.attach_hero) 
+
+				_abilityData.attachHero = _responseData.data.attach_hero;
+				_abilityData.attachment = _responseData.data.attachment;
+			
+				vector.push(_abilityData)
+			}
+		}
+		
+		public function initPlayerAbilities(list:Array) :void {
+			_playerAbilities = new Vector.<AbilityData>();
+			initAbilities(_playerAbilities, list)
+		}
+		
+		public function initOpponentAbilities(list:Array) :void {
+			_opponentAbilities = new Vector.<AbilityData>();
+			initAbilities(_opponentAbilities, list)
+		}
+		
+		public function get playerAbilities () :Vector.<AbilityData> {
+			return _playerAbilities;
+		}
+		public function get opponentAbilities () :Vector.<AbilityData> {
+			return _opponentAbilities;
 		}
 
 		

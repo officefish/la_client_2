@@ -4,10 +4,12 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 	import com.greensock.easing.Expo;
 	import com.greensock.TimelineMax;
 	import com.sla.event.HandEvent;
+	import com.sla.event.ScenarioEvent;
 	import com.sla.event.SceneEvent;
 	import com.sla.mvc.model.MatchModel;
 	import com.sla.mvc.view.card.Card;
 	import com.sla.mvc.view.field.Field;
+	import com.sla.mvc.view.field.minion.hero.Hero;
 	import com.sla.mvc.view.field.minion.hero.IHero;
 	import com.sla.mvc.view.field.minion.IMinion;
 	import com.sla.mvc.view.hand.OpponentHand;
@@ -26,10 +28,10 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 	 * ...
 	 * @author inozemcev
 	 */
-	public class SelectTargetForSpellCommand extends StarlingCommand 
+	public class SelectTargetForSpellCommand extends StarlingCommand
 	{
 		[Inject]
-		public var event:HandEvent;
+		public var event:ScenarioEvent;
 		
 		[Inject]
 		public var field:Field;
@@ -60,7 +62,12 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 		{
 			MonsterDebugger.log ('SelectTargetForSpellCommand::execute()');
 			
-			card = event.data.card;
+			if (!event.data.client) {
+				dispatch (new ScenarioEvent(ScenarioEvent.ACTION));
+				return;
+			}
+			
+			card = matchModel.drawingCard;
 			var cardIndex:int = event.data.index; 
 			
 			card.getMirror().visible = false;
@@ -71,37 +78,44 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 			contextView.addChild(opponentHand);
 			contextView.addChild(scene);
 			
+			var associate:Array = event.data.mask.associate;
+			var opponent:Array = event.data.mask.opponent;
+			var playerHeroFlag:Boolean = event.data.mask.player_hero;
+			var opponentHeroFlag:Boolean = event.data.mask.opponent_hero;
+						
 			var index:int;
 			var minion:IMinion;
 			var copy:IMinion;
 			
 			scene.darken();
-			// field.blur();
 			
 			serviceData = new Dictionary();
 			
-			var associate:Vector.<IMinion> = field.getPlayerMinions();
-			var opponent:Vector.<IMinion> = field.getOpponentMinions();
-			
 			for (var i:int = 0; i < associate.length; i++) {
-				minion = associate[i];
-				index = minion.asDO().parent.getChildIndex(minion.asDO());
+				index = associate[i]
+				minion = field.getMinion(index, true);
+				if (minion.isSpellInvisible) continue;
 				copy = copyMinion(minion);
-				serviceData[copy] = {'targetIndex':index, 'attachment':0, 'cardIndex':cardIndex}
+				serviceData[copy] = {'index':index, 'player':true}
 			}
-			for (i = 0; i < opponent.length; i++) {
-				minion = opponent[i];
-				index = minion.asDO().parent.getChildIndex(minion.asDO());
-				copy = copyMinion(minion);
-				serviceData[copy] = {'targetIndex':index, 'attachment':1, 'cardIndex':cardIndex}
-			}
-			minion = playerHero;
-			copy = copyMinion(minion);
-			serviceData[copy] = {'targetIndex':-1, 'attachment':0, 'cardIndex':cardIndex}
 			
-			minion = opponentHero;
-			copy = copyMinion(minion);
-			serviceData[copy] = { 'targetIndex': -1, 'attachment':1, 'cardIndex':cardIndex }
+			for (i = 0; i < opponent.length; i++) {
+				index = opponent[i]
+				minion = field.getMinion(index, false);
+				if (minion.isSpellInvisible) continue;
+				copy = copyMinion(minion);
+				serviceData[copy] = {'index':index, 'player':false}
+			}
+			if (playerHeroFlag) {
+				minion = playerHero;
+				copy = copyMinion(minion);
+				serviceData[copy] = {'index':-1, 'player':true}
+			}
+			if (opponentHeroFlag) {
+				minion = opponentHero;
+				copy = copyMinion(minion);
+				serviceData[copy] = {'index':-1, 'player':false}
+			}
 			
 			contextView.stage.addEventListener(TouchEvent.TOUCH, stage_touchHandler); 
 			
@@ -115,8 +129,10 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 			{
 				return; 
 			}
+			
 			if(touch.phase == TouchPhase.BEGAN)
 			{
+				
 				//MonsterDebugger.log(event.target);
 				//(event.target as DisplayObject).filter = glowFilter;
 				choiceComplete();
@@ -171,16 +187,18 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 		}
 		
 		private function selectMinion (data:Object) :void {
-			MonsterDebugger.log('cardIndex:' + data.cardIndex);
-			MonsterDebugger.log('targetIndex:' + data.targetIndex);
-			MonsterDebugger.log('attachment:' + data.attachment);
-			dispatch (new SceneEvent(SceneEvent.SELECT_FOR_SPELL_INIT, data ));
+			var attachment:int = 0;
+			if (data.player == false) {
+				attachment = 1;
+			}
+			var serviceData:Object = { };
+			serviceData['attachment'] = attachment
+			serviceData['index'] = data.index;
+			dispatch (new SceneEvent(SceneEvent.SELECT_FOR_SPELL_INIT, serviceData));
 		}
 		
 		private function cancelSelect() :void {
 			backCardToHand();
-			//MonsterDebugger.log('cancelSelect');
-			//dispatch (new SceneEvent(SceneEvent.CANCEL_SELECT_FOR_APTITUDE_UNIT, {}));
 		}
 		
 		private function backCardToHand () :void {
@@ -201,8 +219,10 @@ package com.sla.mvc.controller.match.scenario.action.drawing
 			mirror.scaleY = mirror.scaleX = 1;
 			mirror.rotation = 0;
 			card.visible = true;
+			card.block = false;
 			matchModel.dragMode = false;
 			hand.glowCards(matchModel.mana, matchModel.numMinions);
+			dispatch (new ScenarioEvent(ScenarioEvent.ACTION));
 		}
 		
 		private function copyMinion (minion:IMinion) :IMinion {

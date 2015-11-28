@@ -166,7 +166,7 @@ package com.sla.mvc.view.hand
 			var card:Card;
 			for (var i:int = 0; i < cardsStack.numChildren; i ++) {
 				card = cardsStack.getChildAt(i) as Card;
-				if (card.getCardData().price <= mana) {
+				if (card.getPrice() <= mana) {
 					if (card.getCardData().type == CardData.UNIT && numMinions >= 7) {
 						card.stopGlow();
 					} else {
@@ -193,7 +193,14 @@ package com.sla.mvc.view.hand
 				var card:Card = cardsStack.getChildAt(i) as Card;
 				card.setSpellMixin(spellMixin);
 			}
-	}
+		}
+		
+		override public function clear():void 
+		{
+			mirrorStack.removeChildren();
+			cardsStack.removeChildren();
+			sensorStack.removeChildren();
+		}
 		
 		
 		

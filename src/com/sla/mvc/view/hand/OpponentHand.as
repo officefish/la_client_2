@@ -112,6 +112,20 @@ package com.sla.mvc.view.hand
 			TweenLite.to (card, 0.8, {x:position.x, y:position.y, ease:Expo.easeInOut});
 		}
 		
+		public function over (index:uint) :void {
+			var card:Card = cardsStack.getChildAt(index) as Card;
+			var position:Point;
+			position = card.longPosition;
+			TweenLite.to (card, 0.8, {x:position.x, y:position.y, ease:Expo.easeInOut});
+		}
+		
+		public function out (index:uint) :void {
+			var card:Card = cardsStack.getChildAt(index) as Card;
+			var position:Point;
+			position = card.position;
+			TweenLite.to (card, 0.8, {x:position.x, y:position.y, ease:Expo.easeInOut});
+		}
+		
 		override public function pickCard(cardData:CardData):Card 
 		{
 			newCard = initCard(cardData);
@@ -180,6 +194,11 @@ package com.sla.mvc.view.hand
 			sort(false);
 		}
 		
+		override public function clear():void 
+		{
+			cardsStack.removeChildren();
+		}
+			
 	}
 
 }

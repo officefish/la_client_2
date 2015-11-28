@@ -30,8 +30,6 @@ package com.sla.mvc.controller.decklist {
 			list.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
 			contextView.addChild(list);
 			
-			MonsterDebugger.log(model.list);
-			
 			list.initDecks(model.list);
 			if (model.actualDeck) {
 				list.activateDeck(model.actualDeck);

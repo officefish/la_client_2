@@ -19,7 +19,6 @@ package com.sla.mvc.view.mediator
 		}
 		
 		private function onEditDeck(event:StarlingCollectionEvent) :void {
-			MonsterDebugger.log (event.data.deckData.id);
 			dispatch (new CollectionEvent(CollectionEvent.EDIT_DECK, {deckId:event.data.deckData.id}));
 		}
 		

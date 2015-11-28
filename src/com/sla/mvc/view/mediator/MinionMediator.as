@@ -1,6 +1,7 @@
 package com.sla.mvc.view.mediator 
 {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.FieldEvent;
 	import com.sla.event.ScenarioEvent;
 	import com.sla.event.SceneEvent;
 	import com.sla.event.starling.StarlingFieldEvent;
@@ -38,9 +39,23 @@ package com.sla.mvc.view.mediator
 			if (!minion) {
 				return;
 			}
+			if (event.getTouch(view, TouchPhase.HOVER)) {
+				if (!minion.showMirror) {
+					dispatch(new FieldEvent(FieldEvent.SHOW_MIRROR, { minion:view } ));
+					minion.showMirror = true;
+				}
+			} else {
+				minion.showMirror = false;
+				dispatch(new FieldEvent(FieldEvent.HIDE_MIRROR, { minion:view } ));
+			}
+			
 			if (minion.isEnemy || minion.block) {
 				return;
 			}
+			
+			
+			
+			
 			var touch:Touch = event.getTouch(view, TouchPhase.BEGAN);
 			if (touch) {
 				if (minion.hasActiveAptitude && minion.activeManacost <= matchModel.mana && minion.activeBlock == false) {

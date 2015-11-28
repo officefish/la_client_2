@@ -42,6 +42,8 @@ package com.sla.mvc.controller.match.preflop
 			matchModel.playerHeroHealth = event.data.health;
 			matchModel.opponentHeroHealth = event.data.opponent_health;
 			
+			matchModel.initPlayerAbilities (event.data.achieves);
+			matchModel.initOpponentAbilities (event.data.opponent_achieves);
 			
 			matchModel.whiteFlag = event.data.white;
 			

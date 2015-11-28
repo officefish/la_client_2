@@ -68,9 +68,11 @@ package com.sla.mvc.controller.match.scenario.action.drawing {
 			iniciatorMinion.asDO().scaleY = 1.1;
 			//scene.startDraw(iniciatorMinion.globalPosition, onTargetInit);
 			
-			var enemyMinions:Vector.<IMinion>
+			var enemyMinions:Vector.<IMinion> = new Vector.<IMinion>();
 			var provocationFlag:Boolean = false;
-			enemyMinions = field.getOpponentProvocation();
+			if (!iniciatorMinion.canFly) {
+				enemyMinions = field.getOpponentProvocation();
+			}
 			if (enemyMinions.length) {
 				provocationFlag = true;
 			} else {

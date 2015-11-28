@@ -84,7 +84,7 @@ package com.sla.mvc.controller.match.hand
 				backCard();
 				return;
 			}
-			if (matchModel.mana < card.getCardData().price) {
+			if (matchModel.mana < card.getPrice()) {
 				backCard();
 				return;
 			}
@@ -206,22 +206,10 @@ package com.sla.mvc.controller.match.hand
 			
 			matchModel.dragMode = false;
 			var index:int = hand.getCardIndex(card);
-			switch (card.getCardData().type) {
-				case CardData.UNIT: {
-					dispatch(new HandEvent(HandEvent.PLAY_CARD, { card:card, index:index } ));
-					break;
-				}
-				case CardData.SPELL: {
-					dispatch(new HandEvent(HandEvent.PLAY_CARD, { card:card, index:index } ));
-					break;
-				}
-				case CardData.SPELL_TO_TARGET: {
-					dragMode = false;
-					Starling.current.stage.removeEventListener(TouchEvent.TOUCH, stage_touchHandler);
-					dispatch(new HandEvent(HandEvent.SELECT_TARGET_FOR_SPELL, { card:card, index:index } ));
-					break;
-				}
-			}
+			dragMode = false;
+			Starling.current.stage.removeEventListener(TouchEvent.TOUCH, stage_touchHandler);
+			dispatch(new HandEvent(HandEvent.PLAY_CARD, { card:card, index:index } ));
+			
 		}
 		
 		

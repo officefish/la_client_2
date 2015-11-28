@@ -3,6 +3,7 @@ package com.sla.mvc.service
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.la.socket.IWebSocketWrapper;
 	import com.la.socket.SocketFactory;
+	import com.sla.event.HandEvent;
 	import com.sla.event.MatchServiceEvent;
 	import com.worlize.websocket.WebSocketErrorEvent;
 	import com.worlize.websocket.WebSocketEvent;
@@ -27,6 +28,8 @@ package com.sla.mvc.service
 		private static const END_STEP_TIMER:String = 'end_step_timer';
 		private static const END_MATCH:String = 'end_match'; 
 		private static const REPLACE_DECK_ITEMS:String = 'replace_deck_items';
+		private static const CURSOR_OVER:String = 'cursor_over';
+		private static const CURSOR_OUT:String = 'cursor_out';
 
 		
 		private var wrapper:IWebSocketWrapper;
@@ -157,6 +160,20 @@ package com.sla.mvc.service
 					dispatch(new MatchServiceEvent(MatchServiceEvent.SCENARIO, response.data))
                     break;
 				}
+				case END_MATCH: {
+					dispatch(new MatchServiceEvent(MatchServiceEvent.END_MATCH, response.data));
+					break;
+				}
+				case CURSOR_OVER: {
+					dispatch(new HandEvent(HandEvent.OPPONENT_CURSOR_OVER, response.data));
+					break;
+				}
+				case CURSOR_OUT: {
+					dispatch(new HandEvent(HandEvent.OPPONET_CURSOR_OUT, response.data));
+					break;
+				}
+				
+				
 
 			}
 		}

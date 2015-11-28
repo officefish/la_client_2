@@ -29,13 +29,13 @@ package com.la.mvc.model
 			super(attack, health, price, eptitudes);
 		}
 		
-		public function set id (value:int) :void {
-			this._id = value;
-		}
+		//public function set id (value:int) :void {
+		//	this._id = value;
+	//	}
 		
-		public function get id () :int {
-			return _id;
-		}
+	//	public function get id () :int {
+		//	return _id;
+		//}
 		
 		public function setCount (value:int) :void {
 			this._count = value;

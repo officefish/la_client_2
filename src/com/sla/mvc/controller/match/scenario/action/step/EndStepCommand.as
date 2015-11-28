@@ -30,11 +30,14 @@ package com.sla.mvc.controller.match.scenario.action.step
 		{
 			MonsterDebugger.log ('EndStepCommand::execute()');
 			field.blockMinions();
+			field.blockHero();
 			field.unblockActive();
 									
 			if (stateModel.state == GameState.PLAYER_STEP) {
 				field.disableStepButton();
 				hand.stopGlowCards();
+				
+				
 								
 				service.sendMessage('end_step', {});
 			}

@@ -1,10 +1,16 @@
 package com.sla.mvc.view.card 
 {
+	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.mvc.model.data.CardAptitude;
 	import com.sla.mvc.model.data.CardData;
+	import com.sla.mvc.view.asset.Stock;
 	import feathers.controls.Label;
 	import feathers.controls.TextArea;
 	import flash.display.Bitmap;
 	import flash.geom.Point;
+	import flash.text.AntiAliasType;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	import ru.flasher.utils.StringUtil;
 	import starling.display.Image;
 	import starling.display.Quad;
@@ -21,22 +27,28 @@ package com.sla.mvc.view.card
 	public class Card extends Sprite 
 	{
 		[Embed(source = "../../../../../../lib/assets/cardMirrorTexture.png")]
-		private var MirrorAsset:Class;
+		private static var MirrorAsset:Class;
+		private static var _mirrorAssetTexture:Texture;
 		
 		[Embed(source="../../../../../../lib/assets/cardTexture.png")]
-		private var CardAsset:Class;
+		private static var CardAsset:Class;
+		private static var _cardAssetTexture:Texture;
 		
 		[Embed(source = "../../../../../../lib/assets/cardMirrorSpellTexture.png")]
-		private var MirrorSpellAsset:Class;
+		private static var MirrorSpellAsset:Class;
+		private static var _mirrorSpellTexture:Texture;
 		
 		[Embed(source = "../../../../../../lib/assets/cardSpellTexture.png")]
-		private var CardSpellAsset:Class;
+		private static var CardSpellAsset:Class;
+		private static var _cardSpellTexture:Texture;
 		
 		[Embed(source = "../../../../../../lib/assets/cardShirt.png")]
-		private var ShirtClass:Class;
+		private static var ShirtClass:Class;
+		private static var _shirtTexture:Texture;
 		
 		[Embed(source = "../../../../../../lib/assets/cardMirrorShirt.png")]
-		private var MirrorShirtClass:Class;
+		private static var MirrorShirtClass:Class;
+		private static var _mirrorShirtTexture:Texture;
 		
 		public static const DEFAULT_GLOW_COLOR:int = 0x00FFFF;
 		public static const SERIES_GLOW_COLOR:int = 0xFFFF00;
@@ -84,6 +96,51 @@ package com.sla.mvc.view.card
 		
 		private var _endRotation:Number;
 		
+		private var targetMask:Object;
+		
+		
+		private static function get mirrorAssetTexture ():Texture {
+			if (!_mirrorAssetTexture) {
+				_mirrorAssetTexture = Texture.fromBitmap(new MirrorAsset());
+			}
+			return _mirrorAssetTexture;
+		}
+		
+		private static function get cardAssetTexture ():Texture {
+			if (!_cardAssetTexture) {
+				_cardAssetTexture = Texture.fromBitmap(new CardAsset());
+			}
+			return _cardAssetTexture;
+		}
+		
+		private static function get mirrorSpellTexture () :Texture {
+			if (!_mirrorSpellTexture) {
+				_mirrorSpellTexture = Texture.fromBitmap(new MirrorSpellAsset());
+			}
+			return _mirrorSpellTexture;
+		}
+		
+		private static function get cardSpellTexture () :Texture {
+			if (!_cardSpellTexture) {
+				_cardSpellTexture = Texture.fromBitmap(new CardSpellAsset());
+			}
+			return _cardSpellTexture;
+		}
+		
+		private static function get shirtTexture () :Texture {
+			if (!_shirtTexture) {
+				_shirtTexture = Texture.fromBitmap(new ShirtClass());
+			}
+			return _shirtTexture;
+		}
+		
+		private static function get mirrorShirtTexture () :Texture {
+			if (!_mirrorShirtTexture) {
+				_mirrorShirtTexture = Texture.fromBitmap(new MirrorShirtClass());
+			}
+			return _mirrorShirtTexture;
+		}
+		
 		
 		public function Card(cardData:CardData)
 		{
@@ -98,6 +155,8 @@ package com.sla.mvc.view.card
 			
 			
 			
+			
+			
 			// уточняем есть ли у карты способность пассивной аттаки по нескольким существам.
 			//validateSeveralTargetsEptitude();
 			
@@ -105,6 +164,12 @@ package com.sla.mvc.view.card
 			//validateDrawingSeries();
 			
 			
+		}
+		
+		
+		
+		public function getPrice () :int {
+			return price;
 		}
 		
 		public function set block (value:Boolean) :void {
@@ -154,15 +219,19 @@ package com.sla.mvc.view.card
 			cardContainer.x -= CARD_WIDTH / 2;
 			cardContainer.y -= CARD_HEIGHT / 2;
 			//container.
-			var asset:Bitmap
-			if (cardData.type == CardData.UNIT) {
-				asset = new CardAsset();
+			var texture:Texture
+			if (cardData.type == CardData.UNIT) {  
+				texture = Card.cardAssetTexture;
 			} else {
-				asset = new CardSpellAsset();
+				texture = Card.cardSpellTexture;
 			}
-			var texture:Texture = Texture.fromBitmap(asset);
 			var body:Image = new Image(texture); //CardFormater.drawBody(CARD_WIDTH, CARD_HEIGHT, cardData.type, 21);
 			cardContainer.addChild(body);
+			
+			var cardImage:Image = new Image(Stock.getTexture(cardData.id));
+			cardImage.x = 40 * 0.65;
+			cardImage.y = 2;
+			cardContainer.addChild(cardImage);
 			
 			priceLabel = CardFormater.drawValueLabel(price.toString());
 			priceLabel.width = 18;
@@ -192,7 +261,7 @@ package com.sla.mvc.view.card
 			titleLabel = CardFormater.drawTitleLabel(cardData.title.toString());
 			titleLabel.width = CARD_WIDTH - 6;
 			titleLabel.x = 0;
-			titleLabel.y = Math.round (this.height * 0.47);
+			titleLabel.y = Math.round (this.height * 0.5);
 			cardContainer.addChild (titleLabel);
 
 			descriptionArea = CardFormater.drawDescriptionArea(parseDescription(cardData.description));
@@ -232,16 +301,22 @@ package com.sla.mvc.view.card
 			mirror.addChild(container);
 			container.x -= MIRROR_WIDTH/2;
 			container.y -= MIRROR_HEIGHT/2;
-			var asset:Bitmap
-			if (cardData.type == CardData.UNIT) {
-				asset = new MirrorAsset();
+			var texture:Texture
+			if (cardData.type == CardData.UNIT) {  
+				texture = Card.mirrorAssetTexture;
 			} else {
-				asset = new MirrorSpellAsset();
+				texture = Card.mirrorSpellTexture;
 			}
-			var texture:Texture = Texture.fromBitmap(asset);
 			var body:Image = new Image(texture);
 			//var body:QuadBatch = CardFormater.drawBody(MIRROR_WIDTH, MIRROR_HEIGHT, cardData.type, 30);
 			container.addChild(body);
+			
+			
+			var cardImage:Image = new Image(Stock.getMirrorTextrure(cardData.id));
+			cardImage.x = 40;
+			cardImage.y = 4;
+			container.addChild(cardImage);
+			
 			
 			mirrorPriceLabel = CardFormater.drawMirrorValueLabel(price.toString());
             mirrorPriceLabel.width = 31;
@@ -273,14 +348,14 @@ package com.sla.mvc.view.card
 			mirrorTitleLabel = CardFormater.drawMirrorTitleLabel (cardData.title);
             mirrorTitleLabel.width = Card.MIRROR_WIDTH - 10;
 			mirrorTitleLabel.x = 5;
-			mirrorTitleLabel.y = Math.round (mirror.height * 0.45);
+			mirrorTitleLabel.y = Math.round (mirror.height * 0.5);
 			container.addChild (mirrorTitleLabel);
 
             mirrorDescriptionArea = CardFormater.drawMirrorDescriptionArea(parseDescription(cardData.description))
             mirrorDescriptionArea.width = Card.MIRROR_WIDTH - 20;
 			mirrorDescriptionArea.x = 10;
 			mirrorDescriptionArea.height = 80;
-			mirrorDescriptionArea.y = Math.round (mirror.height * 0.55);
+			mirrorDescriptionArea.y = Math.round (mirror.height * 0.6);
             container.addChild (mirrorDescriptionArea);
 			
 			
@@ -321,8 +396,7 @@ package com.sla.mvc.view.card
 			container.x -= Card.MIRROR_WIDTH/2;
 			container.y -= Card.MIRROR_HEIGHT/2;
 			
-			var mirrorShirtAsset:Bitmap = new MirrorShirtClass();
-			var mirrorShirtTexture:Texture = Texture.fromBitmap(mirrorShirtAsset); 
+			var mirrorShirtTexture:Texture = Card.mirrorShirtTexture;
 			var mirrorShirtImage:Image = new Image(mirrorShirtTexture);
 			container.addChild(mirrorShirtImage);
 			
@@ -330,8 +404,7 @@ package com.sla.mvc.view.card
 			smallShirt.x -= Card.CARD_WIDTH/2;
 			smallShirt.y -= Card.CARD_HEIGHT / 2;
 			
-			var shirtAsset:Bitmap = new ShirtClass();
-			var shirtTexture:Texture = Texture.fromBitmap(shirtAsset); 
+			var shirtTexture:Texture = Card.shirtTexture;
 			var shirtImage:Image = new Image(shirtTexture);
 			smallShirt.addChild(shirtImage);
 		}
@@ -430,6 +503,73 @@ package com.sla.mvc.view.card
 				return true;
 			}
 		}
+		
+		public function setPrice (value:int) :void {
+			price = value;
+			if (price > defaultPrice) {
+				mirrorPriceLabel.textRendererProperties.textFormat = mirrorUpPriceFormat;
+                priceLabel.textRendererProperties.textFormat =  upPriceFormat;
+			} else if (price == defaultPrice) {
+				mirrorPriceLabel.textRendererProperties.textFormat = mirrorPriceFormat;
+                priceLabel.textRendererProperties.textFormat = priceFormat;
+			} else {
+				mirrorPriceLabel.textRendererProperties.textFormat = mirrorPriceFormat;
+                priceLabel.textRendererProperties.textFormat = saleFormat;
+			}
+			mirrorPriceLabel.text = '' + price;
+            priceLabel.text = '' + price;
+		}
+		
+		private static var _saleFormat:TextFormat;
+		public static function get saleFormat () :TextFormat {
+			if (!_saleFormat) { 
+				_saleFormat = new TextFormat("SupriaSans", 18, 0x00FF00, true); 
+				_saleFormat.align = TextFormatAlign.CENTER; 
+			}
+			return _saleFormat;
+		}
+		private static var _priceFormat:TextFormat;
+		public static function get priceFormat () :TextFormat {
+			if (!_priceFormat) {
+				_priceFormat = new TextFormat("SupriaSans", 18, 0, true); 
+				_priceFormat.align = TextFormatAlign.CENTER; 
+			}
+			return _priceFormat;
+		}
+		private static var _upPriceFormat:TextFormat;
+		public static function get upPriceFormat () :TextFormat {
+			if (!_upPriceFormat) {
+				_upPriceFormat = new TextFormat("SupriaSans", 18, 0xFF0000, true); 
+				_upPriceFormat.align = TextFormatAlign.CENTER; 
+			}
+			return _upPriceFormat;
+		}
+		
+		private static var _mirrorSaleFormat:TextFormat;
+		public static function get mirrorSaleFormat () :TextFormat {
+			if (!_mirrorSaleFormat) {
+				_mirrorSaleFormat = new TextFormat("SupriaSans", 26, 0x00FF00, true); 
+				_mirrorSaleFormat.align = TextFormatAlign.CENTER; 
+			}
+			return _mirrorSaleFormat;
+		}
+		private static var _mirrorPriceFormat:TextFormat;
+		public static function get mirrorPriceFormat () :TextFormat {
+			if (!_mirrorPriceFormat) {
+				_mirrorPriceFormat = new TextFormat("SupriaSans", 26, 0, true); 
+				_mirrorPriceFormat.align = TextFormatAlign.CENTER; 
+			}
+			return _mirrorPriceFormat;
+		}
+		private static var _mirrorUpPriceFormat:TextFormat;
+		public static function get mirrorUpPriceFormat () :TextFormat {
+			if (!_mirrorUpPriceFormat) {
+				_mirrorUpPriceFormat = new TextFormat("SupriaSans", 26, 0xFF0000, true); 
+				_mirrorUpPriceFormat.align = TextFormatAlign.CENTER; 
+			}
+			return _mirrorUpPriceFormat;
+		}
+
 
 		
 	}

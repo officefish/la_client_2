@@ -23,6 +23,8 @@ package com.sla.theme
 		
 		private var _id:int;
 		
+		private var _golden:Boolean;
+		
 		
 		public function DeckLlistItemsRenderer()  
 		{
@@ -35,6 +37,14 @@ package com.sla.theme
 		
 		public function get id () :int {
 			return _id;
+		}
+		
+		public function set golden (value:Boolean) :void {
+			this._golden = value;
+		}
+		
+		public function get golden () :Boolean {
+			return this._golden;
 		}
 		
 		override protected function initialize():void
@@ -83,8 +93,11 @@ package com.sla.theme
 				priceLabel.text = this._data.price;
 				if (this._data.count > 1) {
 					countLabel.text = this._data.count;
+				} else {
+					countLabel.text = '';
 				}
 				this.id = this._data.id;
+				this.golden = this._data.golden;
 			}
 		}
 		

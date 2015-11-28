@@ -26,7 +26,7 @@ package com.sla.mvc.controller.lobby
 			MonsterDebugger.log ('StartupLobbyServiceCommand::execute()');
 			
 			rootModel.lobbyId = Math.round(Math.random() * 50000);
-			service.setUserData({'id':rootModel.lobbyId, 'hero_id':heroModel.heroId, 'deck_id':heroModel.deckId, 'hero_uid':heroModel.type, 'level':heroModel.level});
+			service.setUserData({'id':rootModel.lobbyId, 'hero_id':heroModel.heroId, 'deck_id':heroModel.deckId, 'hero_uid':heroModel.type, 'level':heroModel.level, 'nickname':rootModel.nickname});
 			service.connect();			
 		}		
 	}

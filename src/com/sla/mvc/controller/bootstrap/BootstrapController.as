@@ -1,6 +1,7 @@
 package com.sla.mvc.controller.bootstrap 
 {
 	
+	import com.sla.event.AbilityEvent;
 	import com.sla.event.ApiServiceEvent;
 	import com.sla.event.CollectionEvent;
 	import com.sla.event.DeckListEvent;
@@ -13,12 +14,40 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.event.MatchServiceEvent;
 	import com.sla.event.ScenarioEvent;
 	import com.sla.event.SceneEvent;
+	import com.sla.mvc.controller.ability.AbilitiesInitCommand;
+	import com.sla.mvc.controller.ability.AbilitySelectCommand;
+	import com.sla.mvc.controller.ability.AddAbilityCommand;
+	import com.sla.mvc.controller.ability.CompleteCraftAbilityCommand;
+	import com.sla.mvc.controller.ability.CompleteDustAbilityCommand;
+	import com.sla.mvc.controller.ability.CompleteSetupAbilitiesCommand;
+	import com.sla.mvc.controller.ability.PreviewCraftAbilityCommand;
+	import com.sla.mvc.controller.ability.RemoveAbilityCommand;
+	import com.sla.mvc.controller.ability.AbilitiesCraftListInitCommand;
+	import com.sla.mvc.controller.ability.request.RequestCraftAbilitiesCommand;
+	import com.sla.mvc.controller.ability.request.RequestCraftAbilityCommand;
+	import com.sla.mvc.controller.ability.request.RequestDestroyAbilityCommand;
+	import com.sla.mvc.controller.ability.request.RequestEditAbilityCommand;
+	import com.sla.mvc.controller.ability.request.RequestSaveAbilitiesCommand;
+	import com.sla.mvc.controller.ability.StartupAbilityCommand;
 	import com.sla.mvc.controller.collection.AddToDeckCommand;
+	import com.sla.mvc.controller.collection.CardCreatedCommand;
+	import com.sla.mvc.controller.collection.CardDestroyedCommand;
+	import com.sla.mvc.controller.collection.CloseCollectionCommand;
+	import com.sla.mvc.controller.collection.CollectionHeroesInitCommand;
 	import com.sla.mvc.controller.collection.CollectionInitCommand;
 	import com.sla.mvc.controller.collection.DeckInitCommand;
+	import com.sla.mvc.controller.collection.FullCollectionInitCommand;
+	import com.sla.mvc.controller.collection.RemoveFromDeckCommand;
 	import com.sla.mvc.controller.collection.request.RequestCollectionCommand;
+	import com.sla.mvc.controller.collection.request.RequestCraftCardCommand;
+	import com.sla.mvc.controller.collection.request.RequestCraftCardsCommand;
+	import com.sla.mvc.controller.collection.request.RequestCraftReadyCommand;
+	import com.sla.mvc.controller.collection.request.RequestDustCardCommand;
 	import com.sla.mvc.controller.collection.request.RequestEditDeckCommand;
+	import com.sla.mvc.controller.collection.request.RequestHeroesCommand;
+	import com.sla.mvc.controller.collection.request.RequestNewDeckCommand;
 	import com.sla.mvc.controller.collection.request.RequestRemoveDeckCommand;
+	import com.sla.mvc.controller.collection.request.RequestSaveDeckCommand;
 	import com.sla.mvc.controller.collection.StartupCollectionCommand;
 	import com.sla.mvc.controller.collection.PreviewCollectionCardCommand;
 	import com.sla.mvc.controller.decklist.CloseDeckListCommand;
@@ -42,18 +71,39 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.mvc.controller.lobby.StartupLobbyServiceCommand;
 	import com.sla.mvc.controller.lobby.InviteCommand;
 	import com.sla.mvc.controller.lobby.AcceptCommand;
+	import com.sla.mvc.controller.match.CloseMatchCommand;
 	import com.sla.mvc.controller.match.field.FindMinionPositionCommand;
+	import com.sla.mvc.controller.match.hand.OpponentCursorOutCommand;
+	import com.sla.mvc.controller.match.hand.OpponentCursorOverCommand;
+	import com.sla.mvc.controller.match.hand.requests.RequestCursorOutCommand;
+	import com.sla.mvc.controller.match.hand.requests.RequestCursorOverCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.DisableAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.EnableAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.IncrementAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.PreviewAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.request.RequestActivateAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.request.RequestActivateTargetAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.ability.StopPreviewAbilityCommand;
 	import com.sla.mvc.controller.match.scenario.action.attack.AttackAvailableCommand;
 	import com.sla.mvc.controller.match.scenario.action.attack.AttackCompleteCommand;
 	import com.sla.mvc.controller.match.scenario.action.attack.AttackMixinCommand;
 	import com.sla.mvc.controller.match.scenario.action.attack.ClassicAttackCommand;
+	import com.sla.mvc.controller.match.scenario.action.card.BurnCardCommand;
+	import com.sla.mvc.controller.match.scenario.action.card.ChangeCardPriceCommand;
+	import com.sla.mvc.controller.match.scenario.action.card.FatigueCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.ActionPopupCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestActivateActiveCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestActiveSelectedCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestEffectSelectedCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestHeroAttackCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestHeroAttackCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestTargetForAttackInitCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestTargetForEffectInitCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.request.RequestTargetForSpellInitCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.SelectEffectCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.SelectPlayerWeaponCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForAbilityCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForActiveCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForAttackCommand;
 	import com.sla.mvc.controller.match.field.StopFindMinionPositionCommand;
 	import com.sla.mvc.controller.match.hand.requests.RequestPlayCardCommand;
@@ -77,9 +127,11 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.mvc.controller.match.scenario.action.card.BackMinionToHandCommand;
 	import com.sla.mvc.controller.match.scenario.action.card.PickCardCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForEffectCommand;
+	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForHeroAttackCommand;
 	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForSpellCommand;
 	import com.sla.mvc.controller.match.scenario.action.hand.RemoveCardCommand;
 	import com.sla.mvc.controller.match.scenario.action.minion.GlowMinionsCommand;
+	import com.sla.mvc.controller.match.scenario.action.minion.HideMirrorCommand;
 	import com.sla.mvc.controller.match.scenario.action.minion.MinionHealthCommand;
 	import com.sla.mvc.controller.match.scenario.action.minion.NewMinionCommand;
 	import com.sla.mvc.controller.match.scenario.action.minion.PlayMinionCardCommand;
@@ -90,13 +142,25 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.mvc.controller.match.scenario.action.drawing.SelectTargetForAptitudeCommand;
 	import com.sla.mvc.controller.match.scenario.action.hand.GlowCardsCommand;
 	import com.sla.mvc.controller.match.scenario.action.minion.SeveralMinionsHealthCommand;
+	import com.sla.mvc.controller.match.scenario.action.minion.ShowMirrorCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.ActivateShadowCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.AttachWidgetCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.AttackAndHealthCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.BlockActiveCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.ChangeAttackCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DeactivateShadowCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DecreaseHealthCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.DecreaseSpellCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DestroyDoubleAttackCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DestroyFlyCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.DestroyFreezeCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DestroyProvocationCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.DestroyShieldCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DoubleAttackCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.DumbnessCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.FlyCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.FreezeCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.GlowHeroCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.GlowMinionCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.IncreaseSpellCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.JerkCommand;
@@ -105,6 +169,15 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.mvc.controller.match.scenario.action.simple.ProvocationCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.ShieldCommand;
 	import com.sla.mvc.controller.match.scenario.action.simple.ActivateWidgetCommand;
+	import com.sla.mvc.controller.match.scenario.action.simple.SpellInvisibleCommand;
+	import com.sla.mvc.controller.match.scenario.action.weapon.DestroyWeaponCommand;
+	import com.sla.mvc.controller.match.scenario.action.weapon.GlowWeaponCommand;
+	import com.sla.mvc.controller.match.scenario.action.weapon.StopGlowWeaponCommand;
+	import com.sla.mvc.controller.match.scenario.action.weapon.TakeUpWeaponCommand;
+	import com.sla.mvc.controller.match.scenario.action.weapon.WeaponStrengthCommand;
+	import com.sla.mvc.controller.match.scenario.EndMatchCommand;
+	import com.sla.mvc.controller.plreloader.PreloadCommand;
+	import com.sla.mvc.controller.plreloader.StopPreloadCommand;
 
 	import com.sla.mvc.controller.match.scenario.action.step.InitManaCommand;
 	import com.sla.mvc.controller.match.scenario.action.step.StepCommand;
@@ -156,8 +229,27 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(IntroEvent.STARTUP, StartupIntroCommand);
 			commandMap.mapEvent(IntroEvent.SELECT_GAME, GameSelectCommand);
 			commandMap.mapEvent(IntroEvent.SELECT_COLLECTION, CollectionSelectCommand);
+			commandMap.mapEvent(IntroEvent.SELECT_HEROES, AbilitySelectCommand);
 			
 			commandMap.mapEvent(IntroEvent.COMPLETE, ChangeStateCommand);
+			
+			// -- Hero Abilities --
+			commandMap.mapEvent(AbilityEvent.STARTUP, StartupAbilityCommand);
+			commandMap.mapEvent(AbilityEvent.CHOOSE_HERO_FOR_CRAFT, RequestHeroesCommand);
+			commandMap.mapEvent(AbilityEvent.HERO_SELECT, RequestEditAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(ApiServiceEvent.ABILITIES_LIST_INIT, AbilitiesInitCommand, ApiServiceEvent);
+			commandMap.mapEvent(AbilityEvent.REMOVE_ABILITY, RemoveAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.ADD_ABILITY, AddAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.SAVE_ABILITIES, RequestSaveAbilitiesCommand, AbilityEvent);
+			commandMap.mapEvent(ApiServiceEvent.SETUP_ABILITIES, CompleteSetupAbilitiesCommand);
+			commandMap.mapEvent(AbilityEvent.CRAFT, RequestCraftAbilitiesCommand); 
+			commandMap.mapEvent(ApiServiceEvent.ABILITIES_CRAFT_LIST_INIT, AbilitiesCraftListInitCommand, ApiServiceEvent);
+			commandMap.mapEvent(AbilityEvent.PREVIEW_CRAFT, PreviewCraftAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.CRAFT_ABILITY, RequestCraftAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.DESTROY_ABILITY, RequestDestroyAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(ApiServiceEvent.COMPLETE_CRAFT_ABILITY, CompleteCraftAbilityCommand, ApiServiceEvent);
+			commandMap.mapEvent(ApiServiceEvent.COMPLETE_DUST_ABILITY, CompleteDustAbilityCommand, ApiServiceEvent);
+			commandMap.mapEvent(AbilityEvent.CRAFT_READY, RequestEditAbilityCommand, AbilityEvent);
 			
 			// -- Collection --
 			commandMap.mapEvent(CollectionEvent.STARTUP, StartupCollectionCommand);
@@ -168,6 +260,24 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(CollectionEvent.PREVIEW_CARD, PreviewCollectionCardCommand, CollectionEvent);
 			commandMap.mapEvent(ApiServiceEvent.EDIT_DECK_INIT, DeckInitCommand, ApiServiceEvent);
 			commandMap.mapEvent(CollectionEvent.ADD_TO_DECK, AddToDeckCommand, CollectionEvent);
+			commandMap.mapEvent(CollectionEvent.REMOVE_FROM_DECK, RemoveFromDeckCommand, CollectionEvent);
+			commandMap.mapEvent(CollectionEvent.SAVE_DECK, RequestSaveDeckCommand, CollectionEvent); 
+			commandMap.mapEvent(CollectionEvent.CLOSE, CloseCollectionCommand);
+			commandMap.mapEvent(CollectionEvent.NEW_DECK, RequestHeroesCommand);
+			commandMap.mapEvent(ApiServiceEvent.HEROES_INIT, CollectionHeroesInitCommand, ApiServiceEvent);
+			commandMap.mapEvent(CollectionEvent.HERO_SELECT, RequestNewDeckCommand, CollectionEvent);
+			commandMap.mapEvent(ApiServiceEvent.NEW_DECK_INIT, DeckInitCommand, ApiServiceEvent);
+			commandMap.mapEvent(CollectionEvent.CRAFT, RequestCraftCardsCommand);
+			commandMap.mapEvent(ApiServiceEvent.FULL_COLLECTION_INIT, FullCollectionInitCommand, ApiServiceEvent);
+			commandMap.mapEvent(CollectionEvent.CRAFT_READY, RequestCraftReadyCommand);
+			commandMap.mapEvent(CollectionEvent.CRAFT_CARD, RequestCraftCardCommand);
+			commandMap.mapEvent(CollectionEvent.DUST_CARD, RequestDustCardCommand);
+			commandMap.mapEvent(ApiServiceEvent.CARD_CREATED, CardCreatedCommand, ApiServiceEvent);
+			commandMap.mapEvent(ApiServiceEvent.CARD_DESTROYED, CardDestroyedCommand, ApiServiceEvent);
+			
+			// -- Preloader --
+			commandMap.mapEvent(ApiServiceEvent.REQUEST, PreloadCommand);
+			commandMap.mapEvent(ApiServiceEvent.REQUEST_COMPLETE, StopPreloadCommand);
 			
 			// -- Decklist before match --
 			commandMap.mapEvent(DeckListEvent.STARTUP, StartupDeckListCommand);
@@ -217,6 +327,8 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(MatchServiceEvent.SCENARIO, ScenarioCommand, MatchServiceEvent);
 			commandMap.mapEvent(ScenarioEvent.ACTION, ScenarioActionCommand, ScenarioEvent);
 			commandMap.mapEvent(ScenarioEvent.EXCEPTION, ExceptionCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.END_MATCH, EndMatchCommand, ScenarioEvent);
+			commandMap.mapEvent(MatchServiceEvent.END_MATCH, CloseMatchCommand, MatchServiceEvent);
 			
 			// -- Match -- Step
 			commandMap.mapEvent(ScenarioEvent.STEP, StepCommand, ScenarioEvent);
@@ -229,7 +341,7 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(SceneEvent.SELECT_FOR_APTITUDE_INIT, RequestTargetForAptitudeInitCommand, SceneEvent);
 			commandMap.mapEvent(SceneEvent.CANCEL_SELECT_FOR_APTITUDE_UNIT, RequestCancelSelectForAptCommand);
 			commandMap.mapEvent(SceneEvent.SELECT_FOR_ATTACK_INIT, RequestTargetForAttackInitCommand, SceneEvent);
-			commandMap.mapEvent(HandEvent.SELECT_TARGET_FOR_SPELL, SelectTargetForSpellCommand, HandEvent);
+			commandMap.mapEvent(ScenarioEvent.SELECT_TARGET_FOR_SPELL, SelectTargetForSpellCommand, ScenarioEvent);
 			commandMap.mapEvent(SceneEvent.SELECT_FOR_SPELL_INIT, RequestTargetForSpellInitCommand, SceneEvent);
 			commandMap.mapEvent(ScenarioEvent.SELECT_EFFECT, SelectEffectCommand, ScenarioEvent);
 			commandMap.mapEvent(SceneEvent.EFFECT_SELECTED, RequestEffectSelectedCommand, SceneEvent);
@@ -237,21 +349,35 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(SceneEvent.TARGET_FOR_EFFECT_SELLECTED, RequestTargetForEffectInitCommand, SceneEvent);
 			commandMap.mapEvent(SceneEvent.ACTION_POPUP, ActionPopupCommand, SceneEvent);
 			commandMap.mapEvent(SceneEvent.ACTIVATE_ACTIVE, RequestActivateActiveCommand , SceneEvent);
+			commandMap.mapEvent(ScenarioEvent.SELECT_TARGET_FOR_ACTIVE, SelectTargetForActiveCommand, ScenarioEvent);
+			commandMap.mapEvent(SceneEvent.TARGET_FOR_ACTIVE_SELLECTED, RequestActiveSelectedCommand, SceneEvent);
+			commandMap.mapEvent(SceneEvent.SELECT_TARGET_FOR_HERO_ATTACK, SelectTargetForHeroAttackCommand, SceneEvent);
+			commandMap.mapEvent(SceneEvent.SELECT_FOR_HERO_ATTACK_INIT, RequestHeroAttackCommand, SceneEvent);
+			commandMap.mapEvent(SceneEvent.SELECT_PLAYER_WEAPON, SelectPlayerWeaponCommand, SceneEvent);
 			
 			//-- Match -- Hand
 			commandMap.mapEvent(HandEvent.START_DRAG, StartDragCardCommand, HandEvent);
 			commandMap.mapEvent(HandEvent.PLAY_CARD, RequestPlayCardCommand, HandEvent);
 			commandMap.mapEvent(ScenarioEvent.GLOW_CARDS, GlowCardsCommand, ScenarioEvent);
 			commandMap.mapEvent(ScenarioEvent.REMOVE_CARD, RemoveCardCommand, ScenarioEvent);
+			commandMap.mapEvent(HandEvent.CURSOR_OVER, RequestCursorOverCommand, HandEvent);
+			commandMap.mapEvent(HandEvent.CURSOR_OUT, RequestCursorOutCommand, HandEvent);
+			commandMap.mapEvent(HandEvent.OPPONENT_CURSOR_OVER, OpponentCursorOverCommand, HandEvent);
+			commandMap.mapEvent(HandEvent.OPPONET_CURSOR_OUT, OpponentCursorOutCommand, HandEvent);
 			
 			//-- MAtch -- Field
 			commandMap.mapEvent(FieldEvent.FIND_MINION_POSITION, FindMinionPositionCommand);
 			commandMap.mapEvent(FieldEvent.STOP_FIND_MINION_POSITION, StopFindMinionPositionCommand, FieldEvent);
 			commandMap.mapEvent(SceneEvent.INIT_ATTACK_TARGET, SelectTargetForAttackCommand, SceneEvent);
+			commandMap.mapEvent(FieldEvent.SHOW_MIRROR, ShowMirrorCommand, FieldEvent);
+			commandMap.mapEvent(FieldEvent.HIDE_MIRROR, HideMirrorCommand, FieldEvent);
 			
 			//-- Match -- Scenario -- Actions -- Card Actions 
 			commandMap.mapEvent(ScenarioEvent.PICK_CARD, PickCardCommand, ScenarioEvent);
 			commandMap.mapEvent(ScenarioEvent.BACK_CARD_TO_HAND, BackMinionToHandCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.BURN_CARD, BurnCardCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.FATIGUE, FatigueCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.CHANGE_CARD_PRICE, ChangeCardPriceCommand, ScenarioEvent);
 			
 			//-- Match -- Scenario -- Actions -- Attack Actions 
 			commandMap.mapEvent(ScenarioEvent.PASSIVE_ATTACK, PassiveAttackCommand, ScenarioEvent);
@@ -283,7 +409,35 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(ScenarioEvent.ACTIVATE_WIDGET, ActivateWidgetCommand, ScenarioEvent);
 			commandMap.mapEvent(ScenarioEvent.BLOCK_ACTIVE, BlockActiveCommand, ScenarioEvent);
 			commandMap.mapEvent(ScenarioEvent.GLOW_MINION, GlowMinionCommand, ScenarioEvent);
-		
+			commandMap.mapEvent(ScenarioEvent.DOUBLE_ATTACK, DoubleAttackCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DESTROY_DOUBLE_ATTACK, DestroyDoubleAttackCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.SHADOW, ActivateShadowCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DESTROY_SHADOW, DeactivateShadowCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.FLY, FlyCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DESTROY_FLY, DestroyFlyCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.ATTACH_WIDGET, AttachWidgetCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DESTROY_PROVOCATION, DestroyProvocationCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DECREASE_HEALTH, DecreaseHealthCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.SPELL_INVISIBLE, SpellInvisibleCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DUMBNESS, DumbnessCommand, ScenarioEvent);
+			
+			// -- Weapon -- 
+			commandMap.mapEvent(ScenarioEvent.TAKE_UP_WEAPON, TakeUpWeaponCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.GLOW_HERO, GlowHeroCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.GLOW_WEAPON, GlowWeaponCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.STOP_GLOW_WEAPON, StopGlowWeaponCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.WEAPON_STRENGTH, WeaponStrengthCommand, ScenarioEvent);
+			commandMap.mapEvent(ScenarioEvent.DESTOY_WEAPON, DestroyWeaponCommand, ScenarioEvent);
+			
+			// -- Abilities --
+			commandMap.mapEvent(AbilityEvent.INCREMENT_ABILITY, IncrementAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.DISABLE_ABILITY, DisableAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.ENABLE_ABILITY, EnableAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.PREVIEW_ABILITY, PreviewAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.STOP_PREVIEW_ABILITY, StopPreviewAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.ACTIVATE_SPELL_ABILITY, RequestActivateAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.ACTIVATE_SPELL_TO_TARGET_ABILITY, SelectTargetForAbilityCommand, AbilityEvent);
+			commandMap.mapEvent(AbilityEvent.TARGET_FOR_ABILITY_INIT, RequestActivateTargetAbilityCommand, AbilityEvent);
 		}
 		
 	}

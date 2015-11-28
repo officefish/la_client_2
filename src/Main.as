@@ -47,6 +47,14 @@ import org.robotlegs.mvcs.StarlingContext;
 			// entry point
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
+			
+			Security.allowDomain("*");
+			Security.loadPolicyFile("http://lastargument.ru:8000/api/crossdomain.xml")
+			Security.loadPolicyFile("http://lastargument.ru:8003/api/crossdomain.xml")
+			Security.loadPolicyFile("http://lastargument.ru:8003/crossdomain.xml")
+			Security.loadPolicyFile("ws://5.101.123.195:8003/api/crossdomain.xml")
+			Security.loadPolicyFile("ws://5.101.123.195:8003/crossdomain.xml")
+			
 
 
 			MonsterDebugger.initialize (this);

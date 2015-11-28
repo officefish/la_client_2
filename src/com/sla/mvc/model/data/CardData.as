@@ -198,6 +198,8 @@ package com.sla.mvc.model.data
 				if (data.condition) {
 					eptitude.setCondition(data.condition);
 				}
+				eptitude.attachment = data.attachment;
+				eptitude.attachHero = data.attachHero;
 				eptitude.manacost = data.manacost;
 				_eptitudes.push (eptitude);
 			}

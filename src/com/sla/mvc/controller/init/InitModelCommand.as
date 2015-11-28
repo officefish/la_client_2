@@ -25,7 +25,7 @@ package com.sla.mvc.controller.init
 			//	rootModel.userId = flashVars["userId"];
 			//} else {
 				MonsterDebugger.log('пользователь не установлен')
-				//rootModel.username = 'admin';
+				rootModel.nickname = 'admin' + Math.round(Math.random() * 1000);
 				rootModel.userId = 1;
 			//}
 			

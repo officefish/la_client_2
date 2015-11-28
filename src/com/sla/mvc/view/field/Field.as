@@ -8,10 +8,12 @@ package com.sla.mvc.view.field {
 	import com.greensock.TimelineMax;
 	import com.greensock.TweenLite;
 	import com.sla.event.starling.StarlingFieldEvent;
+	import com.sla.mvc.model.data.AbilityData;
 	import com.sla.mvc.model.data.CardData;
 	import com.sla.mvc.view.field.minion.hero.IHero;
 	import com.sla.mvc.view.field.minion.IMinion;
 	import com.sla.mvc.view.field.minion.Minion;
+	import com.sla.mvc.view.field.weapon.Weapon;
 	import feathers.controls.Button;
 	import flash.geom.Point;
 	import starling.core.Starling;
@@ -24,6 +26,7 @@ package com.sla.mvc.view.field {
 	import starling.events.TouchPhase;
 	import starling.filters.BlurFilter;
 	import com.sla.mvc.view.field.mana.ManaWidget;
+	import com.sla.mvc.view.field.weapon.WeaponWidget;
 	
 	/**
 	 * ...
@@ -68,7 +71,17 @@ package com.sla.mvc.view.field {
 		
 		private var endStepButton:Button;
 		
+		private var playerHeroLeftHand:WeaponWidget;
+		private var playerHeroRightHand:WeaponWidget;
+		private var opponentHeroLeftHand:WeaponWidget;
+		private var opponentHeroRightHand:WeaponWidget;
+		
 		private var scaleSprite:Sprite;
+		
+		private var playerHero:IHero;
+		
+		private var playerAbilitiesWidget:AbilitiesWidget;
+		private var opponentAbilitiesWidget:AbilitiesWidget;
 		
 		public function Field() 
 		{
@@ -145,7 +158,75 @@ package com.sla.mvc.view.field {
 			playerManaWidget.setMana(0, 0);
 			opponentManaWidget.setMana(0, 0);
 			
+			playerHeroLeftHand = new WeaponWidget();
+			playerHeroRightHand = new WeaponWidget();
+			opponentHeroLeftHand = new WeaponWidget();
+			opponentHeroRightHand = new WeaponWidget();
+			
 			_initFlag = true;
+			
+			playerAbilitiesWidget = new AbilitiesWidget(true);
+			playerAbilitiesWidget.x = arenaWidth * 0.04;
+			playerAbilitiesWidget.y = arenaHeight - 100;
+			arena.addChild(playerAbilitiesWidget);
+			
+			opponentAbilitiesWidget = new AbilitiesWidget(false);
+			opponentAbilitiesWidget.x = arenaWidth * 0.04;
+			arena.addChild(opponentAbilitiesWidget);
+		}
+		
+		public function initAbilities (playerAbilites:Vector.<AbilityData>, opponentAbilities:Vector.<AbilityData>) :void {
+			playerAbilitiesWidget.initAbilities(playerAbilites);
+			opponentAbilitiesWidget.initAbilities(opponentAbilities);
+		}
+		
+		public function getAbilitySlot (position:int, playerFlag:Boolean) :FieldAbilitySlot {
+			var slot:FieldAbilitySlot
+			if (playerFlag) {
+				slot = playerAbilitiesWidget.getSlot(position);
+			} else {
+				slot = opponentAbilitiesWidget.getSlot(position);
+			}
+			return slot;
+		}
+		
+		public function getPlayerWeapon (index:int) :Weapon {
+			var weapon:Weapon;
+			if (index) {
+				weapon = playerHeroRightHand.getWeapon();
+			} else {
+				weapon =playerHeroLeftHand.getWeapon();
+			}
+			return weapon;
+		}
+		
+		public function getOpponentWeapon (index:int) :Weapon {
+			var weapon:Weapon;
+			if (index) {
+				weapon = opponentHeroRightHand.getWeapon();
+			} else {
+				weapon = opponentHeroLeftHand.getWeapon();
+			}
+			return weapon;
+		}
+		
+		public function destroyWeapon (weapon:Weapon) :void {
+			if (playerHeroLeftHand.containsWeapon(weapon)) {
+				playerHeroLeftHand.clear();
+				return;
+			}
+			if (playerHeroRightHand.containsWeapon(weapon)) {
+				playerHeroRightHand.clear();
+				return;
+			}
+			if (opponentHeroLeftHand.containsWeapon(weapon)) {
+				opponentHeroLeftHand.clear();
+				return;
+			}
+			if (opponentHeroRightHand.containsWeapon(weapon)) {
+				opponentHeroRightHand.clear();
+				return;
+			}
 		}
 		
 		public function shake (value:int) :void {
@@ -208,6 +289,8 @@ package com.sla.mvc.view.field {
 		}
 		
 		public function addHeroes (playerHero:IHero, opponentHero:IHero) :void {
+			this.playerHero = playerHero;
+			
 			var playerHeroDO:DisplayObject = playerHero.asDO();
 			var opponentHeroDO:DisplayObject = opponentHero.asDO();
 			
@@ -218,6 +301,38 @@ package com.sla.mvc.view.field {
 			opponentHeroDO.x = playerHeroDO.x;
 			opponentHeroDO.y = opponentHeroDO.height / 2;
 			arena.addChild(opponentHeroDO);
+			
+			playerHeroLeftHand.x = playerHeroDO.x - 90;
+			playerHeroLeftHand.y = playerHeroDO.y;
+			arena.addChild(playerHeroLeftHand);
+			
+			playerHeroRightHand.x = playerHeroDO.x + 90;
+			playerHeroRightHand.y = playerHeroDO.y;
+			arena.addChild(playerHeroRightHand);
+			
+			opponentHeroLeftHand.x = opponentHeroDO.x - 90;
+			opponentHeroLeftHand.y = opponentHeroDO.y;
+			arena.addChild(opponentHeroLeftHand);
+			
+			opponentHeroRightHand.x = opponentHeroDO.x + 90;
+			opponentHeroRightHand.y = opponentHeroDO.y;
+			arena.addChild(opponentHeroRightHand);
+		}
+		
+		public function addWeapon (weapon:Weapon, index:int, player:Boolean) :void {
+			if (player) {
+				if (index == 1) {
+					playerHeroLeftHand.addWeapon(weapon);
+				} else {
+					playerHeroRightHand.addWeapon(weapon);
+				}
+			} else {
+				if (index == 1) {
+					opponentHeroLeftHand.addWeapon(weapon);
+				} else {
+					opponentHeroRightHand.addWeapon(weapon);
+				}
+			}
 		}
 		
 		public function findPosition () :void {
@@ -435,14 +550,48 @@ package com.sla.mvc.view.field {
 			}
 			return vector;
 		}
-		
-		public function getOpponentMinions () :Vector.<IMinion> {
+		public function getPlayerSpellTargetMinions () :Vector.<IMinion> {
 			var vector:Vector.<IMinion> = new Vector.<IMinion>();
-			for (var i:int = 0; i < opponentRow.numChildren; i++ ) {
-				vector.push(opponentRow.getChildAt(i) as IMinion)
+			var minion:IMinion;
+			for (var i:int = 0; i < playerRow.numChildren; i++ ) {
+				minion = playerRow.getChildAt(i) as IMinion;
+				if (minion.isSpellInvisible) {
+					continue;
+				}
+				vector.push(minion);
 			}
 			return vector;
 		}
+		
+		public function getOpponentMinions () :Vector.<IMinion> {
+			var vector:Vector.<IMinion> = new Vector.<IMinion>();
+			var minion:IMinion;
+			for (var i:int = 0; i < opponentRow.numChildren; i++ ) {
+				minion = opponentRow.getChildAt(i) as IMinion;
+				if (minion.inShadow) continue;
+				vector.push(minion);
+			}
+			return vector;
+		}
+		public function getOpponentSpellTargetMinions () :Vector.<IMinion> {
+			var vector:Vector.<IMinion> = new Vector.<IMinion>();
+			var minion:IMinion;
+			for (var i:int = 0; i < opponentRow.numChildren; i++ ) {
+				minion = opponentRow.getChildAt(i) as IMinion;
+				if (minion.inShadow || minion.isSpellInvisible) {
+					continue;
+				}
+				vector.push(minion);
+			}
+			return vector;
+		}
+		public function getPlayerMinionIndex(minion:IMinion) :int {
+			return playerRow.getChildIndex(minion as DisplayObject);
+		}
+		public function getOpponentMinionIndex(minion:IMinion) :int {
+			return opponentRow.getChildIndex(minion as DisplayObject);
+		}
+		
 		public function getOpponentProvocation () :Vector.<IMinion> {
 			var vector:Vector.<IMinion> = new Vector.<IMinion>();
 			var minion:IMinion;
@@ -478,6 +627,13 @@ package com.sla.mvc.view.field {
 				otherMinion.stopGlow();
 			}
 		}
+		public function stopGlowMinions () :void {
+			var otherMinion:IMinion;
+			for (var i:int = 0; i < playerRow.numChildren; i ++) {
+				otherMinion = playerRow.getChildAt (i) as IMinion;
+				otherMinion.stopGlow();
+			}
+		}
 		public function markMinionsAsAttackAvailable(list:Array):void {
 			var minion:IMinion;
 			for (var i:int = 0; i < list.length; i ++) {
@@ -485,6 +641,82 @@ package com.sla.mvc.view.field {
 				minion.canAttack = true;
 				minion.block = false;
 			}
+		}
+		
+		public function blur () :void {
+			this.filter = new BlurFilter(1.0, 1.0, 0.5); 
+		}
+		public function stopBlur () :void {
+			this.filter = null;
+		}
+		
+		public function clear () :void {
+			removeAllTokens();
+			//clientCardsWidget.clear();
+			//opponentCardsWidget.clear();
+			playerManaWidget.clear();
+			opponentManaWidget.clear();
+			disableStepButton ();
+			
+			playerAbilitiesWidget.clear();
+			opponentAbilitiesWidget.clear();
+			
+			arena.removeChild(playerHeroLeftHand);
+			arena.removeChild(playerHeroRightHand);
+			arena.removeChild(opponentHeroLeftHand);
+			arena.removeChild(opponentHeroRightHand);
+			
+			//clientCardsWidget.clear();
+			//opponentCardsWidget.clear();
+			//if (playerDeckWidget) {
+				//playerDeckWidget.clear();
+			//}
+		}
+		
+		public function removeAllTokens() :void {
+			playerRow.removeChildren();
+			opponentRow.removeChildren();
+		}
+		
+		public function blockHero () :void {
+			this.playerHero.block = true;
+			this.playerHero.stopGlow();
+			playerHeroLeftHand.stopGlowWeapon();
+			playerHeroRightHand.stopGlowWeapon();
+			playerHeroLeftHand.block = false;
+			playerHeroRightHand.block = false;
+		}
+		
+		public function blockWeapon(index:int) :void {
+			if (index) {
+				playerHeroRightHand.block = true;
+			} else {
+				playerHeroLeftHand.block = true; 
+			}
+		}
+		
+		public function get leftHandBlock () :Boolean {
+			var bool:Boolean = true;
+			if (playerHeroLeftHand.hasWeapon) {
+				bool = false;
+			}
+			if (playerHeroLeftHand.block) {
+				bool = true;
+			}
+			return bool;
+			
+		}
+		
+		public function get rightHandBlock () :Boolean {
+			var bool:Boolean = true;
+			if (playerHeroRightHand.hasWeapon) {
+				bool = false;
+			}
+			if (playerHeroRightHand.block) {
+				bool = true;
+			}
+			return bool;
+			
 		}
 		
 	}

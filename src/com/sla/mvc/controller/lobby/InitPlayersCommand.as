@@ -20,6 +20,7 @@ package com.sla.mvc.controller.lobby
 		override public function execute():void 
 		{
 			MonsterDebugger.log("InitPlayersCommand::execute()");
+			MonsterDebugger.log(event.data.players);
 			lobby.initPlayers(event.data.players);
 		}		
 	}

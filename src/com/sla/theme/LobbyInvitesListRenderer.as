@@ -89,6 +89,8 @@ package com.sla.theme
 		{
 			this.layout = new AnchorLayout(); 
 			
+			this.useHandCursor = true;
+			
 			background = new Quad (this.width, this.height, DEFAULT_BG_COLOR);
 			this.addChild(background);
 			
@@ -126,7 +128,7 @@ package com.sla.theme
             if(this._data && this._owner)
             {
                 this.uid = this._data.uid;
-				this.nicknameLabel.text = 'player' + this._data.id;
+				this.nicknameLabel.text = this._data.nickname;
 				this.levelLabel.text = this._data.level;
 				this.modeLabel.text = this.getModeDescription(this._data.mode);
 				this.mode = this._data.mode;

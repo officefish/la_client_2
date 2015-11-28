@@ -14,6 +14,7 @@ package com.sla.mvc.view.field.minion.hero {
 		function clear():void;
 		function stopDarken() :void;
 		function setStartHealth(value:int) :void;
+		
 	}
 	
 }

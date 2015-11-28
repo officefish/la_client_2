@@ -54,10 +54,22 @@ package com.sla.mvc.view.collection.deck
 			}
 		}
 		
+		public function clear () :void {
+			list.selectedIndex = -1;
+			list.dataProvider.removeAll();
+			slotsCount = 0;
+		}
+		
+		
 		public function initDataProvider(data:Array) :void {
 			var collection:ListCollection = new ListCollection(data);
 			list.selectedIndex = -1; 
 			list.dataProvider = collection;
+			sortList ();
+		}
+		
+		public function getCollection () :ListCollection {
+			return list.dataProvider;
 		}
 		
 		public function addSlot (data:Object) :void {
@@ -81,6 +93,34 @@ package com.sla.mvc.view.collection.deck
 				list.dataProvider.unshift(data);
 				sortList();
 			}
+			
+		}
+		
+		public function removeSlot (slotId:int) :void {
+			var length:int = list.dataProvider.length;
+			var index:int = - 1;
+			var item:Object;
+			for (var i:int = 0; i < length; i ++) {
+				item = list.dataProvider.getItemAt(i);
+				if (item.id == slotId) {
+					index = i;
+					break;
+				}
+			}
+			
+			if (index > -1) {
+				item = list.dataProvider.getItemAt(index);
+				MonsterDebugger.log(item);
+				if (item.count > 1) {
+					item.count = item.count-1;
+					list.dataProvider.updateItemAt(index);
+				} else {
+					list.dataProvider.removeItemAt(index);
+				}
+			}
+			list.selectedIndex = -1; 
+			
+			
 			
 		}
 		
@@ -115,6 +155,7 @@ package com.sla.mvc.view.collection.deck
 				return 0;
 		   }
 		}
+		
 		
 	}
 

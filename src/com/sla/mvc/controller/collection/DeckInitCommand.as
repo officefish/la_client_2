@@ -31,6 +31,10 @@ package com.sla.mvc.controller.collection
 		{
 			MonsterDebugger.log ('DeckInitCommand');
 			
+			contextView.removeChildren();
+			contextView.addChildAt(collection, 0);
+			collection.resize (contextView.stage.stageWidth, contextView.stage.stageHeight);
+			
 			stateModel.state = GameState.EDIT_DECK;
 			collectionModel.deckData = event.data.deck;
 						

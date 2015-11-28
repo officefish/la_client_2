@@ -1,6 +1,8 @@
 package com.sla.mvc.view.collection 
 {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.CollectionEvent;
+	import com.sla.event.starling.StarlingCollectionEvent;
 	import com.sla.event.starling.StarlingDeckListEvent;
 	import com.sla.mvc.model.data.BookData;
 	import com.sla.mvc.model.data.CollectionCardData;
@@ -13,13 +15,17 @@ package com.sla.mvc.view.collection
 	import com.sla.mvc.view.collection.deck.DeckContainer;
 	import com.sla.mvc.view.collection.deck.DeckItemsContainer;
 	import com.sla.mvc.view.collection.deck.HeroTitle;
+	import feathers.controls.Alert;
 	import feathers.controls.Button;
+	import feathers.data.ListCollection;
 	import starling.display.DisplayObject;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import com.sla.event.starling.BookToolbarEvent;
+	import starling.events.Event;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import com.sla.mvc.view.collection.book.CraftBook;
 	
 	/**
 	 * ...
@@ -55,6 +61,13 @@ package com.sla.mvc.view.collection
 		private var countBar:CountBar;
 		
 		private var heroTitle:HeroTitle;
+		private var resetButton:Button;
+		private var craftButton:Button;
+		private var readyButton:Button;
+		
+		private var dust:int = 0;
+		
+		private var craftBar:CraftBar;
 		
 		public function CollectionView() 
 		{
@@ -73,15 +86,12 @@ package com.sla.mvc.view.collection
 			
 			heroTitle = new HeroTitle();
 			heroTitle.x = 620;
-			
-			
-			//newDeckButton = new NewDeckButton ();
-			//newDeckButton.addEventListener (MouseEvent.CLICK, onNewDeck);
-			
+						
 			newDeckButton = new Button();
 			newDeckButton.styleNameList.add('collectionButton');
 			newDeckButton.useHandCursor = true;
 			newDeckButton.label = 'Create Deck';
+			newDeckButton.addEventListener( Event.TRIGGERED, onNewDeck); 
 			
 			deckContainer = new DeckContainer(newDeckButton);
 			deckContainer.x = 620;
@@ -89,14 +99,149 @@ package com.sla.mvc.view.collection
 			countBar = new CountBar ();
 			countBar.x = this.width - countBar.width;
 			countBar.y = this.height - countBar.height;
+			countBar.addEventListener(StarlingCollectionEvent.SAVE, onSave);
+			countBar.addEventListener(StarlingCollectionEvent.CLOSE, onClose);
+						
+			resetButton = new Button ();
+			resetButton.label = 'Reset';
+			resetButton.useHandCursor = true;
+			resetButton.styleNameList.add('countBarButton');
+			resetButton.x = 543;
+			resetButton.y = 7;
+			resetButton.addEventListener( Event.TRIGGERED, onReset); 
 			
-			//booksStack = new Sprite ();
+			craftButton = new Button ();
+			craftButton.label = 'Craft';
+			craftButton.useHandCursor = true;
+			craftButton.styleNameList.add('countBarButton');
+			craftButton.x = 543;
+			craftButton.y = 7;
+			craftButton.addEventListener( Event.TRIGGERED, onCraft); 
+			
+			readyButton = new Button ();
+			readyButton.label = 'Ready';
+			readyButton.useHandCursor = true;
+			readyButton.styleNameList.add('countBarButton');
+			readyButton.addEventListener( Event.TRIGGERED, onCraftReady); 
+						
+			craftBar = new CraftBar('Craft Cards', readyButton);
+			craftBar.x = 620;
+			//craftBar.getReadyButton().addEventListener (MouseEvent.CLICK, onCraftReadyClick);
+			
 			
 			initPagesNavigation ();
 		}
 		
+		private function onCraftReady (event:Event) :void {
+			parent.dispatchEvent(new StarlingCollectionEvent(StarlingCollectionEvent.CRAFT_READY));
+		}
+		
+		private function onCraft (event:Event) :void {
+			parent.dispatchEvent(new StarlingCollectionEvent(StarlingCollectionEvent.CRAFT));
+		}
+		
+		private function onNewDeck (event:Event) :void {
+			parent.dispatchEvent(new StarlingCollectionEvent(StarlingCollectionEvent.NEW_DECK));
+		}
+		
+		private function onClose (event:StarlingCollectionEvent) :void {
+			parent.dispatchEvent(new StarlingCollectionEvent(StarlingCollectionEvent.CLOSE));
+		}
+		
+		private function onSave (event:Event) :void {
+			if (deckItemsContainer.slotsCount < 30) {
+				activateAlertFilters();
+				Alert.show( "This deck is not complete. Do you want to save it? ", "Warning", new ListCollection(
+				[
+					{ label: "Save", triggered: saveButton_triggeredHandler }, 
+					{ label: "Cancel", triggered: cancelButton_triggeredHandler }
+				]), null, true, true, slaAlertFactory );
+			} else {
+				saveDeck();
+			}
+			
+		}
+		
+		private function activateAlertFilters () :void {
+			var collection:Collection = this.parent as Collection;
+			collection.blur();
+			collection.darken();
+		}
+		
+		private function deactivateAlertFilters () :void {
+			var collection:Collection = this.parent as Collection;
+			collection.stopBlur();
+			collection.stopDarken();
+		}
+		
+		private function saveButton_triggeredHandler (event:Event) :void {
+			saveDeck();
+			deactivateAlertFilters();
+		}
+		
+		private function cancelButton_triggeredHandler (event:Event) :void {
+			deactivateAlertFilters();
+		}
+		
+		private function saveDeck() :void {
+			var collection:ListCollection = deckItemsContainer.getCollection();
+			var length:int = collection.length;
+			var item:Object;
+			var itemData:Object;
+			var items:Array = [];
+			for (var i:int = 0; i < length; i ++) {
+				item = collection.getItemAt(i);
+				itemData = { };
+				itemData.count = item.count;
+				if (item.golden != null) {
+					itemData['golden'] = item.golden;
+				} else {
+					itemData['golden'] = false;
+				}
+				
+				itemData.id = item.id;
+				items.push(itemData);
+			}
+			parent.dispatchEvent (new StarlingCollectionEvent (StarlingCollectionEvent.SAVE, false,
+				{
+					'title':heroTitle.text,
+					'items':items
+				}
+			));
+
+		}
+		
 		private function onRemoveSlot (event:StarlingDeckListEvent) :void {
-			dispatchEvent (new StarlingDeckListEvent(StarlingDeckListEvent.REMOVE_SLOT, false, event.data));
+			parent.dispatchEvent (new StarlingDeckListEvent(StarlingDeckListEvent.REMOVE_SLOT, false, event.data));
+		}
+		
+		private function onReset (event:Event) :void {
+			
+			var collection:ListCollection = deckItemsContainer.getCollection();
+			var length:int = collection.length;
+			var item:Object;
+			var card:CollectionCard;
+			for (var i:int = 0; i < length; i ++) {
+				item = collection.getItemAt(i);
+				card = getCardById(item.id);
+				for (var j:int = 0; j < item.count; j++) {
+					card.increment();
+				}
+			}
+			deckItemsContainer.clear();
+			countBar.setCount(deckItemsContainer.slotsCount);
+		}
+		
+		private function slaAlertFactory():Alert
+		{
+			var alert:Alert = new Alert(); 
+			alert.styleNameList.add( "sla-alert" );
+			return alert;
+		};
+		
+		public function setDust (value:int) :void {
+			dust = value;
+			craftBar.setDust (dust);
 		}
 		
 		private function initPagesNavigation () :void {
@@ -157,9 +302,7 @@ package com.sla.mvc.view.collection
 		public function initBooks (booksData:Array) :void {
 			contentSprite.removeChildren();
 			bookStack.removeChildren();
-			
-			
-			
+						
 			if (toolbar) {
 				toolbar.removeEventListener (BookToolbarEvent.CLICK, onToolbarClick)
 				toolbar.destroy();
@@ -175,7 +318,7 @@ package com.sla.mvc.view.collection
 			if (state == INTRO) {
 				contentSprite.addChild (deckContainer);
 				countBar.setMode (0);
-				//addChild (createCardsButton);
+				contentSprite.addChild (craftButton);
 				contentSprite.addChild (countBar);
 				books = createBooks (booksData);
 
@@ -184,14 +327,14 @@ package com.sla.mvc.view.collection
 				countBar.setCount (0);
 				contentSprite.addChild (deckItemsContainer);
 				contentSprite.addChild (heroTitle);
-				//addChild (resetButton);
+				contentSprite.addChild (resetButton);
 				contentSprite.addChild (countBar);
 				books = createBooks (booksData);
 			
 			} else if (state == CRAFT) {
-				//addChild (craftWidget);
-				//craftWidget.setDust (dust);
-				//books = createCraftBooks (booksData);
+				contentSprite.addChild (craftBar);
+				craftBar.setDust (dust);
+				books = createCraftBooks (booksData);
 			}
 						
 			toolbar = new BookToolbar (booksData.length);
@@ -213,6 +356,14 @@ package com.sla.mvc.view.collection
 		
 		public function getDeckItemsStack () :Sprite {
 			return deckItemsContainer;
+		}
+		
+		public function restateCards () :void {
+			var book:CraftBook;
+			for (var i:int = 0; i < books.length; i ++) {
+				book = books[i];
+				book.restateCards (dust);
+			}
 		}
 		
 		private function onToolbarClick (event:BookToolbarEvent) :void {
@@ -241,6 +392,21 @@ package com.sla.mvc.view.collection
 				books.push(book);
 			}
 			
+			return books;
+		}
+		
+		private function createCraftBooks (booksData:Array) :Array {
+			var books:Array = [];
+			var bookData:BookData;
+			var book:Book;
+			var bookCards:Object;
+			for (var i:int = 0; i < booksData.length; i ++) {
+				bookData = booksData[i] as BookData;
+				book = new CraftBook (bookData, dust);
+				bookCards = book.getCardsList();
+				addCards (cards, bookCards);
+				books.push(book);
+			}
 			return books;
 		}
 		
@@ -325,6 +491,7 @@ package com.sla.mvc.view.collection
 					data['price'] = cardData.price;
 					data['count'] = 1
 					data['id'] = cardData.id;
+					data['golden'] = cardData.isGolden();
 					a.push(data);
 					deckCards[cardData.id] = data;
 				} else {
@@ -358,42 +525,15 @@ package com.sla.mvc.view.collection
 		}
 		
 		public function initDeck (deckData:DeckData) :void {
-			MonsterDebugger.log ('initDeck');
-			//deckItemsContainer.defaultStack();
+			
+
 			countBar.setCount(deckData.items.length);
 			deckItemsContainer.slotsCount = deckData.items.length;
 			var array:Array = convertToArray(deckData.items);
-			//MonsterDebugger.log (array);
 			deckItemsContainer.initDataProvider(array);
 			heroTitle.text = deckData.title;
 			blockCardsUsedInDeck(array);
-			/*
-			this.deckId = deckData.id;
-			heroTitle.setTitle (deckData.title);
 			
-			if (deckData.items) {
-				var cardData:CollectionCardData;
-				var card:CollectionCard;
-				for (var i:int = 0; i < deckData.items.length; i ++) {
-					cardData = deckData.items[i] as CollectionCardData;
-					deckItemsContainer.addDeckItem (cardData);
-					countBar.setCount (deckItemsContainer.getCount());
-					card = getCardById (cardData.getId())
-					
-					try 
-					{ 
-						// some code that could throw an error 
-						card.decrement();
-					} 
-					catch (err:Error) 
-					{ 
-						trace ('problem with card:' + cardData.getTitle() + ', (id:' + cardData.getId()+')');
-						// code to react to the error 
-					} 
-					
-				}
-			}
-			*/
 		}
 		
 		

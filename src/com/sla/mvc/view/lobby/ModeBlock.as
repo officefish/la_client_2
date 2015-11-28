@@ -35,23 +35,19 @@ package com.sla.mvc.view.lobby
 			title.styleNameList.add('lobbyModePopupLabel');
 			title.text = blockTitle;
 			
-			var title2:Label = new Label();
-			title2.text = 'title';
-			
 			var description:TextField = new TextField(180, 180, blockDescription);
-			//description.border = true;
 			
 			var button:Button = new Button();
 			button.label = blockTitle.toUpperCase();
-			button.styleNameList.add('smallButton');
+			button.useHandCursor = true;
+			button.styleNameList.add('mainButton');
 			button.addEventListener( Event.TRIGGERED, button_triggeredHandler );
 			
 			layoutGroup.addChild(title);
-			//layoutGroup.addChild(title2);
 			layoutGroup.addChild(description);
 			
-			button.x = 40;
-			button.y = 230;
+			button.x = 10;
+			button.y = 200;
 			addChild(button);
 			
 			

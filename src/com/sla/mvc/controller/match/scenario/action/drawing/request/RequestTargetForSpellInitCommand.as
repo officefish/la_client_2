@@ -20,7 +20,8 @@ package com.sla.mvc.controller.match.scenario.action.drawing.request
 		override public function execute():void 
 		{
 			MonsterDebugger.log('RequestTargetForSpellInitCommand::execute()');
-			service.sendMessage('play_card_spell_to_target', event.data);
+			MonsterDebugger.log(event.data);
+			service.sendMessage('spell_to_target_init', event.data);
 		}	
 	}
 

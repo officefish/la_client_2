@@ -1,6 +1,7 @@
 package com.sla.mvc.controller.match.scenario 
 {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.AbilityEvent;
 	import com.sla.event.ScenarioEvent;
 	import com.sla.mvc.controller.match.scenario.exeption.ScenarioExeption;
 	import com.sla.mvc.model.data.CardData;
@@ -84,6 +85,18 @@ package com.sla.mvc.controller.match.scenario
 				case 'step': {
 					actionData.client = getClientFlag(data.client);
 					dispatch (new ScenarioEvent(ScenarioEvent.STEP, actionData));
+					break;
+				}
+				case 'attrition': {
+					actionData.damage = data.damage;
+					dispatch(new ScenarioEvent(ScenarioEvent.FATIGUE, actionData))
+					break;
+				}
+				case 'burn_card': {
+					actionData.client = getClientFlag(data.client);
+					actionData.card = CardData.converToData(data.card);
+					actionData.attachment = data.attachment;
+					dispatch(new ScenarioEvent(ScenarioEvent.BURN_CARD, actionData))
 					break;
 				}
 				case 'pick_card': {
@@ -262,6 +275,15 @@ package com.sla.mvc.controller.match.scenario
 					dispatch (new ScenarioEvent (ScenarioEvent.SEVERAL_MINIONS_HEALTH, actionData));
 					break;
 				}
+				case 'decrease_health': {
+					actionData.client = getClientFlag(data.client);
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					actionData.health = data.health;
+					actionData.maxHealth = data.maxHealth;
+					dispatch (new ScenarioEvent (ScenarioEvent.DECREASE_HEALTH, actionData));
+					break;
+				}
 				case 'destroy_actual_card': {
 					actionData.client = getClientFlag(data.client);
 					actionData.cardIndex = data.cardIndex;
@@ -300,10 +322,39 @@ package com.sla.mvc.controller.match.scenario
 					dispatch (new ScenarioEvent (ScenarioEvent.DESTROY_SHIELD, actionData));
 					break;
 				}
+				case 'shadow': {
+					actionData.client = getClientFlag(data.client);
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch (new ScenarioEvent (ScenarioEvent.SHADOW, actionData));
+					break;
+				}
+				case 'destroy_shadow': {
+					actionData.client = getClientFlag(data.client);
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch (new ScenarioEvent (ScenarioEvent.DESTROY_SHADOW, actionData));
+					break;
+				}
+				
 				case 'jerk': {
 					actionData.client = getClientFlag(data.client);
 					actionData.targets = data.targets;
 					dispatch (new ScenarioEvent (ScenarioEvent.JERK, actionData));
+					break;
+				}
+				case 'double_attack': {
+					actionData.client = getClientFlag(data.client);
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch (new ScenarioEvent (ScenarioEvent.DOUBLE_ATTACK, actionData));
+					break;
+				}
+				case 'destroy_double_attack': {
+					actionData.client = getClientFlag(data.client);
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch (new ScenarioEvent (ScenarioEvent.DESTROY_DOUBLE_ATTACK, actionData));
 					break;
 				}
 				case 'provocation': {
@@ -315,7 +366,24 @@ package com.sla.mvc.controller.match.scenario
 				case 'provocation_exception': {
 					actionData.client = getClientFlag(data.client);
 					actionData.exception = ScenarioExeption.PROVOCATION;
+					actionData.backCard = false;
 					dispatch (new ScenarioEvent (ScenarioEvent.EXCEPTION, actionData));
+					break;
+				}
+				case 'spell_target_warning': {
+					actionData.client = getClientFlag(data.client);
+					actionData.exception = ScenarioExeption.SPELL_INVISIBLE;
+					actionData.backCard = true;
+					dispatch (new ScenarioEvent (ScenarioEvent.EXCEPTION, actionData));
+					break;
+				}
+				case 'dumbness': {
+					actionData.client = getClientFlag(data.client);
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					actionData.attack = data.attack;
+					actionData.health = data.health;
+					dispatch (new ScenarioEvent (ScenarioEvent.DUMBNESS, actionData));
 					break;
 				}
 				case 'increase_spell': {
@@ -354,6 +422,31 @@ package com.sla.mvc.controller.match.scenario
 					dispatch (new ScenarioEvent (ScenarioEvent.MINION_HEALTH, actionData));
 					break;
 				}
+				case 'fly':
+				{
+					actionData.client = getClientFlag(data.client);	
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch (new ScenarioEvent (ScenarioEvent.FLY, actionData));
+					break;
+				}
+				case 'destroy_fly':
+				{
+					actionData.client = getClientFlag(data.client);	
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch (new ScenarioEvent (ScenarioEvent.DESTROY_FLY, actionData));
+					break;
+				}
+				case 'attach_widget':
+				{
+					actionData.client = getClientFlag(data.client);	
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					actionData.widget = data.widget;
+					dispatch (new ScenarioEvent (ScenarioEvent.ATTACH_WIDGET, actionData));
+					break;
+				}
 				case 'change_health':
 				{
 					actionData.client = getClientFlag(data.client);	
@@ -381,6 +474,14 @@ package com.sla.mvc.controller.match.scenario
 					dispatch(new ScenarioEvent(ScenarioEvent.ACTIVATE_WIDGET, actionData));
 					break;
 				}
+				case 'destroy_provocation': {
+					
+					actionData.client = getClientFlag(data.client);	
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					dispatch(new ScenarioEvent(ScenarioEvent.DESTROY_PROVOCATION, actionData));
+					break;
+				}
 				case 'select_effect':
 				{
 					actionData.client = getClientFlag(data.client);	
@@ -402,18 +503,130 @@ package com.sla.mvc.controller.match.scenario
 					dispatch (new ScenarioEvent (ScenarioEvent.SELECT_TARGET_FOR_EFFECT, actionData ));
 					break;
 				}
+				case 'select_active_target': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.mask = data.mask;
+					dispatch (new ScenarioEvent (ScenarioEvent.SELECT_TARGET_FOR_ACTIVE, actionData ));
+					break;
+				}
+				case 'select_for_spell': {
+					MonsterDebugger.log ('selectForSpell')
+					actionData.client = getClientFlag(data.client);	
+					actionData.mask = data.mask;
+					dispatch (new ScenarioEvent (ScenarioEvent.SELECT_TARGET_FOR_SPELL, actionData ));
+					break;
+				}
 				case 'block_active': {
 					actionData.client = getClientFlag(data.client);	
 					actionData.index = data.index;
 					actionData.attachment = data.attachment;
 					dispatch(new ScenarioEvent(ScenarioEvent.BLOCK_ACTIVE, actionData));
+					break;
 				}
 				case 'glow_unit': {
 					actionData.client = getClientFlag(data.client);	
 					actionData.index = data.index;
 					actionData.attachment = data.attachment;
+					actionData.canAttack = data.canAttack;
 					dispatch(new ScenarioEvent(ScenarioEvent.GLOW_MINION, actionData));
+					break;
 				}
+				case 'glow_hero': {
+					actionData.client = getClientFlag(data.client);	
+					dispatch(new ScenarioEvent(ScenarioEvent.GLOW_HERO, actionData));
+					break;
+				}
+				case 'change_card_price': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.index = data.index;
+					actionData.attachment = data.attachment;
+					actionData.price = data.price;
+					dispatch (new ScenarioEvent (ScenarioEvent.CHANGE_CARD_PRICE, actionData));
+					break;
+				}
+				case 'spell_invisible': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.index = data.targetIndex;
+					actionData.attachment = data.targetAttachment;
+					dispatch(new ScenarioEvent(ScenarioEvent.SPELL_INVISIBLE, actionData));
+					break;
+				}
+				
+				case 'take_up_weapon':
+					{
+					actionData.client = getClientFlag(data.client);	
+					actionData.playerWeaponIndex = data.playerWeaponIndex;
+					actionData.opponentWeaponIndex = data.opponentWeaponIndex;
+					actionData.weaponId = data.weaponId;
+					actionData.power = data.power;
+					actionData.strength = data.strength;
+					
+					dispatch (new ScenarioEvent (ScenarioEvent.TAKE_UP_WEAPON, actionData));
+					break;
+					}
+				
+				case 'glow_weapon': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.attachment = data.attachment;
+					actionData.weaponIndex = data.weaponIndex;
+					dispatch (new ScenarioEvent (ScenarioEvent.GLOW_WEAPON, actionData));
+					break;
+				}
+				case 'stop_glow_weapon': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.attachment = data.attachment;
+					actionData.weaponIndex = data.weaponIndex;
+					dispatch (new ScenarioEvent (ScenarioEvent.STOP_GLOW_WEAPON, actionData));
+					break;
+				}
+				case 'destroy_weapon': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.attachment = data.attachment;
+					actionData.weaponIndex = data.weaponIndex;
+					dispatch (new ScenarioEvent (ScenarioEvent.DESTOY_WEAPON, actionData));
+					break;
+				}
+				case 'weapon_strength': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.attachment = data.attachment;
+					actionData.weaponIndex = data.weaponIndex;
+					actionData.strength = data.strength;
+					dispatch (new ScenarioEvent (ScenarioEvent.WEAPON_STRENGTH, actionData));
+					break;
+				}
+					
+				case 'end_match': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.playerWin = data.playerWin;
+					actionData.opponentWin = data.opponentWin;
+					dispatch(new ScenarioEvent(ScenarioEvent.END_MATCH, actionData));
+					break;
+				}
+				case 'enable_achieve': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.position = data.position;
+					dispatch(new  AbilityEvent(AbilityEvent.ENABLE_ABILITY, actionData))
+					break;
+				}
+				
+				case 'disable_achieve': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.position = data.position;
+					dispatch(new  AbilityEvent(AbilityEvent.DISABLE_ABILITY, actionData))
+					break;
+				}
+					
+				
+				case 'increment_achieve': {
+					actionData.client = getClientFlag(data.client);	
+					actionData.position = data.position;
+					actionData.increment = data.increment;
+					actionData.enable = data.enable;
+					dispatch(new AbilityEvent(AbilityEvent.INCREMENT_ABILITY, actionData))
+					break;
+				}
+				
+				
 					
 				
 				default: {

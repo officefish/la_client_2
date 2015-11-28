@@ -2,6 +2,9 @@ package com.sla.mvc.view.collection {
 	import com.sla.event.starling.StarlingDeckListEvent;
 	import com.sla.mvc.model.data.DeckData;
 	import com.sla.mvc.model.data.HeroData;
+	import com.sla.mvc.view.card.CollectionCard;
+	import com.sla.mvc.view.collection.heroes.HeroesView;
+	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.filters.BlurFilter;
 	
@@ -16,26 +19,43 @@ package com.sla.mvc.view.collection {
 		private var stageHeight:int;
 		
 		private var collectionView:CollectionView;
+		private var heroesView:HeroesView;
+		
+		private var blockQuad:Quad
 		
 		public function Collection() 
 		{
 			collectionView = new CollectionView ();
 			addChild (collectionView);
 			
-			collectionView.addEventListener(StarlingDeckListEvent.REMOVE_SLOT, removeSlot);
+			heroesView = new HeroesView();
+			
+			blockQuad = new Quad(800, 600, 0x222222);
+			blockQuad.alpha = 0.7;
+			
 			
 		}
 		
-		private function removeSlot (event:StarlingDeckListEvent) :void {
-			dispatchEvent (new StarlingDeckListEvent(StarlingDeckListEvent.REMOVE_SLOT, false, event.data));
+		public function darken () :void {
+			addChild(blockQuad);
 		}
+		
+		public function stopDarken () :void {
+			if (contains(blockQuad)) removeChild(blockQuad);
+		}
+		
 		
 		public function resize (stageWidth:int, stageHeight:int) :void {
 			this.stageWidth = stageWidth;
 			this.stageHeight = stageHeight;
 			
-			collectionView.x =  (stageWidth - this.width) / 2;
-			collectionView.y = (stageHeight - this.height) / 2;
+			collectionView.x =  (stageWidth - 800) / 2;
+			collectionView.y = (stageHeight - 600) / 2;
+			
+			heroesView.resize(stageWidth, stageHeight);
+			
+			blockQuad.x = collectionView.x;
+			blockQuad.y = collectionView.y;
 			
 			
 		}
@@ -48,8 +68,8 @@ package com.sla.mvc.view.collection {
 		}
 		
 		public function initBooks (books:Array) :void {
-			//if (contains(heroesView)) removeChild (heroesView);
-			//addChild (collectionView);
+			if (contains(heroesView)) removeChild (heroesView);
+			addChild (collectionView);
 			collectionView.initBooks (books);
 		}
 		
@@ -58,9 +78,9 @@ package com.sla.mvc.view.collection {
 		}
 		
 		public function initHeroes (heroes:Array) :void {
-			//if (contains(collectionView)) removeChild (collectionView);
-			//addChild (heroesView);
-			//heroesView.initHeroes (heroes);	
+			if (contains(collectionView)) removeChild (collectionView);
+			addChild (heroesView);
+			heroesView.initHeroes (heroes);	
 		}
 		
 		public function setState (value:int) :void {
@@ -89,6 +109,18 @@ package com.sla.mvc.view.collection {
 			collectionView.setDecksItemsCount(value);
 		}
 		
+		public function getCardById (id:int):CollectionCard {
+			return collectionView.getCardById (id);
+		}
+		
+		public function setDust (value:int) :void {
+			collectionView.setDust (value);
+		}
+		
+		public function restateCards () :void {
+			collectionView.restateCards();
+		}
+		
 		
 		/*
 		
@@ -96,9 +128,7 @@ package com.sla.mvc.view.collection {
 			collectionView.addDeckItem (data);
 		}
 		
-		public function getCardById (id:int):CollectionCard {
-			return collectionView.getCardById (id);
-		}
+		
 		
 		public function removeDeckItem (data:CollectionCardData) :void {
 			collectionView.removeDeckItem (data);
@@ -114,13 +144,9 @@ package com.sla.mvc.view.collection {
 		
 		
 		
-		public function setDust (value:int) :void {
-			collectionView.setDust (value);
-		}
 		
-		public function restateCards () :void {
-			collectionView.restateCards();
-		}
+		
+		
 		*/
 		
 	}

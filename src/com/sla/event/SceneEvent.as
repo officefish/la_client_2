@@ -71,9 +71,15 @@ package com.sla.event
 		
 		public static const INIT_ATTACK_TARGET:String = 'initAttackTarget';
 		public static const TARGET_FOR_EFFECT_SELLECTED:String = 'targetForEffectSelected';
+		public static const TARGET_FOR_ACTIVE_SELLECTED:String = 'targetForActiveSelected';
 		
 		public static const ACTION_POPUP:String = 'actionPopup';
 		public static const ACTIVATE_ACTIVE:String = 'activateActive';
+		
+		public static const SELECT_TARGET_FOR_HERO_ATTACK:String = 'selectTargetForHeroAttack';
+		public static const SELECT_FOR_HERO_ATTACK_INIT:String = 'selectForHeroAttackInit';
+		public static const SELECT_PLAYER_WEAPON:String = 'selectPlayerWeapon';
+		
 		
 		public function SceneEvent(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

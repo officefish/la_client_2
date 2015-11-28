@@ -20,10 +20,11 @@ package com.sla.mvc.controller.lobby.dispather
 		{
 			var id:int = event.data.id;
 			var mode:int = event.data.mode; 
-			var uid:int = event.data.hero;
+			var uid:int = event.data.uid;
 			var level:int = event.data.level; 
+			var nickname:String = event.data.nickname;
 			
-			lobby.confirmInvite({id:id, mode:mode, uid:uid, level:level});
+			lobby.confirmInvite({id:id, mode:mode, uid:uid, level:level, nickname:nickname});
 		}	
 	}
 

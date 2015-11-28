@@ -10,6 +10,8 @@ package com.sla.mvc.model
 	{
 		private var _lobbyId:int;
 		private var _userId:int;
+		private var _nickname:String;
+		
 		public function set lobbyId (value:int) :void {
 			_lobbyId = value;
 		}
@@ -22,6 +24,12 @@ package com.sla.mvc.model
 		public function get userId () :int {
 			return _userId;
 		}	
+		public function set nickname (value:String) :void {
+			_nickname = value;
+		}
+		public function get nickname () :String {
+			return _nickname;
+		}
 		
 		
 	}

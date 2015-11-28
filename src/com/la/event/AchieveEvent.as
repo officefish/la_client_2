@@ -15,6 +15,7 @@ package com.la.event
 		public static const DESTROY:String = 'destroyAchieve';
 		public static const CLOSE_CRAFT:String = 'closeCraft';
 		public static const READY_CRAFT:String = 'readyCraft';
+		public static const PREVIEW_CRAFT:String = 'previewCraft';
 		
 		private var data:Object;
 		public function AchieveEvent(type:String, data:Object = null, bubbles:Boolean=false, cancelable:Boolean=false) 

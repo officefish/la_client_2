@@ -1,6 +1,7 @@
 package com.sla.mvc.view.mediator 
 {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.sla.event.CollectionEvent;
 	import com.sla.event.DeckListEvent;
 	import com.sla.event.starling.DeckListItemEvent;
 	import com.sla.event.starling.StarlingDeckListEvent;
@@ -24,7 +25,7 @@ package com.sla.mvc.view.mediator
 		}
 		
 		private function onEditDeck (event:StarlingDeckListEvent) :void {
-			dispatch(new DeckListEvent(DeckListEvent.EDIT_DECK_FROM_DECKLIST, event.data));
+			dispatch(new CollectionEvent(CollectionEvent.EDIT_DECK, event.data));
 		}
 		
 		private function onReady (event:StarlingDeckListEvent) :void {
