@@ -23,7 +23,7 @@ package com.sla.mvc.controller.match.startup
 
 		override public function execute():void {
 			MonsterDebugger.log('StartupMatchServiceCommand::execute()');
-			service.init('5.101.123.195', 8003, matchModel.matchId);
+			service.init(rootModel.hostname, 8003, matchModel.matchId);
 			service.setUserData({'id':rootModel.lobbyId})
 			service.connect();
 		}

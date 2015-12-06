@@ -26,6 +26,7 @@ package com.sla.event
 		public static const ACTIVATE_SPELL_ABILITY:String = 'activateSpellAbility';
 		public static const ACTIVATE_SPELL_TO_TARGET_ABILITY:String = 'activateSpellToTargetAbility';
 		public static const TARGET_FOR_ABILITY_INIT:String = 'targetForAbilityInit';
+		
 
 		
 		public function AbilityEvent(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) 

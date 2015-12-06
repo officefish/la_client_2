@@ -27,6 +27,9 @@ package com.sla.mvc.controller.init
 				MonsterDebugger.log('пользователь не установлен')
 				rootModel.nickname = 'admin' + Math.round(Math.random() * 1000);
 				rootModel.userId = 1;
+				
+				//rootModel.hostname = '127.0.0.1';
+				rootModel.hostname = '5.101.123.195';
 			//}
 			
 			dispatch(new LAContextEvent(LAContextEvent.MODEL_INIT));

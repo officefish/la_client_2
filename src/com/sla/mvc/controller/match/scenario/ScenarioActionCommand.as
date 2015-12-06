@@ -615,6 +615,18 @@ package com.sla.mvc.controller.match.scenario
 					dispatch(new  AbilityEvent(AbilityEvent.DISABLE_ABILITY, actionData))
 					break;
 				}
+				
+				case 'cards_from_graveyard': {
+					actionData.client = getClientFlag(data.client);	
+					var graveyardCards:Vector.<CardData> = new Vector.<CardData>();
+					for (i = 0; i < data.cards.length; i++) {
+						cardData = CardData.converToData(data.cards[i]);
+						graveyardCards.push(cardData);
+					}
+					actionData.cards = graveyardCards;
+					dispatch(new ScenarioEvent(ScenarioEvent.CARDS_FROM_GRAVEYARD, actionData))
+					break;
+				}
 					
 				
 				case 'increment_achieve': {

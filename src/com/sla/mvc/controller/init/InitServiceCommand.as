@@ -1,6 +1,7 @@
 package com.sla.mvc.controller.init 
 {
 	import com.sla.event.LAContextEvent;
+	import com.sla.mvc.model.RootModel;
 	import com.sla.mvc.service.LobbyService;
 	import org.robotlegs.mvcs.StarlingCommand;
 	import com.demonsters.debugger.MonsterDebugger;
@@ -18,9 +19,12 @@ package com.sla.mvc.controller.init
 		[Inject]
 		public var lobbyService:LobbyService;
 		
+		[Inject]
+		public var rootModel:RootModel;
+		
 		override public function execute():void 
 		{
-			apiService.host = '5.101.123.195';
+			apiService.host = rootModel.hostname;
 			apiService.port = 8000;
 			apiService.userId = 1;
 			

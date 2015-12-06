@@ -72,7 +72,7 @@ package com.sla.event
 		public static const STOP_GLOW_WEAPON:String = 'stopGlowWeapon';
 		public static const WEAPON_STRENGTH:String = 'weaponStrength';
 		public static const DESTOY_WEAPON:String = 'destroyWeapon';
-		
+		public static const CARDS_FROM_GRAVEYARD:String = 'cards_from_graveyard';
 		
 		public function ScenarioEvent(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) 
 		{

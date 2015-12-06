@@ -12,6 +12,8 @@ package com.sla.mvc.model
 		private var _userId:int;
 		private var _nickname:String;
 		
+		private var _hostname:String;
+		
 		public function set lobbyId (value:int) :void {
 			_lobbyId = value;
 		}
@@ -29,6 +31,13 @@ package com.sla.mvc.model
 		}
 		public function get nickname () :String {
 			return _nickname;
+		}
+		
+		public function set hostname (value:String) :void {
+			_hostname = value;
+		}
+		public function get hostname () :String {
+			return _hostname;
 		}
 		
 		

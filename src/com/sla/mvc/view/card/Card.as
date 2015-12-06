@@ -311,6 +311,8 @@ package com.sla.mvc.view.card
 			//var body:QuadBatch = CardFormater.drawBody(MIRROR_WIDTH, MIRROR_HEIGHT, cardData.type, 30);
 			container.addChild(body);
 			
+			MonsterDebugger.log ('id:' + cardData.id, 'title:' + cardData.title);
+			
 			
 			var cardImage:Image = new Image(Stock.getMirrorTextrure(cardData.id));
 			cardImage.x = 40;

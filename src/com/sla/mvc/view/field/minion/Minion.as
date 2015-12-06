@@ -114,6 +114,11 @@ package com.sla.mvc.view.field.minion
 			var quad:Quad = new Quad(WIDTH, HEIGHT, color);
 			bg.addChild(quad);
 			
+			if (cardData) {
+				var cardAsset:Image = new Image(Stock.getMinionTextrure(cardData.id))
+				bg.addChild(cardAsset);
+			}
+			
 			bg.x -= WIDTH / 2;
 			bg.y -= HEIGHT / 2;
 			addChild(bg);
@@ -198,9 +203,6 @@ package com.sla.mvc.view.field.minion
 					
 			if (cardData) {
 				this.name = cardData.title;
-				
-				var cardAsset:Image = new Image(Stock.getMinionTextrure(cardData.id))
-				bg.addChild(cardAsset);
 				
 				var attackQuad:Quad = new Quad(15, 15, 0xFFFFFF);
 				attackQuad.y = HEIGHT - 15;

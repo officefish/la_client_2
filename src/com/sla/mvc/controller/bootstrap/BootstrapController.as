@@ -73,6 +73,7 @@ package com.sla.mvc.controller.bootstrap
 	import com.sla.mvc.controller.lobby.AcceptCommand;
 	import com.sla.mvc.controller.match.CloseMatchCommand;
 	import com.sla.mvc.controller.match.field.FindMinionPositionCommand;
+	import com.sla.mvc.controller.match.hand.CardsFromGraveyardCommand;
 	import com.sla.mvc.controller.match.hand.OpponentCursorOutCommand;
 	import com.sla.mvc.controller.match.hand.OpponentCursorOverCommand;
 	import com.sla.mvc.controller.match.hand.requests.RequestCursorOutCommand;
@@ -364,6 +365,7 @@ package com.sla.mvc.controller.bootstrap
 			commandMap.mapEvent(HandEvent.CURSOR_OUT, RequestCursorOutCommand, HandEvent);
 			commandMap.mapEvent(HandEvent.OPPONENT_CURSOR_OVER, OpponentCursorOverCommand, HandEvent);
 			commandMap.mapEvent(HandEvent.OPPONET_CURSOR_OUT, OpponentCursorOutCommand, HandEvent);
+			commandMap.mapEvent(ScenarioEvent.CARDS_FROM_GRAVEYARD, CardsFromGraveyardCommand, ScenarioEvent);
 			
 			//-- MAtch -- Field
 			commandMap.mapEvent(FieldEvent.FIND_MINION_POSITION, FindMinionPositionCommand);
